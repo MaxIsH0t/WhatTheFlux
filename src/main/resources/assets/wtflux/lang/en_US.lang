@@ -1,0 +1,9 @@
+itemGroup.tab_wtflux=WhatTheFlux
+
+item.wtflux:itemRes0.name=Zinc Ingot
+item.wtflux:itemRes1.name=Zinc Dust
+item.wtflux:itemRes2.name=Zinc Nugget
+item.wtflux:itemRes3.name=Zinc Gear
+
+tile.wtflux:blockMetal0.name=Block of Zinc
+tile.wtflux:blockOre0.name=Sphalerite Ore

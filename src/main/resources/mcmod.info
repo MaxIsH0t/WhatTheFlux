@@ -1,0 +1,16 @@
+[
+{
+  "modid": "wtflux",
+  "name": "WhatTheFlux",
+  "description": "More ways to make redstone fluctuate!",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Phanta"],
+  "credits": "Vazkii, because I keep using her code, Team CoFH for the awesome RF system",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": ["CoFHCore", "ThermalFoundation"]
+}
+]
