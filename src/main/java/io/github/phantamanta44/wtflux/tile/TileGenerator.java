@@ -1,9 +1,18 @@
 package io.github.phantamanta44.wtflux.tile;
 
 import io.github.phantamanta44.wtflux.lib.LibNBT;
+
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
+
+import com.google.common.collect.Maps;
 
 public class TileGenerator extends TileBasicInventory implements IEnergyProvider {
 	
@@ -54,8 +63,7 @@ public class TileGenerator extends TileBasicInventory implements IEnergyProvider
 	@Override
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
 		if (init) {
-			int transferRate = cap * 128 + 128;
-			int toTransfer = Math.max(energy - transferRate, 0);
+			int toTransfer = Math.max(Math.min(Math.min(getTransferRate(), maxExtract), energy), 0);
 			if (toTransfer > 0 && !simulate) {
 				energy -= toTransfer;
 				markForUpdate();
@@ -81,9 +89,30 @@ public class TileGenerator extends TileBasicInventory implements IEnergyProvider
 		boolean dirty = false;
 		
 		// TODO Generation procedures
+		energy += 10;
+		
+		Map<ForgeDirection, IEnergyReceiver> tiles = Maps.newHashMap();
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			TileEntity tile = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
+			if (tile != null && tile instanceof IEnergyReceiver) {
+				ForgeDirection from = dir.getOpposite();
+				tiles.put(dir.getOpposite(), (IEnergyReceiver)tile);
+				dirty = true;
+			}
+		}
+		Set<Entry<ForgeDirection, IEnergyReceiver>> tileSet = tiles.entrySet();
+		int dist = (int)Math.floor((float)Math.min(energy, getTransferRate()) / (float)tileSet.size());
+		for (Entry<ForgeDirection, IEnergyReceiver> tile : tileSet) {
+			int v = ((IEnergyReceiver)tile.getValue()).receiveEnergy(tile.getKey(), dist, false);
+			energy -= v;
+		}
 		
 		if (dirty)
 			markForUpdate();
+	}
+	
+	public int getTransferRate() {
+		return cap * 128 + 128;
 	}
 
 }
