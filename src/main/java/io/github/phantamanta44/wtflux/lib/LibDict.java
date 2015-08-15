@@ -1,5 +1,8 @@
 package io.github.phantamanta44.wtflux.lib;
 
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
+
 public class LibDict {
 
 	public static final String INGOT = "ingot";
@@ -138,5 +141,14 @@ public class LibDict {
 	public static final String ORE_COAL = ORE + COAL;
 	
 	public static final String GLASS_PANE = "paneGlassColorless";
+
+	public static boolean matches(ItemStack stack, String key) {
+		int[] ids = OreDictionary.getOreIDs(stack);
+		for (int i : ids) {
+			if (OreDictionary.getOreName(i).equals(key))
+				return true;
+		}
+		return false;
+	}
 	
 }

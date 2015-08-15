@@ -1,5 +1,6 @@
-package io.github.phantamanta44.wtflux.recipe;
+package io.github.phantamanta44.wtflux.crafting;
 
+import io.github.phantamanta44.wtflux.crafting.recipe.GeneratorRecipe;
 import io.github.phantamanta44.wtflux.item.ItemCapacitor;
 import io.github.phantamanta44.wtflux.item.ItemMisc;
 import io.github.phantamanta44.wtflux.item.ItemRotary;
@@ -111,6 +112,8 @@ public final class MasterRecipeManager {
 		// Electrolytic Capacitor
 		addOreDictRecipe(new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.CAP_3), " a ", "dnd", " c ", 'n', LibDict.INGOT_SIG, 'd', new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.DIELEC_3), 'a', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.ANODE), 'c', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.CATHODE));
 		addOreDictRecipe(new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.CAP_3), " c ", "dnd", " a ", 'n', LibDict.INGOT_SIG, 'd', new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.DIELEC_3), 'a', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.ANODE), 'c', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.CATHODE));
+		
+		GameRegistry.addRecipe(new GeneratorRecipe());
 	}
 
 	protected static void addSmelting(ItemStack output, ItemStack input, int xp) {

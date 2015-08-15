@@ -1,4 +1,4 @@
-package io.github.phantamanta44.wtflux.recipe;
+package io.github.phantamanta44.wtflux.crafting;
 
 import io.github.phantamanta44.wtflux.block.BlockCompressed;
 import io.github.phantamanta44.wtflux.block.BlockOre;

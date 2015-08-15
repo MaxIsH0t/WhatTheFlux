@@ -2,11 +2,13 @@ package io.github.phantamanta44.wtflux.proxy;
 
 import io.github.phantamanta44.wtflux.block.BlockOre;
 import io.github.phantamanta44.wtflux.block.WtfBlocks;
+import io.github.phantamanta44.wtflux.crafting.MasterRecipeManager;
 import io.github.phantamanta44.wtflux.item.WtfItems;
-import io.github.phantamanta44.wtflux.recipe.MasterRecipeManager;
+import io.github.phantamanta44.wtflux.tile.TileGenerator;
 import io.github.phantamanta44.wtflux.util.BlockWithMeta;
 import io.github.phantamanta44.wtflux.worldgen.OreGenSimple;
 import net.minecraft.init.Blocks;
+import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CommonProxy {
@@ -14,6 +16,7 @@ public class CommonProxy {
 	public void onPreInit() {
 		WtfItems.init();
 		WtfBlocks.init();
+		registerTileEntities();
 	}
 	
 	public void onInit() {
@@ -24,6 +27,14 @@ public class CommonProxy {
 	
 	public void onPostInit() {
 		
+	}
+	
+	protected void registerTileEntities() {
+		addTEMapping(TileGenerator.class);
+	}
+	
+	protected void addTEMapping(Class c) {
+		TileEntity.addMapping(c, c.getName());
 	}
 	
 }
