@@ -9,10 +9,10 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class BlockCompressed extends BlockModSubs {
 	
-	public static final int ZINC = 0;
+	public static final int ZINC = 0, URAN = 1;
 	
 	public BlockCompressed() {
-		super(Material.iron, 1);
+		super(Material.iron, 2);
 		setHardness(4F);
 		setResistance(7.5F);
 		setBlockName(LibLang.METAL_BLOCK_NAME);

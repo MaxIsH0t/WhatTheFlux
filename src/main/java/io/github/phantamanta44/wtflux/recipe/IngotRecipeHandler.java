@@ -15,6 +15,7 @@ public final class IngotRecipeHandler {
 
 	protected static void registerRecipes() {
 		addIngot(new ItemStack(WtfBlocks.blockMetal, 1, BlockCompressed.ZINC), WtfItems.itemRes, ItemResource.INGOT_ZINC, LibDict.ZINC, 4000, new ItemStack(WtfBlocks.blockOre, 1, BlockOre.ZINC));
+		addIngot(new ItemStack(WtfBlocks.blockMetal, 1, BlockCompressed.URAN), WtfItems.itemRes, ItemResource.INGOT_URAN, LibDict.URAN, 4000, new ItemStack(WtfBlocks.blockOre, 1, BlockOre.URAN));
 	}
 	
 	private static void addIngot(ItemStack block, Item ingot, int meta, String dict, int xp) {

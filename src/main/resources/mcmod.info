@@ -11,6 +11,6 @@
   "credits": "Vazkii, because I keep using her code, Team CoFH for the awesome RF system",
   "logoFile": "",
   "screenshots": [],
-  "dependencies": ["CoFHCore", "ThermalFoundation"]
+  "dependencies": ["CoFHCore", "ThermalFoundation", "ThermalExpansion"]
 }
 ]

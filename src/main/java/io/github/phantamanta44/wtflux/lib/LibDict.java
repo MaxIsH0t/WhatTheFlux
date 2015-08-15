@@ -7,6 +7,7 @@ public class LibDict {
 	public static final String NUGGET = "nugget";
 	public static final String GEAR = "gear";
 	public static final String BLOCK = "block";
+	public static final String ORE = "ore";
 	
 	public static final String IRON = "Iron";
 	public static final String INGOT_IRON = INGOT + IRON;
@@ -21,6 +22,13 @@ public class LibDict {
 	public static final String NUGGET_ZINC = NUGGET + ZINC;
 	public static final String GEAR_ZINC = GEAR + ZINC;
 	public static final String BLOCK_ZINC = BLOCK + ZINC;
+	
+	public static final String URAN = "Uranium";
+	public static final String INGOT_URAN = INGOT + URAN;
+	public static final String DUST_URAN = DUST + URAN;
+	public static final String NUGGET_URAN = NUGGET + URAN;
+	public static final String GEAR_URAN = GEAR + URAN;
+	public static final String BLOCK_URAN = BLOCK + URAN;
 	
 	public static final String COPPER = "Copper";
 	public static final String INGOT_COPPER = INGOT + COPPER;
@@ -99,7 +107,7 @@ public class LibDict {
 	public static final String GEAR_LUM = GEAR + LUM;
 	public static final String BLOCK_LUM = BLOCK + LUM;
 	
-	public static final String SIG = "Signallum";
+	public static final String SIG = "Signalum";
 	public static final String INGOT_SIG = INGOT + SIG;
 	public static final String DUST_SIG = DUST + SIG;
 	public static final String NUGGET_SIG = NUGGET + SIG;
@@ -119,5 +127,16 @@ public class LibDict {
 	public static final String NUGGET_ELEC = NUGGET + ELEC;
 	public static final String GEAR_ELEC = GEAR + ELEC;
 	public static final String BLOCK_ELEC = BLOCK + ELEC;
+	
+	public static final String GRAPH = "Graphite";
+	public static final String INGOT_GRAPH = INGOT + GRAPH;
+	public static final String DUST_GRAPH = DUST + GRAPH;
+	
+	public static final String COAL = "Coal";
+	public static final String DUST_COAL = DUST + COAL;
+	public static final String BLOCK_COAL = BLOCK + COAL;
+	public static final String ORE_COAL = ORE + COAL;
+	
+	public static final String GLASS_PANE = "paneGlassColorless";
 	
 }

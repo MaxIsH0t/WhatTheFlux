@@ -8,10 +8,10 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class BlockOre extends BlockModSubs {
 	
-	public static final int ZINC = 0;
+	public static final int ZINC = 0, URAN = 1;
 	
 	public BlockOre() {
-		super(Material.rock, 1);
+		super(Material.rock, 2);
 		setHardness(1.2F);
 		setResistance(4.8F);
 		setBlockName(LibLang.ORE_NAME);
