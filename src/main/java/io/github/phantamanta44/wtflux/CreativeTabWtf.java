@@ -1,7 +1,7 @@
 package io.github.phantamanta44.wtflux;
 
+import io.github.phantamanta44.wtflux.item.ItemRotary;
 import io.github.phantamanta44.wtflux.item.WtfItems;
-import io.github.phantamanta44.wtflux.item.ItemResource;
 import io.github.phantamanta44.wtflux.lib.LibLang;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -15,12 +15,12 @@ public class CreativeTabWtf extends CreativeTabs {
 	
 	@Override
 	public ItemStack getIconItemStack() {
-		return new ItemStack(WtfItems.itemRes, 1, ItemResource.INGOT_ZINC);
+		return new ItemStack(WtfItems.itemRot, 1, ItemRotary.NUKE);
 	}
 	
 	@Override
 	public Item getTabIconItem() {
-		return WtfItems.itemRes;
+		return WtfItems.itemRot;
 	}
 	
 }
