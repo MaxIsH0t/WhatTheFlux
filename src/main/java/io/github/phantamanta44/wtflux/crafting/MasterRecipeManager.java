@@ -2,6 +2,7 @@ package io.github.phantamanta44.wtflux.crafting;
 
 import io.github.phantamanta44.wtflux.crafting.recipe.GeneratorRecipe;
 import io.github.phantamanta44.wtflux.item.ItemCapacitor;
+import io.github.phantamanta44.wtflux.item.ItemDynamo;
 import io.github.phantamanta44.wtflux.item.ItemMisc;
 import io.github.phantamanta44.wtflux.item.ItemRotary;
 import io.github.phantamanta44.wtflux.item.WtfItems;
@@ -70,8 +71,10 @@ public final class MasterRecipeManager {
 			addOreDictRecipe(new ItemStack(WtfItems.itemDyn, 1, i), "ccc", "c c", "ccc", 'c', i == 0 ? new ItemStack(WtfItems.itemMisc, 1, ItemMisc.COPPER_THREAD) : new ItemStack(WtfItems.itemDyn, 1, i - 1));
 		
 		// Dynamos
-		for (int i = 0; i < 3; i++)
-			addOreDictRecipe(new ItemStack(WtfItems.itemDyn, 1, 3 + i), " c ", "csc", " c ", 'c', new ItemStack(WtfItems.itemDyn, 1, i), 's', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.SOLENOID));
+		addOreDictRecipe(new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.DYN_1), "csc", 'c', new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.COIL_3), 's', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.SOLENOID));
+		addOreDictRecipe(new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.DYN_1), "c", "s", "c", 'c', new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.COIL_3), 's', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.SOLENOID));
+		addOreDictRecipe(new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.DYN_2), " c ", "csc", " c ", 'c', new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.COIL_3), 's', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.SOLENOID));
+		addOreDictRecipe(new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.DYN_3), "ccc", "csc", "ccc", 'c', new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.COIL_3), 's', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.SOLENOID));
 		
 		// Heat Furnace
 		addOreDictRecipe(new ItemStack(WtfItems.itemRot, 1, ItemRotary.FURN), "ppp", "bfb", 'f', new ItemStack(Blocks.furnace), 'p', new ItemStack(Blocks.heavy_weighted_pressure_plate), 'b', new ItemStack(Blocks.brick_block));

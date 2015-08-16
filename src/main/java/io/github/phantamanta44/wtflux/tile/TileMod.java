@@ -12,10 +12,11 @@ public abstract class TileMod extends TileEntity {
 	
 	public abstract void readItemTag(NBTTagCompound tag);
 	
-	public abstract void tick();
+	protected abstract void tick();
 	
 	public void markForUpdate() {
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		if (worldObj != null)
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		markDirty();
 	}
 	

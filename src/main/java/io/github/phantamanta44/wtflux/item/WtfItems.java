@@ -9,6 +9,7 @@ public final class WtfItems {
 	public static Item itemDyn;
 	public static Item itemRot;
 	public static Item itemCap;
+	public static Item itemRct;
 	
 	public static void init() {
 		itemRes = new ItemResource();
@@ -16,6 +17,7 @@ public final class WtfItems {
 		itemDyn = new ItemDynamo();
 		itemRot = new ItemRotary();
 		itemCap = new ItemCapacitor();
+		itemRct = new ItemReactor();
 	}
 	
 }

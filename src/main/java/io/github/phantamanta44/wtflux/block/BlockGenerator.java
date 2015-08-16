@@ -27,7 +27,7 @@ public class BlockGenerator extends BlockModSubs implements ITileEntityProvider 
 
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
-		return new TileGenerator(meta);
+		return TileGenerator.getAppropriateTile(meta);
 	}
 
 }

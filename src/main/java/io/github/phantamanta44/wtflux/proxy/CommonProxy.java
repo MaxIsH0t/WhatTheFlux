@@ -30,7 +30,12 @@ public class CommonProxy {
 	}
 	
 	protected void registerTileEntities() {
-		addTEMapping(TileGenerator.class);
+		addTEMapping(TileGenerator.Furnace.class);
+		addTEMapping(TileGenerator.Heat.class);
+		addTEMapping(TileGenerator.Wind.class);
+		addTEMapping(TileGenerator.Water.class);
+		addTEMapping(TileGenerator.Nuke.class);
+		addTEMapping(TileGenerator.Solar.class);
 	}
 	
 	protected void addTEMapping(Class c) {
