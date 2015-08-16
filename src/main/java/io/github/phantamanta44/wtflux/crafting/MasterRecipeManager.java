@@ -147,11 +147,11 @@ public final class MasterRecipeManager {
 		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.VALVE), " l ", "pvp", 'l', new ItemStack(Blocks.lever), 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'v', new ItemStack(Blocks.piston));
 		
 		// Neutron Howitzer Cradle
-		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.HOW_CRADLE), "ppp", "w  ", "ppp", 'p', new ItemStack(WtfItems.itemRct, 1), ItemReactor.PLATE, 'w', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC));
-		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.HOW_CRADLE), "ppp", "  w", "ppp", 'p', new ItemStack(WtfItems.itemRct, 1), ItemReactor.PLATE, 'w', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC));
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.HOW_CRADLE), "ppp", "w  ", "ppp", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'w', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC));
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.HOW_CRADLE), "ppp", "  w", "ppp", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'w', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC));
 		
 		// Control Rod Cradle
-		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.ROD_CRADLE), "pvp", "p p", "p p", 'p', new ItemStack(WtfItems.itemRct, 1), ItemReactor.PLATE, 'v', new ItemStack(Blocks.piston));
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.ROD_CRADLE), "pvp", "p p", "p p", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'v', new ItemStack(Blocks.piston));
 		
 		// Reactor Casing
 		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.CASING), "pp", "pp", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE));
