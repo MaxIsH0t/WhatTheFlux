@@ -2,6 +2,7 @@ package io.github.phantamanta44.wtflux.tile;
 
 import io.github.phantamanta44.wtflux.item.ItemReactor;
 import io.github.phantamanta44.wtflux.item.WtfItems;
+import io.github.phantamanta44.wtflux.lib.LibDict;
 import io.github.phantamanta44.wtflux.lib.LibNBT;
 import io.github.phantamanta44.wtflux.util.MathUtil;
 import io.github.phantamanta44.wtflux.util.SingleFluidTank;
@@ -37,9 +38,11 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 	protected int energy = 0, energyMax = 24000;
 	protected byte gen = 0, dyn = 0, cap = 0;
 	protected float momentum = 0F, temp = 23.0F;
+	protected boolean useResistance;
 	
-	public TileGenerator(int slots) {
+	public TileGenerator(int slots, boolean resist) {
 		super(slots);
+		useResistance = resist;
 	}
 	
 	@Override
@@ -125,9 +128,10 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 	}
 	
 	public boolean simulateInduction() {
-		float voltage = MathUtil.voltageFromFlux(momentum, COIL_AMOUNTS[dyn]), resist = MathUtil.resistanceFromHeat(temp);
-		int current = (int)(voltage / resist);
-		energy += current;
+		float voltage = MathUtil.voltageFromFlux(momentum, COIL_AMOUNTS[dyn]);
+		if (useResistance)
+			voltage /= MathUtil.resistanceFromHeat(temp);
+		energy += voltage;
 		float momentumLossFactor = (0.997F - momentum / 2400F);
 		momentum *= momentumLossFactor;
 		temp += Math.max(momentum / 4200F, 0);
@@ -195,7 +199,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 		private int totalBurnTime = 0;
 		
 		public Furnace() {
-			super(1);
+			super(1, true);
 		}
 
 		@Override
@@ -245,7 +249,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 		private SingleFluidTank tank = new SingleFluidTank(FluidRegistry.WATER, TANK_SIZE);
 		
 		public Heat() {
-			super(2);
+			super(2, false);
 		}
 		
 		@Override
@@ -333,7 +337,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 	public static class Wind extends TileGenerator {
 		
 		public Wind() {
-			super(0);
+			super(0, true);
 		}
 		
 		@Override
@@ -369,7 +373,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 		private SingleFluidTank lowerTank = new SingleFluidTank(FluidRegistry.WATER, LWR_SIZE);
 		
 		public Water() {
-			super(2);
+			super(2, true);
 		}
 		
 		@Override
@@ -470,29 +474,29 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 	public static class Nuke extends TileGenerator implements IFluidHandler {
 		
 		private static final int TANK_SIZE = 16000;
-		private int fuel = 0, waste = 0;
+		private float fuel = 0, waste = 0;
 		private SingleFluidTank tank = new SingleFluidTank(FluidRegistry.WATER, TANK_SIZE);
 		
 		public Nuke() {
-			super(6);
+			super(6, false);
 		}
 		
 		@Override
 		protected boolean doGeneration() {
-			if (fuel > 0) {
-				if (waste < 1000)
+			if (fuel > 0F) {
+				if (waste < 1000F)
 					tryDoReaction();
 			}
 			else
 				tryInjectFuel();
 			
-			if (waste >= 1000)
+			if (waste >= 1000F)
 				tryEjectWaste();
 			
 			if (tank.getFluidAmount() >= temp && temp > getPassiveTemp()) {
 				tank.drain((int)temp, true);
 				momentumFromHeat();
-				temp *= 0.9F + 0.1F * (Math.max(0, 2000 - temp) / 2000);
+				temp *= 0.9F + 0.1F * (Math.max(0F, 2000F - temp) / 2000F);
 			}
 			
 			if (slots[3] != null && slots[4] == null) {
@@ -519,29 +523,40 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 			if (slots[2] != null) {
 				if (slots[2].getItem() == WtfItems.itemRct && slots[2].getItemDamage() == ItemReactor.CONTROL_ROD) {
 					((ItemReactor)WtfItems.itemRct).decrementUses(slots[2]);
-					fuel--;
-					waste++;
-					temp += (0.5 + worldObj.rand.nextFloat() * 1.5);
+					float fuelCost = temp / (float)3000;
+					fuel -= fuelCost;
+					waste += fuelCost;
+					temp += (140.0F + worldObj.rand.nextFloat() * 400.0F);
 				}
 			}
 		}
 		
 		private void tryInjectFuel() {
+			boolean flag1 = false, flag2 = false;
 			if (slots[1] != null) {
-				if (slots[1].getItem() == WtfItems.itemRct && slots[1].getItemDamage() == ItemReactor.BLASTER) {
-					((ItemReactor)WtfItems.itemRct).decrementUses(slots[1]);
-					fuel = 1000;
-				}
+				if (slots[1].getItem() == WtfItems.itemRct && slots[1].getItemDamage() == ItemReactor.BLASTER)
+					flag1 = true;
+			}
+			
+			if (slots[0] != null) {
+				if (LibDict.matches(slots[0], LibDict.INGOT_URAN))
+					flag2 = true;
+			}
+			
+			if (flag1 && flag2) {
+				((ItemReactor)WtfItems.itemRct).decrementUses(slots[1]);
+				slots[0].stackSize--;
+				fuel += 1000F;
 			}
 		}
 		
 		private void tryEjectWaste() {
 			if (slots[5] == null) {
-				waste -= 1000;
+				waste -= 1000F;
 				slots[5] = new ItemStack(WtfItems.itemRct, 1, ItemReactor.WASTE);
 			}
 			else if (slots[5].getItem() == WtfItems.itemRct && slots[5].getItemDamage() == ItemReactor.WASTE && slots[5].stackSize < slots[5].getMaxStackSize()) {
-				waste -= 1000;
+				waste -= 1000F;
 				slots[5].stackSize++;
 			}
 		}
@@ -579,8 +594,8 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 		@Override
 		public void readFromNBT(NBTTagCompound tag) {
 			super.readFromNBT(tag);
-			fuel = tag.getInteger(LibNBT.MACHINE_FUEL);
-			waste = tag.getInteger(LibNBT.MACHINE_WASTE);
+			fuel = tag.getFloat(LibNBT.MACHINE_FUEL);
+			waste = tag.getFloat(LibNBT.MACHINE_WASTE);
 			tank = SingleFluidTank.loadFromNBT(tag.getCompoundTag(LibNBT.MACHINE_TANK));
 		}
 		
@@ -589,8 +604,8 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 			super.writeToNBT(tag);
 			NBTTagCompound tankTag = new NBTTagCompound();
 			tank.writeToNBT(tankTag);
-			tag.setInteger(LibNBT.MACHINE_FUEL, fuel);
-			tag.setInteger(LibNBT.MACHINE_WASTE, waste);
+			tag.setFloat(LibNBT.MACHINE_FUEL, fuel);
+			tag.setFloat(LibNBT.MACHINE_WASTE, waste);
 			tag.setTag(LibNBT.MACHINE_TANK, tankTag);
 		}
 		
@@ -599,7 +614,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 	public static class Solar extends TileGenerator {
 		
 		public Solar() {
-			super(0);
+			super(0, true);
 		}
 		
 		@Override

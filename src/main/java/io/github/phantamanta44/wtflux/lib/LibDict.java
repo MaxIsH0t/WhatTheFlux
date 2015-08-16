@@ -11,6 +11,7 @@ public class LibDict {
 	public static final String GEAR = "gear";
 	public static final String BLOCK = "block";
 	public static final String ORE = "ore";
+	public static final String GEM = "gem";
 	
 	public static final String IRON = "Iron";
 	public static final String INGOT_IRON = INGOT + IRON;
@@ -139,6 +140,16 @@ public class LibDict {
 	public static final String DUST_COAL = DUST + COAL;
 	public static final String BLOCK_COAL = BLOCK + COAL;
 	public static final String ORE_COAL = ORE + COAL;
+	
+	public static final String EMERALD = "Emerald";
+	public static final String BLOCK_EMERALD = BLOCK + EMERALD;
+	public static final String ORE_EMERALD = ORE + EMERALD;
+	public static final String GEM_EMERALD = GEM + EMERALD;
+	
+	public static final String DIAMOND = "Diamond";
+	public static final String BLOCK_DIAMOND = BLOCK + DIAMOND;
+	public static final String ORE_DIAMOND = ORE + DIAMOND;
+	public static final String GEM_DIAMOND = GEM + DIAMOND;
 	
 	public static final String GLASS_PANE = "paneGlassColorless";
 

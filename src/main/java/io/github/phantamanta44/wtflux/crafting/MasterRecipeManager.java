@@ -4,6 +4,7 @@ import io.github.phantamanta44.wtflux.crafting.recipe.GeneratorRecipe;
 import io.github.phantamanta44.wtflux.item.ItemCapacitor;
 import io.github.phantamanta44.wtflux.item.ItemDynamo;
 import io.github.phantamanta44.wtflux.item.ItemMisc;
+import io.github.phantamanta44.wtflux.item.ItemReactor;
 import io.github.phantamanta44.wtflux.item.ItemRotary;
 import io.github.phantamanta44.wtflux.item.WtfItems;
 import io.github.phantamanta44.wtflux.lib.LibDict;
@@ -88,8 +89,9 @@ public final class MasterRecipeManager {
 		// Water Turbine
 		addOreDictRecipe(new ItemStack(WtfItems.itemRot, 1, ItemRotary.WATER), " t ", "tit", " t ", 't', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.TURBINE), 'i', LibDict.INGOT_COPPER);
 		
-		// Reaction Chamber
-		addOreDictRecipe(new ItemStack(WtfItems.itemRot, 1, ItemRotary.NUKE), "lgl", "lul", "lgl", 'l', LibDict.INGOT_LEAD, 'g', LibDict.INGOT_GRAPH, 'u', LibDict.GEAR_URAN);
+		// Fission Reactor
+		addOreDictRecipe(new ItemStack(WtfItems.itemRot, 1, ItemRotary.NUKE), "crc", "hvf", "ccc", 'c', new ItemStack(WtfItems.itemRct, 1, ItemReactor.CASING), 'r', new ItemStack(WtfItems.itemRct, 1, ItemReactor.ROD_CRADLE), 'h', new ItemStack(WtfItems.itemRct, 1, ItemReactor.HOW_CRADLE), 'v', new ItemStack(WtfItems.itemRct, 1, ItemReactor.RPV), 'f', new ItemStack(WtfItems.itemRct, 1, ItemReactor.CONDENSER));
+		addOreDictRecipe(new ItemStack(WtfItems.itemRot, 1, ItemRotary.NUKE), "crc", "fvh", "ccc", 'c', new ItemStack(WtfItems.itemRct, 1, ItemReactor.CASING), 'r', new ItemStack(WtfItems.itemRct, 1, ItemReactor.ROD_CRADLE), 'h', new ItemStack(WtfItems.itemRct, 1, ItemReactor.HOW_CRADLE), 'v', new ItemStack(WtfItems.itemRct, 1, ItemReactor.RPV), 'f', new ItemStack(WtfItems.itemRct, 1, ItemReactor.CONDENSER));
 		
 		// Parabolic Trough
 		addOreDictRecipe(new ItemStack(WtfItems.itemRot, 1, ItemRotary.SOLAR), "ggg", "mbm", "hmh", 'g', LibDict.GLASS_PANE, 'h', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.HEAT_COND), 'm', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.MIRROR), 'b', new ItemStack(Items.bucket));
@@ -115,6 +117,44 @@ public final class MasterRecipeManager {
 		// Electrolytic Capacitor
 		addOreDictRecipe(new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.CAP_3), " a ", "dnd", " c ", 'n', LibDict.INGOT_SIG, 'd', new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.DIELEC_3), 'a', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.ANODE), 'c', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.CATHODE));
 		addOreDictRecipe(new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.CAP_3), " c ", "dnd", " a ", 'n', LibDict.INGOT_SIG, 'd', new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.DIELEC_3), 'a', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.ANODE), 'c', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.CATHODE));
+		
+		// Neutron Howitzer
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.BLASTER), "pp ", "v c", "ppp", 'c', LibDict.GEAR_URAN, 'v', LibDict.GEM_EMERALD, 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE));
+		
+		// Control Rod
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.CONTROL_ROD), "gsg", "gmg", "gsg", 'g', LibDict.INGOT_GRAPH, 's', LibDict.INGOT_SILVER, 'm', LibDict.GEAR_SILVER);
+		
+		// Coolant Cell
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.COOLANT_CELL), "php", "pcp", " p ", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'h', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.HEAT_COND), 'c', new ItemStack(Items.water_bucket));
+		
+		// Reactor Plating
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 4, ItemReactor.PLATE), "lll", "lil", "lll", 'l', LibDict.INGOT_LEAD, 'i', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.IRON_ROD));
+		
+		// Reactor Core
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.CORE), "pgp", "pup", "pgp", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'g', LibDict.INGOT_GRAPH, 'u', LibDict.GEAR_URAN);
+		
+		// Fluid Condenser
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.CONDENSER), "iii", "v v", "ici", 'i', LibDict.INGOT_IRON, 'v', new ItemStack(WtfItems.itemRct, 1, ItemReactor.VALVE), 'c', new ItemStack(WtfItems.itemRct, 1, ItemReactor.COOLANT_CELL));
+		
+		// Reactor Pressurized Vessel
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.RPV), "pvp", "pcp", "pip", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'c', new ItemStack(WtfItems.itemRct, 1, ItemReactor.CORE), 'i', new ItemStack(WtfItems.itemRct, 1, ItemReactor.INJECTOR));
+		
+		// Coolant Injector
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.INJECTOR), " pp", "c v", "ppp", 'c', new ItemStack(WtfItems.itemRct, 1, ItemReactor.COOLANT_CELL), 'v', new ItemStack(WtfItems.itemRct, 1, ItemReactor.VALVE), 'p', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC));
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.INJECTOR), "pp ", "v c", "ppp", 'c', new ItemStack(WtfItems.itemRct, 1, ItemReactor.COOLANT_CELL), 'v', new ItemStack(WtfItems.itemRct, 1, ItemReactor.VALVE), 'p', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC));
+		
+		// Pressure Valve
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.VALVE), " l ", "pvp", 'l', new ItemStack(Blocks.lever), 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'v', new ItemStack(Blocks.piston));
+		
+		// Neutron Howitzer Cradle
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.HOW_CRADLE), "ppp", "w  ", "ppp", 'p', new ItemStack(WtfItems.itemRct, 1), ItemReactor.PLATE, 'w', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC));
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.HOW_CRADLE), "ppp", "  w", "ppp", 'p', new ItemStack(WtfItems.itemRct, 1), ItemReactor.PLATE, 'w', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC));
+		
+		// Control Rod Cradle
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.ROD_CRADLE), "pvp", "p p", "p p", 'p', new ItemStack(WtfItems.itemRct, 1), ItemReactor.PLATE, 'v', new ItemStack(Blocks.piston));
+		
+		// Reactor Casing
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.CASING), "pp", "pp", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE));
 		
 		GameRegistry.addRecipe(new GeneratorRecipe());
 	}

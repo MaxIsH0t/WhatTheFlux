@@ -13,10 +13,10 @@ import net.minecraft.util.EnumChatFormatting;
 
 public class ItemReactor extends ItemModSubs {
 
-	public static final int BLASTER = 0, CONTROL_ROD = 1, WASTE = 2;
+	public static final int BLASTER = 0, CONTROL_ROD = 1, WASTE = 2, COOLANT_CELL = 3, PLATE = 4, CORE = 5, CONDENSER = 6, RPV = 7, INJECTOR = 8, VALVE = 9, HOW_CRADLE = 10, ROD_CRADLE = 11, CASING = 12;
 	
 	public ItemReactor() {
-		super(3);
+		super(13);
 		setUnlocalizedName(LibLang.REACTOR_COMPONENT_NAME);
 	}
 	
