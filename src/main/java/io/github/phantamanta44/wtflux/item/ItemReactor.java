@@ -24,21 +24,19 @@ public class ItemReactor extends ItemModSubs {
 	public void addInformation(ItemStack stack, EntityPlayer player, List info, boolean flag) {
 		int meta = stack.getItemDamage();
 		if (meta == 0 || meta == 1) {
-			float damagePercent = (float)(getMaxDamage(stack) - getDamage(stack)) / (float)getMaxDamage(stack);
+			float damagePercent = (float)(getVirtualMaxDamage(stack) - getVirtualDamage(stack)) / (float)getVirtualMaxDamage(stack);
 			String color = (damagePercent == 1F ? EnumChatFormatting.AQUA : (damagePercent > 0.7F ? EnumChatFormatting.GREEN : (damagePercent > 0.5F ? EnumChatFormatting.YELLOW : (damagePercent > 0.2F ? EnumChatFormatting.GOLD : EnumChatFormatting.DARK_RED)))).toString();
 			info.add(String.format("%s: %s%d%%", LibLang.get(LibLang.INF_DURA), color, (int)Math.max(damagePercent * 100, 1)));
 		}
 	}
 	
-	@Override
-	public int getDamage(ItemStack stack) {
+	public int getVirtualDamage(ItemStack stack) {
 		if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey(LibNBT.DURABILITY))
 			return stack.stackTagCompound.getInteger(LibNBT.DURABILITY);
 		return 0;
 	}
 	
-	@Override
-	public int getMaxDamage(ItemStack stack) {
+	public int getVirtualMaxDamage(ItemStack stack) {
 		switch (stack.getItemDamage()) {
 		case BLASTER:
 			return 36;
