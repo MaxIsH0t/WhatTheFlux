@@ -5,3 +5,4 @@ Ever feel like you just didn't have enough overcomplicated, less-than-useful RF 
 Credit to:
 * [Vazkii](http://github.com/vazkii), from whom I borrowed some code. All that cool stuff is under [The Botania License](http://botaniamod.net/license.php).
 * [Team CoFH](http://github.com/cofh), who created the RF API. Their code is all under the GNU GPL v3.
+* [aidancbrady](http://github.com/aidancbrady), from whom I borrowed some other code. His stuff is all under the MIT License.
