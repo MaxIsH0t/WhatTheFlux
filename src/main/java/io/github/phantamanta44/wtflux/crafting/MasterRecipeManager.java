@@ -68,6 +68,10 @@ public final class MasterRecipeManager {
 		for (ItemStack nickel : OreDictionary.getOres(LibDict.DUST_NICKEL))
 			ThermalExpansionHelper.addSmelterRecipe(2400, new ItemStack(WtfItems.itemMisc, 4, ItemMisc.PROPENE), new ItemStack(nickel.getItem(), 1, nickel.getItemDamage()), new ItemStack(WtfItems.itemMisc, 4, ItemMisc.PLASTIC));
 		
+		// Ni-MH Cell Core
+		for (ItemStack bucket : OreDictionary.getOres(LibDict.BUCKET_PYRO))
+			addOreDictRecipe(new ItemStack(WtfItems.itemMisc, 1, ItemMisc.BATTERY_CORE), "pnp", "cbc", "pap", 'p', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC), 'n', LibDict.GEAR_NICKEL, 'b', new ItemStack(bucket.getItem(), 1, bucket.getItemDamage()), 'a', LibDict.DUST_BORON, 'c', new ItemStack(WtfItems.itemRct, 1, ItemReactor.COOLANT_CELL));
+		
 		// Copper Coils
 		for (int i = 0; i < 3; i++)
 			addOreDictRecipe(new ItemStack(WtfItems.itemDyn, 1, i), "ccc", "c c", "ccc", 'c', i == 0 ? new ItemStack(WtfItems.itemMisc, 1, ItemMisc.COPPER_THREAD) : new ItemStack(WtfItems.itemDyn, 1, i - 1));
@@ -125,6 +129,9 @@ public final class MasterRecipeManager {
 			addOreDictRecipe(new ItemStack(WtfItems.itemCap, 1, i + 6), "dfd", "lgl", "a c", 'd', new ItemStack(WtfItems.itemCap, 1, i), 'l', new ItemStack(WtfItems.itemCap, 1, i + 3), 'g', GeneratorRecipe.GEARS[i + 1], 'a', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.ANODE), 'c', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.CATHODE), 'f', LibDict.INGOT_SIG);
 			addOreDictRecipe(new ItemStack(WtfItems.itemCap, 1, i + 6), "dfd", "lgl", "c a", 'd', new ItemStack(WtfItems.itemCap, 1, i), 'l', new ItemStack(WtfItems.itemCap, 1, i + 3), 'g', GeneratorRecipe.GEARS[i + 1], 'a', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.ANODE), 'c', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.CATHODE), 'f', LibDict.INGOT_SIG);
 		}
+		
+		// Nickel-Metal Hydride Battery
+		addOreDictRecipe(new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.CAP_7), " a ", "tbt", "tct", 'a', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.ANODE), 'c', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.CATHODE), 't', LibDict.INGOT_TIN, 'b', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.BATTERY_CORE));
 		
 		// Neutron Howitzer
 		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.BLASTER), "pp ", "v c", "ppp", 'c', LibDict.GEAR_URAN, 'v', LibDict.GEM_EMERALD, 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE));
