@@ -233,7 +233,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 			if (burnTime == 0 && slots[0] != null) {
 				int fuelValue = TileEntityFurnace.getItemBurnTime(slots[0]);
 				if (fuelValue > 0) {
-					slots[0].stackSize--;
+					slots[0] = decrStackSize(0, 1);
 					if (slots[0].stackSize == 0)
 						slots[0] = slots[0].getItem().getContainerItem(slots[0]);
 					burnTime = totalBurnTime = fuelValue;
@@ -538,16 +538,17 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 		private void tryDoReaction() {
 			if (slots[2] != null) {
 				if (slots[2].getItem() == WtfItems.itemRct && slots[2].getItemDamage() == ItemReactor.CONTROL_ROD) {
-					((ItemReactor)WtfItems.itemRct).decrementUses(slots[2]);
-					float fuelCost = temp / (float)3000;
+					slots[2] = ((ItemReactor)WtfItems.itemRct).decrementUses(slots[2]);
+					float fuelCost = temp / (float)7500;
 					fuel -= fuelCost;
 					waste += fuelCost;
-					temp += (140.0F + worldObj.rand.nextFloat() * 400.0F);
+					temp += (16F + worldObj.rand.nextFloat() * 24F) * Math.max(0.001F, (6000F - temp) / 6000F);
 				}
 			}
 		}
 		
 		private void tryInjectFuel() {
+			fuel = 0;
 			boolean flag1 = false, flag2 = false;
 			if (slots[1] != null) {
 				if (slots[1].getItem() == WtfItems.itemRct && slots[1].getItemDamage() == ItemReactor.BLASTER)
@@ -560,8 +561,8 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 			}
 			
 			if (flag1 && flag2) {
-				((ItemReactor)WtfItems.itemRct).decrementUses(slots[1]);
-				slots[0].stackSize--;
+				slots[1] = ((ItemReactor)WtfItems.itemRct).decrementUses(slots[1]);
+				slots[0] = decrStackSize(0, 1);
 				fuel += 1000F;
 			}
 		}

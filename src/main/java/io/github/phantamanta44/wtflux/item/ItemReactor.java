@@ -41,7 +41,7 @@ public class ItemReactor extends ItemModSubs {
 		case BLASTER:
 			return 36;
 		case CONTROL_ROD:
-			return 15000;
+			return 4000;
 		default:
 			return 0;
 		}
@@ -49,11 +49,16 @@ public class ItemReactor extends ItemModSubs {
 	
 	@Override
 	public int getItemStackLimit(ItemStack stack) {
-		int meta = stack.getItemDamage();
-		return meta == 0 ? 1 : 64;
+		switch (stack.getItemDamage()) {
+		case BLASTER:
+		case CONTROL_ROD:
+			return 1;
+		default:
+			return 64;
+		}
 	}
 	
-	public void decrementUses(ItemStack stack) {
+	public ItemStack decrementUses(ItemStack stack) {
 		int meta = stack.getItemDamage();
 		if (meta == 0 || meta == 1) {
 			if (stack.stackTagCompound != null) {
@@ -68,9 +73,12 @@ public class ItemReactor extends ItemModSubs {
 				stack.setTagCompound(new NBTTagCompound());
 				stack.stackTagCompound.setInteger(LibNBT.DURABILITY, 1);
 			}
-			if (stack.stackTagCompound.getInteger(LibNBT.DURABILITY) >= getMaxDamage(stack))
+			if (stack.stackTagCompound.getInteger(LibNBT.DURABILITY) >= getVirtualMaxDamage(stack))
 				stack.stackSize--;
+			if (stack.stackSize < 0)
+				return null;
 		}
+		return stack;
 	}
 
 }
