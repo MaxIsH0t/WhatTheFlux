@@ -4,6 +4,7 @@ import io.github.phantamanta44.wtflux.lib.LibNBT;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
@@ -80,6 +81,17 @@ public abstract class TileBasicInventory extends TileMod implements IInventory {
 	@Override
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
+		NBTTagList tagList = tag.getTagList(LibNBT.ITEMS, 10);
+		for (int i = 0; i < tagList.tagCount(); i++) {
+			NBTTagCompound itemTag = tagList.getCompoundTagAt(i);
+			int slot = itemTag.getInteger(LibNBT.SLOT);
+			slots[slot] = ItemStack.loadItemStackFromNBT(itemTag);
+		}
+	}
+	
+	@Override
+	public void writeToNBT(NBTTagCompound tag) {
+		super.writeToNBT(tag);
 		NBTTagList tagList = new NBTTagList();
 		for (int i = 0; i < slots.length; i++) {
 			if (slots[i] != null) {
@@ -90,18 +102,6 @@ public abstract class TileBasicInventory extends TileMod implements IInventory {
 			}
 		}
 		tag.setTag(LibNBT.ITEMS, tagList);
-	}
-	
-	@Override
-	public void writeToNBT(NBTTagCompound tag) {
-		super.writeToNBT(tag);
-		NBTTagList tagList = tag.getTagList(LibNBT.ITEMS, 10);
-		for (int i = 0; i < tagList.tagCount(); i++) {
-			NBTTagCompound itemTag = tagList.getCompoundTagAt(i);
-			int slot = itemTag.getInteger(LibNBT.SLOT);
-			slots[slot] = ItemStack.loadItemStackFromNBT(itemTag);
-		}
-		
 	}
 	
 }
