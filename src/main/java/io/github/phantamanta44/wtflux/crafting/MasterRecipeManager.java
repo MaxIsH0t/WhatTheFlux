@@ -59,7 +59,7 @@ public final class MasterRecipeManager {
 		// Graphite
 		addSmelting(new ItemStack(WtfItems.itemMisc, 1, ItemMisc.GRAPHITE), new ItemStack(WtfItems.itemMisc, 1, ItemMisc.RAW_GRAPHITE), 0);
 		
-		// Methylethylene
+		// Granular ethylethylene
 		for (ItemStack coal : OreDictionary.getOres(LibDict.ORE_COAL))
 			ThermalExpansionHelper.addSmelterRecipe(2400, new ItemStack(coal.getItem(), 1, coal.getItemDamage()), new ItemStack(Items.flint, 2), new ItemStack(Items.coal, 5), new ItemStack(WtfItems.itemMisc, 2, ItemMisc.PROPENE), 30);
 		
@@ -146,7 +146,7 @@ public final class MasterRecipeManager {
 		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.CONDENSER), "iii", "v v", "ici", 'i', LibDict.INGOT_IRON, 'v', new ItemStack(WtfItems.itemRct, 1, ItemReactor.VALVE), 'c', new ItemStack(WtfItems.itemRct, 1, ItemReactor.COOLANT_CELL));
 		
 		// Reactor Pressurized Vessel
-		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.RPV), "pvp", "pcp", "pip", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'c', new ItemStack(WtfItems.itemRct, 1, ItemReactor.CORE), 'i', new ItemStack(WtfItems.itemRct, 1, ItemReactor.INJECTOR));
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.RPV), "pvp", "pcp", "pip", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'c', new ItemStack(WtfItems.itemRct, 1, ItemReactor.CORE), 'i', new ItemStack(WtfItems.itemRct, 1, ItemReactor.INJECTOR), 'v', new ItemStack(WtfItems.itemRct, 1, ItemReactor.VALVE));
 		
 		// Coolant Injector
 		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.INJECTOR), " pp", "c v", "ppp", 'c', new ItemStack(WtfItems.itemRct, 1, ItemReactor.COOLANT_CELL), 'v', new ItemStack(WtfItems.itemRct, 1, ItemReactor.VALVE), 'p', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC));
