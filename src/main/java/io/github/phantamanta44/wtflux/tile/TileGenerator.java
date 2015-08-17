@@ -4,6 +4,7 @@ import io.github.phantamanta44.wtflux.item.ItemReactor;
 import io.github.phantamanta44.wtflux.item.WtfItems;
 import io.github.phantamanta44.wtflux.lib.LibDict;
 import io.github.phantamanta44.wtflux.lib.LibNBT;
+import io.github.phantamanta44.wtflux.util.ITileItemNBT;
 import io.github.phantamanta44.wtflux.util.MathUtil;
 import io.github.phantamanta44.wtflux.util.SingleFluidTank;
 
@@ -29,7 +30,7 @@ import cofh.api.energy.IEnergyReceiver;
 
 import com.google.common.collect.Maps;
 
-public abstract class TileGenerator extends TileBasicInventory implements IEnergyProvider {
+public abstract class TileGenerator extends TileBasicInventory implements IEnergyProvider, ITileItemNBT {
 	
 	public static final int[] COIL_AMOUNTS = new int[] {128, 256, 512, 1024};
 	public static final int[] CAP_AMOUNTS = new int[] {24000, 80000, 50000, 48000, 160000, 100000};
@@ -58,6 +59,24 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 		}
 		onInit();
 		init = true;
+	}
+	
+	@Override
+	public void writeItemTag(NBTTagCompound tag) {
+		tag.setInteger(LibNBT.ENERGY, energy);
+		tag.setInteger(LibNBT.ENERGY_MAX, energyMax);
+		tag.setByte(LibNBT.GENTYPE, gen);
+		tag.setByte(LibNBT.DYNTYPE, dyn);
+		tag.setByte(LibNBT.CAPTYPE, cap);
+	}
+	
+	@Override
+	public ItemStack getNBTItem() {
+		ItemStack stack = new ItemStack(blockType, 1, gen);
+		NBTTagCompound tag = new NBTTagCompound();
+		writeItemTag(tag);
+		stack.setTagCompound(tag);
+		return stack;
 	}
 	
 	@Override

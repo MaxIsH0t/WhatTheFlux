@@ -2,7 +2,7 @@ package io.github.phantamanta44.wtflux.item.block;
 
 import io.github.phantamanta44.wtflux.lib.LibLang;
 import io.github.phantamanta44.wtflux.lib.LibNBT;
-import io.github.phantamanta44.wtflux.tile.TileMod;
+import io.github.phantamanta44.wtflux.tile.TileGenerator;
 import io.github.phantamanta44.wtflux.util.KeyBindUtil;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public class ItemBlockGenerator extends ItemBlockWithMetadataAndName implements 
 	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float subX, float subY, float subZ, int meta) {
 		if (super.placeBlockAt(stack, player, world, x, y, z, side, subX, subY, subZ, meta)) {
-			TileMod tile = (TileMod)world.getTileEntity(x, y, z);
+			TileGenerator tile = (TileGenerator)world.getTileEntity(x, y, z);
 			tile.readItemTag(stack.stackTagCompound);
 			return true;
 		}

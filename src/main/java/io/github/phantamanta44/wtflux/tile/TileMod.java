@@ -10,14 +10,16 @@ public abstract class TileMod extends TileEntity {
 	
 	protected boolean init = false;
 	
-	public abstract void readItemTag(NBTTagCompound tag);
-	
 	protected abstract void tick();
 	
 	public void markForUpdate() {
 		if (worldObj != null)
 			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		markDirty();
+	}
+	
+	public boolean isInitialized() {
+		return init;
 	}
 	
 	@Override
