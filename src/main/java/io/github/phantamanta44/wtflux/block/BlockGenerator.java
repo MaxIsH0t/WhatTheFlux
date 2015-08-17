@@ -4,18 +4,21 @@ import io.github.phantamanta44.wtflux.item.block.ItemBlockGenerator;
 import io.github.phantamanta44.wtflux.lib.LibLang;
 import io.github.phantamanta44.wtflux.tile.TileGenerator;
 import io.github.phantamanta44.wtflux.tile.TileMod;
+import io.github.phantamanta44.wtflux.util.WtfUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 import cofh.api.block.IDismantleable;
 
 import com.google.common.collect.Lists;
@@ -24,6 +27,8 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public class BlockGenerator extends BlockModSubs implements ITileEntityProvider, IDismantleable {
 
+	private ArrayList<ItemStack> drops = Lists.newArrayList();
+	
 	public BlockGenerator() {
 		super(Material.iron, 6);
 		setHardness(4F);
@@ -38,7 +43,21 @@ public class BlockGenerator extends BlockModSubs implements ITileEntityProvider,
 	}
 	
 	@Override
-	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int meta, int fort) {
+	public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean canHarvest) {
+		if (WtfUtil.canHarvest(world, x, y, z, player)) {
+			List<ItemStack> drops = compileDrops(world, x, y, z, world.getBlockMetadata(x, y, z));
+			for (ItemStack stack : drops)
+				WtfUtil.dropItem(world, x, y, z, stack);
+		}
+		return world.setBlockToAir(x, y, z);
+	}
+	
+	@Override
+	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int meta, int fortune) {
+		return OreDictionary.EMPTY_LIST;
+	}
+	
+	public ArrayList<ItemStack> compileDrops(IBlockAccess world, int x, int y, int z, int meta) {
 		ArrayList<ItemStack> drops = Lists.newArrayList();
 		TileGenerator tile = (TileGenerator)world.getTileEntity(x, y, z);
 		if (tile != null && tile.isInitialized()) {
@@ -47,9 +66,7 @@ public class BlockGenerator extends BlockModSubs implements ITileEntityProvider,
 				if (tile.getStackInSlot(i) != null)
 					drops.add(tile.getStackInSlot(i));
 			}
-			return drops;
 		}
-		drops.add(new ItemStack(this, 1, meta));
 		return drops;
 	}
 	
@@ -68,19 +85,11 @@ public class BlockGenerator extends BlockModSubs implements ITileEntityProvider,
 
 	@Override
 	public ArrayList<ItemStack> dismantleBlock(EntityPlayer player, World world, int x, int y, int z, boolean returnDrops) {
-		ArrayList<ItemStack> items = getDrops(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
+		int meta = world.getBlockMetadata(x, y, z);
+		ArrayList<ItemStack> items = compileDrops(world, x, y, z, meta);
 		if (!returnDrops) {
-			for (ItemStack stack : items) {
-				float f = world.rand.nextFloat() * 0.8F + 0.1F;
-				float f1 = world.rand.nextFloat() * 0.8F + 0.1F;
-				float f2 = world.rand.nextFloat() * 0.8F + 0.1F;
-				EntityItem ent = new EntityItem(world, x + f, y + f1, z + f2, stack);
-				float f3 = 0.05F;
-				ent.motionX = (double)((float)world.rand.nextGaussian() * f3);
-				ent.motionY = (double)((float)world.rand.nextGaussian() * f3 + 0.2F);
-				ent.motionZ = (double)((float)world.rand.nextGaussian() * f3);
-				world.spawnEntityInWorld(ent);
-			}
+			for (ItemStack stack : items)
+				WtfUtil.dropItem(world, x, y, z, stack);
 		}
 		world.setBlockToAir(x, y, z);
 		return items;
