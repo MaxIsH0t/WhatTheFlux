@@ -31,8 +31,9 @@ import com.google.common.collect.Maps;
 
 public abstract class TileGenerator extends TileBasicInventory implements IEnergyProvider {
 	
-	public static final int[] COIL_AMOUNTS = new int[] {128, 256, 512};
-	public static final int[] CAP_AMOUNTS = new int[] {24000, 80000, 50000};
+	public static final int[] COIL_AMOUNTS = new int[] {128, 256, 512, 1024};
+	public static final int[] CAP_AMOUNTS = new int[] {24000, 80000, 50000, 48000, 160000, 100000};
+	public static final int[] CAP_RATES = new int[] {128, 256, 384, 256, 512, 768};
 	public static final Class<? extends TileGenerator>[] GEN_TYPES = new Class[] {Furnace.class, Heat.class, Wind.class, Water.class, Nuke.class, Solar.class};
 	
 	protected int energy = 0, energyMax = 24000;
@@ -87,7 +88,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 	@Override
 	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
 		if (init) {
-			int toTransfer = Math.max(Math.min(Math.min(getTransferRate(), maxExtract), energy), 0);
+			int toTransfer = Math.max(Math.min(Math.min(CAP_RATES[cap], maxExtract), energy), 0);
 			if (toTransfer > 0 && !simulate) {
 				energy -= toTransfer;
 				markForUpdate();
@@ -123,10 +124,6 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 			markForUpdate();
 	}
 	
-	public int getTransferRate() {
-		return cap * 128 + 128;
-	}
-	
 	public boolean simulateInduction() {
 		float voltage = MathUtil.voltageFromFlux(momentum, COIL_AMOUNTS[dyn]);
 		if (useResistance)
@@ -148,7 +145,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 			}
 		}
 		Set<Entry<ForgeDirection, IEnergyReceiver>> tileSet = tiles.entrySet();
-		int dist = (int)Math.floor((float)Math.min(energy, getTransferRate()) / (float)tileSet.size());
+		int dist = (int)Math.floor((float)Math.min(energy, CAP_RATES[cap]) / (float)tileSet.size());
 		for (Entry<ForgeDirection, IEnergyReceiver> tile : tileSet) {
 			int v = ((IEnergyReceiver)tile.getValue()).receiveEnergy(tile.getKey(), dist, false);
 			energy -= v;

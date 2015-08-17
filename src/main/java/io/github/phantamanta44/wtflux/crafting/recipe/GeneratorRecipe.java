@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 
 public class GeneratorRecipe implements IRecipe {
 
-	public static final String[] gears = new String[] {LibDict.GEAR_TIN, LibDict.GEAR_INVAR, LibDict.GEAR_PLAT};
+	public static final String[] GEARS = new String[] {LibDict.GEAR_TIN, LibDict.GEAR_INVAR, LibDict.GEAR_PLAT, LibDict.GEAR_END};
 	
 	@Override
 	public boolean matches(InventoryCrafting inv, World world) {
@@ -28,7 +28,7 @@ public class GeneratorRecipe implements IRecipe {
 		ItemStack dyn = inv.getStackInSlot(4);
 		String gear;
 		try {
-			gear = gears[dyn.getItemDamage() - 3];
+			gear = GEARS[dyn.getItemDamage() - 3];
 		} catch (IndexOutOfBoundsException ex) {
 			return false;
 		}

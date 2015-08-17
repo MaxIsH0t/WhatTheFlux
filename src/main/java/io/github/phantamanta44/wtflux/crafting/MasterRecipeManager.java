@@ -76,6 +76,7 @@ public final class MasterRecipeManager {
 		addOreDictRecipe(new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.DYN_1), "c", "s", "c", 'c', new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.COIL_3), 's', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.SOLENOID));
 		addOreDictRecipe(new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.DYN_2), " c ", "csc", " c ", 'c', new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.COIL_3), 's', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.SOLENOID));
 		addOreDictRecipe(new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.DYN_3), "ccc", "csc", "ccc", 'c', new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.COIL_3), 's', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.SOLENOID));
+		addOreDictRecipe(new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.DYN_4), "wew", "csc", "wew", 'c', new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.DYN_3), 's', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.SOLENOID), 'e', LibDict.GEAR_END, 'w', new ItemStack(WtfItems.itemRct, 1, ItemReactor.COOLANT_CELL));
 		
 		// Heat Furnace
 		addOreDictRecipe(new ItemStack(WtfItems.itemRot, 1, ItemRotary.FURN), "ppp", "bfb", 'f', new ItemStack(Blocks.furnace), 'p', new ItemStack(Blocks.heavy_weighted_pressure_plate), 'b', new ItemStack(Blocks.brick_block));
@@ -118,14 +119,22 @@ public final class MasterRecipeManager {
 		addOreDictRecipe(new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.CAP_3), " a ", "dnd", " c ", 'n', LibDict.INGOT_SIG, 'd', new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.DIELEC_3), 'a', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.ANODE), 'c', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.CATHODE));
 		addOreDictRecipe(new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.CAP_3), " c ", "dnd", " a ", 'n', LibDict.INGOT_SIG, 'd', new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.DIELEC_3), 'a', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.ANODE), 'c', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.CATHODE));
 		
+		// Double Capacitors
+		for (int i = 0; i < 3; i++) {
+			addOreDictRecipe(new ItemStack(WtfItems.itemCap, 1, i + 6), "dfd", "lgl", "a c", 'd', new ItemStack(WtfItems.itemCap, 1, i), 'l', new ItemStack(WtfItems.itemCap, 1, i + 3), 'g', GeneratorRecipe.GEARS[i + 1], 'a', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.ANODE), 'c', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.CATHODE), 'f', LibDict.INGOT_SIG);
+			addOreDictRecipe(new ItemStack(WtfItems.itemCap, 1, i + 6), "dfd", "lgl", "c a", 'd', new ItemStack(WtfItems.itemCap, 1, i), 'l', new ItemStack(WtfItems.itemCap, 1, i + 3), 'g', GeneratorRecipe.GEARS[i + 1], 'a', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.ANODE), 'c', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.CATHODE), 'f', LibDict.INGOT_SIG);
+		}
+		
 		// Neutron Howitzer
 		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.BLASTER), "pp ", "v c", "ppp", 'c', LibDict.GEAR_URAN, 'v', LibDict.GEM_EMERALD, 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE));
+		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.BLASTER), " pp", "c v", "ppp", 'c', LibDict.GEAR_URAN, 'v', LibDict.GEM_EMERALD, 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE));
 		
 		// Control Rod
 		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.CONTROL_ROD), "gsg", "gmg", "gsg", 'g', LibDict.INGOT_GRAPH, 's', LibDict.INGOT_SILVER, 'm', LibDict.GEAR_SILVER);
 		
 		// Coolant Cell
-		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.COOLANT_CELL), "php", "pcp", " p ", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'h', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.HEAT_COND), 'c', new ItemStack(Items.water_bucket));
+		for (ItemStack cryo : OreDictionary.getOres(LibDict.BUCKET_CRYO))
+			addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.COOLANT_CELL), "php", "pcp", " g ", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'h', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.HEAT_COND), 'c', new ItemStack(cryo.getItem(), 1, cryo.getItemDamage()), 'g', LibDict.INGOT_END);
 		
 		// Reactor Plating
 		addOreDictRecipe(new ItemStack(WtfItems.itemRct, 4, ItemReactor.PLATE), "lll", "lil", "lll", 'l', LibDict.INGOT_LEAD, 'i', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.IRON_ROD));
