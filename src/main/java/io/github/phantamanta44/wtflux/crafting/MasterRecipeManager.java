@@ -23,6 +23,7 @@ public final class MasterRecipeManager {
 	public static void addRecipes() {
 		OreDictionary.registerOre(LibDict.INGOT_GRAPH, new ItemStack(WtfItems.itemMisc, 1, ItemMisc.GRAPHITE));
 		OreDictionary.registerOre(LibDict.DUST_GRAPH, new ItemStack(WtfItems.itemMisc, 1, ItemMisc.RAW_GRAPHITE));
+		OreDictionary.registerOre(LibDict.DUST_BORON, new ItemStack(WtfItems.itemRct, 1, ItemReactor.WASTE));
 		IngotRecipeHandler.registerRecipes();
 		
 		// Copper Thread

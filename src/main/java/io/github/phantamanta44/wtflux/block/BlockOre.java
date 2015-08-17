@@ -1,6 +1,7 @@
 package io.github.phantamanta44.wtflux.block;
 
 import io.github.phantamanta44.wtflux.item.block.ItemBlockOre;
+import io.github.phantamanta44.wtflux.lib.LibCore;
 import io.github.phantamanta44.wtflux.lib.LibLang;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -15,6 +16,7 @@ public class BlockOre extends BlockModSubs {
 		setHardness(1.2F);
 		setResistance(4.8F);
 		setBlockName(LibLang.ORE_NAME);
+		setHarvestLevel(LibCore.TOOL_PICK, 2);
 	}
 	
 	@Override
