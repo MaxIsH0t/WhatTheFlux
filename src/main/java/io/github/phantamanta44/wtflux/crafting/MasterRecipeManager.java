@@ -23,7 +23,7 @@ public final class MasterRecipeManager {
 	public static void addRecipes() {
 		OreDictionary.registerOre(LibDict.INGOT_GRAPH, new ItemStack(WtfItems.itemMisc, 1, ItemMisc.GRAPHITE));
 		OreDictionary.registerOre(LibDict.DUST_GRAPH, new ItemStack(WtfItems.itemMisc, 1, ItemMisc.RAW_GRAPHITE));
-		OreDictionary.registerOre(LibDict.DUST_BORON, new ItemStack(WtfItems.itemRct, 1, ItemReactor.WASTE));
+		OreDictionary.registerOre(LibDict.DUST_BARIUM, new ItemStack(WtfItems.itemRct, 1, ItemReactor.WASTE));
 		IngotRecipeHandler.registerRecipes();
 		
 		// Copper Thread
@@ -70,7 +70,7 @@ public final class MasterRecipeManager {
 		
 		// Ni-MH Cell Core
 		for (ItemStack bucket : OreDictionary.getOres(LibDict.BUCKET_PYRO))
-			addOreDictRecipe(new ItemStack(WtfItems.itemMisc, 1, ItemMisc.BATTERY_CORE), "pnp", "cbc", "pap", 'p', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC), 'n', LibDict.GEAR_NICKEL, 'b', new ItemStack(bucket.getItem(), 1, bucket.getItemDamage()), 'a', LibDict.DUST_BORON, 'c', new ItemStack(WtfItems.itemRct, 1, ItemReactor.COOLANT_CELL));
+			addOreDictRecipe(new ItemStack(WtfItems.itemMisc, 1, ItemMisc.BATTERY_CORE), "pnp", "cbc", "pap", 'p', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC), 'n', LibDict.GEAR_NICKEL, 'b', new ItemStack(bucket.getItem(), 1, bucket.getItemDamage()), 'a', LibDict.DUST_BARIUM, 'c', new ItemStack(WtfItems.itemRct, 1, ItemReactor.COOLANT_CELL));
 		
 		// Copper Coils
 		for (int i = 0; i < 3; i++)

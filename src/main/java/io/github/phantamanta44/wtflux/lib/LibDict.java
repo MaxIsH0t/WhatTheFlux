@@ -133,8 +133,8 @@ public class LibDict {
 	public static final String GEAR_ELEC = GEAR + ELEC;
 	public static final String BLOCK_ELEC = BLOCK + ELEC;
 	
-	public static final String BORON = "Boron";
-	public static final String DUST_BORON = DUST + BORON;
+	public static final String BARIUM = "Barium";
+	public static final String DUST_BARIUM = DUST + BARIUM;
 	
 	public static final String GRAPH = "Graphite";
 	public static final String INGOT_GRAPH = INGOT + GRAPH;
