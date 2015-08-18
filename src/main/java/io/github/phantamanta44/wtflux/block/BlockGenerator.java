@@ -1,5 +1,6 @@
 package io.github.phantamanta44.wtflux.block;
 
+import io.github.phantamanta44.wtflux.WhatTheFlux;
 import io.github.phantamanta44.wtflux.item.block.ItemBlockGenerator;
 import io.github.phantamanta44.wtflux.lib.LibLang;
 import io.github.phantamanta44.wtflux.tile.TileGenerator;
@@ -98,6 +99,18 @@ public class BlockGenerator extends BlockModSubs implements ITileEntityProvider,
 	@Override
 	public boolean canDismantle(EntityPlayer player, World world, int x, int y, int z) {
 		return ((TileMod)world.getTileEntity(x, y, z)).isInitialized();
+	}
+	
+	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float subX, float subY, float subZ) {
+		if (world.isRemote)
+			return true;
+		
+		if (player.isSneaking())
+			return false;
+		
+		player.openGui(WhatTheFlux.instance, 255, world, x, y, z);
+		return true;
 	}
 
 }

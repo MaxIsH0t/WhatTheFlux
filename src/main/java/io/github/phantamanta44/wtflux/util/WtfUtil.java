@@ -24,4 +24,8 @@ public class WtfUtil {
 		return !player.capabilities.isCreativeMode && !world.isRemote && world.getBlock(x, y, z).canHarvestBlock(player, world.getBlockMetadata(x, y, z));
 	}
 	
+	public static boolean isMouseOver(int x, int y, int width, int height, int mX, int mY) {
+		return mX >= x - 1 && mX < x + width + 1 && mY >= y - 1 && mY < y + height + 1;
+	}
+	
 }

@@ -4,6 +4,7 @@ import io.github.phantamanta44.wtflux.item.ItemReactor;
 import io.github.phantamanta44.wtflux.item.WtfItems;
 import io.github.phantamanta44.wtflux.lib.LibDict;
 import io.github.phantamanta44.wtflux.lib.LibNBT;
+import io.github.phantamanta44.wtflux.util.IEnergyContainer;
 import io.github.phantamanta44.wtflux.util.ITileItemNBT;
 import io.github.phantamanta44.wtflux.util.MathUtil;
 import io.github.phantamanta44.wtflux.util.SingleFluidTank;
@@ -30,7 +31,7 @@ import cofh.api.energy.IEnergyReceiver;
 
 import com.google.common.collect.Maps;
 
-public abstract class TileGenerator extends TileBasicInventory implements IEnergyProvider, ITileItemNBT {
+public abstract class TileGenerator extends TileBasicInventory implements IEnergyProvider, IEnergyContainer, ITileItemNBT {
 	
 	public static final int[] COIL_AMOUNTS = new int[] {128, 256, 512, 1024};
 	public static final int[] CAP_AMOUNTS = new int[] {24000, 80000, 50000, 48000, 160000, 100000, 48000};
@@ -127,6 +128,16 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 		return energyMax;
 	}
 	
+	@Override
+	public int getEnergyStored() {
+		return energy;
+	}
+
+	@Override
+	public int getMaxEnergyStored() {
+		return energyMax;
+	}
+	
 	
 	@Override
 	protected void tick() {
@@ -188,6 +199,14 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 		return temp;
 	}
 	
+	public float getTemp() {
+		return temp;
+	}
+	
+	public float getMomentum() {
+		return momentum;
+	}
+	
 	public int getCapRate() {
 		int rate = CAP_RATES[cap];
 		return rate >= 0 ? rate : Integer.MAX_VALUE;
@@ -217,7 +236,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 	public static class Furnace extends TileGenerator {
 
 		private int burnTime = 0;
-		private int totalBurnTime = 0;
+		private int totalBurnTime = 1;
 		
 		public Furnace() {
 			super(1, true);
@@ -238,8 +257,8 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 			if (burnTime == 0 && slots[0] != null) {
 				int fuelValue = TileEntityFurnace.getItemBurnTime(slots[0]);
 				if (fuelValue > 0) {
-					slots[0] = decrStackSize(0, 1);
-					if (slots[0].stackSize == 0)
+					slots[0].stackSize--;
+					if (slots[0].stackSize <= 0)
 						slots[0] = slots[0].getItem().getContainerItem(slots[0]);
 					burnTime = totalBurnTime = fuelValue;
 					dirty = true;
@@ -260,6 +279,14 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 			super.writeToNBT(tag);
 			tag.setInteger(LibNBT.BURN_TIME, burnTime);
 			tag.setInteger(LibNBT.BURN_TIME_TOTAL, totalBurnTime);
+		}
+		
+		public int getBurnTime() {
+			return burnTime;
+		}
+		
+		public int getBurnTimeMax() {
+			return totalBurnTime;
 		}
 		
 	}
@@ -655,4 +682,5 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 		}
 		
 	}
+	
 }

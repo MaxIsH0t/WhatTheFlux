@@ -3,6 +3,7 @@ package io.github.phantamanta44.wtflux.item.block;
 import io.github.phantamanta44.wtflux.lib.LibLang;
 import io.github.phantamanta44.wtflux.lib.LibNBT;
 import io.github.phantamanta44.wtflux.tile.TileGenerator;
+import io.github.phantamanta44.wtflux.util.IEnergyContainer;
 import io.github.phantamanta44.wtflux.util.KeyBindUtil;
 
 import java.util.List;

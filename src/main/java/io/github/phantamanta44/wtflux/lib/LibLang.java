@@ -26,6 +26,17 @@ public class LibLang {
 	public static final String INF_DYN = INF_KEY + "dynamo";
 	public static final String INF_CAP = INF_KEY + "capacitor";
 	
+	public static final String TT_KEY = LibCore.MODID + ".tooltip.";
+	public static final String TT_ENERGY = TT_KEY + "energyStored";
+	public static final String TT_TEMP = TT_KEY + "temperature";
+	public static final String TT_MOM = TT_KEY + "momentum";
+	public static final String TT_FUEL = TT_KEY + "fuel";
+	public static final String TT_WASTE = TT_KEY + "waste";
+	public static final String TT_EMPTY = TT_KEY + "empty";
+	
+	public static final String GUI_KEY = LibCore.MODID + ".gui.";
+	public static final String GUI_GEN_FURNACE = GUI_KEY + "genFurnace";
+	
 	public static final String[] GENTYPE = new String[] {".furnace", ".heat", ".wind", ".water", ".nuke", ".solar"};
 	
 	public static String get(String key) {
