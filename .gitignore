@@ -1,24 +1,16 @@
-/.gradle
-/build
-/run
-/.settings
-/.metadata
-/.classpath
-/.project
-/bin
-/eclipse/config
-/eclipse/logs
-/eclipse/mods
-/eclipse/servers.dat
-/eclipse/crash-reports
-/eclipse/options.txt
-/eclipse/saves
-/eclipse/screenshots
-/eclipse/usernamecache.json
-/eclipse/.metadata
-/eclipse/.recommenders
-/eclipse/*.log
-/gradle
-gradlew*
-*.*~
-*.txt
+# JetBrains stuff
+/.idea/
+*.ipr
+*.iml
+
+# Compilation output
+/target/
+/build/
+/out/
+
+# Gradle stuff
+/.gradle/
+
+# MinecraftForge
+/eclipse/
+/run/
