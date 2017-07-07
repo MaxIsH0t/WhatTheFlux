@@ -11,41 +11,41 @@ import net.minecraftforge.common.util.ForgeDirection;
  */
 public interface IBlockAppearance {
 
-	/**
-	 * This function returns the block that is being shown on a given side.
-	 *
-	 * @param world
-	 *            Reference to the world.
-	 * @param x
-	 *            X coordinate of the block.
-	 * @param y
-	 *            Y coordinate of the block.
-	 * @param z
-	 *            Z coordinate of the block.
-	 * @param side
-	 *            The side of the block.
-	 */
-	public Block getVisualBlock(IBlockAccess world, int x, int y, int z, ForgeDirection side);
+    /**
+     * This function returns the block that is being shown on a given side.
+     *
+     * @param world
+     *            Reference to the world.
+     * @param x
+     *            X coordinate of the block.
+     * @param y
+     *            Y coordinate of the block.
+     * @param z
+     *            Z coordinate of the block.
+     * @param side
+     *            The side of the block.
+     */
+    public Block getVisualBlock(IBlockAccess world, int x, int y, int z, ForgeDirection side);
 
-	/**
-	 * This function returns metadata of the block that is being shown on a given side.
-	 *
-	 * @param world
-	 *            Reference to the world.
-	 * @param x
-	 *            X coordinate of the block.
-	 * @param y
-	 *            Y coordinate of the block.
-	 * @param z
-	 *            Z coordinate of the block.
-	 * @param side
-	 *            The side of the block.
-	 */
-	public int getVisualMeta(IBlockAccess world, int x, int y, int z, ForgeDirection side);
+    /**
+     * This function returns metadata of the block that is being shown on a given side.
+     *
+     * @param world
+     *            Reference to the world.
+     * @param x
+     *            X coordinate of the block.
+     * @param y
+     *            Y coordinate of the block.
+     * @param z
+     *            Z coordinate of the block.
+     * @param side
+     *            The side of the block.
+     */
+    public int getVisualMeta(IBlockAccess world, int x, int y, int z, ForgeDirection side);
 
-	/**
-	 * This function returns whether the block's renderer will visually connect to other blocks implementing IBlockAppearance.
-	 */
-	public boolean supportsVisualConnections();
+    /**
+     * This function returns whether the block's renderer will visually connect to other blocks implementing IBlockAppearance.
+     */
+    public boolean supportsVisualConnections();
 
 }

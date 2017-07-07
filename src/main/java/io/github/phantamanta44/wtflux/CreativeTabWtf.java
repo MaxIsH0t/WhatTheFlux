@@ -9,18 +9,18 @@ import net.minecraft.item.ItemStack;
 
 public class CreativeTabWtf extends CreativeTabs {
 
-	public CreativeTabWtf() {
-		super(LibLang.CREATIVE_TAB_NAME);
-	}
-	
-	@Override
-	public ItemStack getIconItemStack() {
-		return new ItemStack(WtfItems.itemRot, 1, ItemRotary.NUKE);
-	}
-	
-	@Override
-	public Item getTabIconItem() {
-		return WtfItems.itemRot;
-	}
-	
+    public CreativeTabWtf() {
+        super(LibLang.CREATIVE_TAB_NAME);
+    }
+
+    @Override
+    public ItemStack getIconItemStack() {
+        return new ItemStack(WtfItems.itemRot, 1, ItemRotary.NUKE);
+    }
+
+    @Override
+    public Item getTabIconItem() {
+        return WtfItems.itemRot;
+    }
+
 }

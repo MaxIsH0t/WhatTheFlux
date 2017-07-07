@@ -2,19 +2,19 @@ package io.github.phantamanta44.wtflux.proxy;
 
 public class ClientProxy extends CommonProxy {
 
-	@Override
-	public void onPreInit() {
-		super.onPreInit();
-	}
+    @Override
+    public void onPreInit() {
+        super.onPreInit();
+    }
 
-	@Override
-	public void onInit() {
-		super.onInit();
-	}
+    @Override
+    public void onInit() {
+        super.onInit();
+    }
 
-	@Override
-	public void onPostInit() {
-		super.onPostInit();
-	}
+    @Override
+    public void onPostInit() {
+        super.onPostInit();
+    }
 
 }

@@ -13,28 +13,28 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = LibCore.MODID, version = LibCore.MODVER)
 public class WhatTheFlux {
-	
-	@Instance(LibCore.MODID)
-	public static WhatTheFlux instance;
-	
-	@SidedProxy(clientSide = "io.github.phantamanta44.wtflux.proxy.ClientProxy", serverSide = "io.github.phantamanta44.wtflux.proxy.CommonProxy")
-	public static CommonProxy proxy;
-	
-	public static CreativeTabs tabWTF = new CreativeTabWtf();
-	
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
-		proxy.onPreInit();
-	}
-	
-	@EventHandler
-	public void init(FMLInitializationEvent event) {
-		proxy.onInit();
-	}
-	
-	@EventHandler
-	public void postInit(FMLPostInitializationEvent event) {
-		proxy.onPostInit();
-	}
-	
+
+    @Instance(LibCore.MODID)
+    public static WhatTheFlux instance;
+
+    @SidedProxy(clientSide = "io.github.phantamanta44.wtflux.proxy.ClientProxy", serverSide = "io.github.phantamanta44.wtflux.proxy.CommonProxy")
+    public static CommonProxy proxy;
+
+    public static CreativeTabs tabWTF = new CreativeTabWtf();
+
+    @EventHandler
+    public void preInit(FMLPreInitializationEvent event) {
+        proxy.onPreInit();
+    }
+
+    @EventHandler
+    public void init(FMLInitializationEvent event) {
+        proxy.onInit();
+    }
+
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        proxy.onPostInit();
+    }
+
 }

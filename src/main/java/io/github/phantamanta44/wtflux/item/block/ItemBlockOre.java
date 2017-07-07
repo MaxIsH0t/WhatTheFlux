@@ -6,15 +6,15 @@ import net.minecraft.item.ItemStack;
 
 public class ItemBlockOre extends ItemBlockWithMetadataAndName {
 
-	public ItemBlockOre(Block block) {
-		super(block);
-	}
-	
-	public EnumRarity getRarity(ItemStack stack) {
-		switch (stack.getItemDamage()) {
-		default:
-			return EnumRarity.common;
-		}
-	}
+    public ItemBlockOre(Block block) {
+        super(block);
+    }
+
+    public EnumRarity getRarity(ItemStack stack) {
+        switch (stack.getItemDamage()) {
+        default:
+            return EnumRarity.common;
+        }
+    }
 
 }

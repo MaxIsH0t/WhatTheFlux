@@ -5,10 +5,10 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public interface ITileItemNBT {
 
-	public void readItemTag(NBTTagCompound tag);
-	
-	public void writeItemTag(NBTTagCompound tag);
-	
-	public ItemStack getNBTItem();
-	
+    public void readItemTag(NBTTagCompound tag);
+
+    public void writeItemTag(NBTTagCompound tag);
+
+    public ItemStack getNBTItem();
+
 }

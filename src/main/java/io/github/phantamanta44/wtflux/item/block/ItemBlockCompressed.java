@@ -6,15 +6,15 @@ import net.minecraft.item.ItemStack;
 
 public class ItemBlockCompressed extends ItemBlockWithMetadataAndName {
 
-	public ItemBlockCompressed(Block block) {
-		super(block);
-	}
-	
-	public EnumRarity getRarity(ItemStack stack) {
-		switch (stack.getItemDamage()) {
-		default:
-			return EnumRarity.common;
-		}
-	}
+    public ItemBlockCompressed(Block block) {
+        super(block);
+    }
+
+    public EnumRarity getRarity(ItemStack stack) {
+        switch (stack.getItemDamage()) {
+        default:
+            return EnumRarity.common;
+        }
+    }
 
 }

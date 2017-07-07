@@ -6,8 +6,8 @@ import org.lwjgl.input.Keyboard;
 
 public class KeyBindUtil {
 
-	public static String getName(KeyBinding bind) {
-		return Keyboard.getKeyName(bind.getKeyCode());
-	}
-	
+    public static String getName(KeyBinding bind) {
+        return Keyboard.getKeyName(bind.getKeyCode());
+    }
+
 }

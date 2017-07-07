@@ -14,27 +14,27 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockMod extends Block {
-	
-	public BlockMod(Material material) {
-		super(material);
-		addToCreative();
-	}
 
-	@Override
-	public Block setBlockName(String name) {
-		if (GameRegistry.findBlock(LibCore.MODID, name) == null)
-			GameRegistry.registerBlock(this, name);
-		return super.setBlockName(name);
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister registry) {
-		blockIcon = IconHelper.forBlock(registry, this);
-	}
-	
-	public void addToCreative() {
-		setCreativeTab(WhatTheFlux.tabWTF);
-	}
+    public BlockMod(Material material) {
+        super(material);
+        addToCreative();
+    }
+
+    @Override
+    public Block setBlockName(String name) {
+        if (GameRegistry.findBlock(LibCore.MODID, name) == null)
+            GameRegistry.registerBlock(this, name);
+        return super.setBlockName(name);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister registry) {
+        blockIcon = IconHelper.forBlock(registry, this);
+    }
+
+    public void addToCreative() {
+        setCreativeTab(WhatTheFlux.tabWTF);
+    }
 
 }
