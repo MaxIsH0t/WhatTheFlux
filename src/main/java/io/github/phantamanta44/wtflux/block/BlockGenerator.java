@@ -1,15 +1,14 @@
 package io.github.phantamanta44.wtflux.block;
 
+import cofh.api.block.IDismantleable;
+import com.google.common.collect.Lists;
+import cpw.mods.fml.common.registry.GameRegistry;
 import io.github.phantamanta44.wtflux.WhatTheFlux;
 import io.github.phantamanta44.wtflux.item.block.ItemBlockGenerator;
 import io.github.phantamanta44.wtflux.lib.LibLang;
 import io.github.phantamanta44.wtflux.tile.TileGenerator;
 import io.github.phantamanta44.wtflux.tile.TileMod;
 import io.github.phantamanta44.wtflux.util.WtfUtil;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -20,15 +19,11 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
-import cofh.api.block.IDismantleable;
 
-import com.google.common.collect.Lists;
-
-import cpw.mods.fml.common.registry.GameRegistry;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BlockGenerator extends BlockModSubs implements ITileEntityProvider, IDismantleable {
-
-    private ArrayList<ItemStack> drops = Lists.newArrayList();
 
     public BlockGenerator() {
         super(Material.iron, 6);

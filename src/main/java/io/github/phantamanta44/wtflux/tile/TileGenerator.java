@@ -1,43 +1,32 @@
 package io.github.phantamanta44.wtflux.tile;
 
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
+import com.google.common.collect.Maps;
 import io.github.phantamanta44.wtflux.item.ItemReactor;
 import io.github.phantamanta44.wtflux.item.WtfItems;
 import io.github.phantamanta44.wtflux.lib.LibDict;
 import io.github.phantamanta44.wtflux.lib.LibLang;
 import io.github.phantamanta44.wtflux.lib.LibNBT;
-import io.github.phantamanta44.wtflux.util.IEnergyContainer;
-import io.github.phantamanta44.wtflux.util.ITileItemNBT;
-import io.github.phantamanta44.wtflux.util.MathUtil;
-import io.github.phantamanta44.wtflux.util.SingleFluidTank;
-
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import io.github.phantamanta44.wtflux.util.*;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidContainerItem;
-import net.minecraftforge.fluids.IFluidHandler;
-import net.minecraftforge.fluids.IFluidTank;
-import cofh.api.energy.IEnergyProvider;
-import cofh.api.energy.IEnergyReceiver;
+import net.minecraftforge.fluids.*;
 
-import com.google.common.collect.Maps;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public abstract class TileGenerator extends TileBasicInventory implements IEnergyProvider, IEnergyContainer, ITileItemNBT {
 
     public static final int[] COIL_AMOUNTS = new int[] {128, 256, 512, 1024};
     public static final int[] CAP_AMOUNTS = new int[] {24000, 80000, 50000, 48000, 160000, 100000, 48000};
     public static final int[] CAP_RATES = new int[] {128, 256, 384, 256, 512, 768, -1};
+    public static final float[] MELTING_POINTS = new float[] {300F, 1500F, 2000F, 3500F};
     public static final Class<? extends TileGenerator>[] GEN_TYPES = new Class[] {Furnace.class, Heat.class, Wind.class, Water.class, Nuke.class, Solar.class};
 
     protected int energy = 0, energyMax = 24000;
@@ -58,8 +47,14 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
             gen = tag.getByte(LibNBT.GENTYPE);
             dyn = tag.getByte(LibNBT.DYNTYPE);
             cap = tag.getByte(LibNBT.CAPTYPE);
-            markForUpdate();
+        } else {
+            energy = 0;
+            energyMax = CAP_AMOUNTS[0];
+            gen = (byte)blockMetadata;
+            dyn = (byte)0;
+            cap = (byte)0;
         }
+        markForUpdate();
         onInit();
         init = true;
     }
@@ -143,20 +138,21 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
     @Override
     protected void tick() {
-        boolean dirty = false;
+        try {
+            boolean dirty = doGeneration();
 
-        dirty |= doGeneration();
-        dirty |= simulateInduction();
-        dirty |= distributeEnergy();
-        dirty |= simulateHeat();
+            dirty |= simulateInduction();
+            dirty |= distributeEnergy();
+            dirty |= simulateHeat();
 
-        energy = Math.max(0, Math.min(energy, energyMax));
+            energy = Math.max(0, Math.min(energy, energyMax));
 
-        if (dirty)
-            markForUpdate();
+            if (dirty)
+                markForUpdate();
+        } catch (MachineOverloadException ignored) { }
     }
 
-    public boolean simulateInduction() {
+    public boolean simulateInduction() throws MachineOverloadException {
         float voltage = MathUtil.voltageFromFlux(momentum, COIL_AMOUNTS[dyn]);
         if (useResistance)
             voltage /= MathUtil.resistanceFromHeat(temp);
@@ -164,6 +160,12 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         float momentumLossFactor = (0.997F - momentum / 2400F);
         momentum *= momentumLossFactor;
         temp += Math.max(momentum / 4200F, 0);
+        // TODO RPM cap
+        /*if (momentum > 50F) {
+            worldObj.setBlock(xCoord, yCoord, zCoord, Blocks.air);
+            worldObj.createExplosion(null, xCoord, yCoord, zCoord, 6F, false);
+            throw new MachineOverloadException();
+        }*/
         return true;
     }
 
@@ -185,10 +187,13 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         return !tileSet.isEmpty();
     }
 
-    public boolean simulateHeat() {
+    public boolean simulateHeat() throws MachineOverloadException {
         float prevTemp = temp;
         temp += (0.01F + worldObj.rand.nextFloat()) * 0.001F * (getPassiveTemp() - temp);
-        // TODO React explosively to overheating
+        if (temp > MELTING_POINTS[dyn]) {
+            worldObj.setBlock(xCoord, yCoord, zCoord, Blocks.lava);
+            throw new MachineOverloadException();
+        }
         return prevTemp != temp;
     }
 
@@ -197,7 +202,16 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         temp *= 0.95F + 0.15F * worldObj.getSunBrightnessFactor(1.0F);
         temp *= 0.6F + 0.75F * worldObj.getBiomeGenForCoords(xCoord, zCoord).getFloatTemperature(xCoord, yCoord, zCoord);
         temp += 8F * (Math.max(70 - yCoord, 0F) / 70F);
-        // TODO Check around for nearby hot liquids/blocks
+        for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+            int x = xCoord + dir.offsetX, y = yCoord + dir.offsetY, z = zCoord + dir.offsetZ;
+            Fluid fluid = FluidRegistry.lookupFluidForBlock(worldObj.getBlock(x, y, z));
+            if (fluid != null) {
+                float effTemp = useResistance
+                        ? temp + (Math.min(fluid.getTemperature(worldObj, x, y, z) - 273.15F, 1000F) - temp) / 60F
+                        : fluid.getTemperature(worldObj, x, y, z) - 273.15F;
+                temp = (temp + effTemp) / 2F;
+            }
+        }
         return temp;
     }
 
@@ -246,6 +260,9 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
         @Override
         protected boolean doGeneration() {
+        	if (worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
+        		return false;
+
             boolean dirty = false;
 
             if (burnTime > 0) {
@@ -334,8 +351,11 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         @Override
         public float getPassiveTemp() {
             float orig = super.getPassiveTemp();
-            float yMod = 7.9F * (float)(worldObj.getActualHeight() - yCoord) / (float)worldObj.getActualHeight();
-            return orig * yMod;
+            if (orig > 0) {
+                float yMod = 1.15F * (float)(worldObj.getActualHeight() - yCoord) / (float)worldObj.getActualHeight();
+                return orig * yMod;
+            }
+            return orig;
         }
 
         @Override
@@ -407,9 +427,9 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                     for (int y = -1; y <= 1; y++) {
                         if (!worldObj.isAirBlock(xCoord + x, yCoord + y, zCoord + z)) {
                             if (worldObj.isBlockNormalCubeDefault(xCoord + x, yCoord + y, zCoord + z, true))
-                                powerFactor *= 0.8F;
-                            else
                                 powerFactor *= 0.5F;
+                            else
+                                powerFactor *= 0.8F;
                         }
                     }
                 }
@@ -432,6 +452,9 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
         @Override
         protected boolean doGeneration() {
+			if (worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
+				return false;
+
             boolean dirty = false;
             if (tank.getFluidAmount() >= 1 && lowerTank.getFluidAmount() < 1000) {
                 tank.drain(1, true);
@@ -546,6 +569,8 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
         @Override
         protected boolean doGeneration() {
+        	if (worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
+        		return false;
             if (fuel > 0F) {
                 if (waste < 1000F)
                     tryDoReaction();
