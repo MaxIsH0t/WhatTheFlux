@@ -34,8 +34,7 @@ public class GeneratorRecipe implements IRecipe {
         }
         ItemStack cap = inv.getStackInSlot(7);
 
-        boolean valid = true;
-        valid &= (inv.getStackInSlot(1).getItem() == WtfItems.itemRot);
+        boolean valid = (inv.getStackInSlot(1).getItem() == WtfItems.itemRot);
         valid &= LibDict.matches(inv.getStackInSlot(3), gear);
         valid &= (dyn.getItem() == WtfItems.itemDyn && dyn.getItemDamage() > 2);
         valid &= LibDict.matches(inv.getStackInSlot(5), gear);
@@ -45,11 +44,7 @@ public class GeneratorRecipe implements IRecipe {
     }
 
     private static boolean checkLeads(ItemStack a, ItemStack b) {
-        if (isAnode(a))
-            return isCathode(b);
-        if (isCathode(a))
-            return isAnode(b);
-        return false;
+        return isAnode(a) ? isCathode(b) : isCathode(a) && isAnode(b);
     }
 
     private static boolean isCathode(ItemStack stack) {

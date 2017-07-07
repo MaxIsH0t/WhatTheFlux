@@ -1,14 +1,8 @@
 package io.github.phantamanta44.wtflux.gui;
 
-import org.lwjgl.opengl.GL11;
-
-import io.github.phantamanta44.wtflux.gui.component.GCEnergyMeter;
-import io.github.phantamanta44.wtflux.gui.component.GCFluidTank;
-import io.github.phantamanta44.wtflux.gui.component.GCFluidTank.IFluidInfoHandler;
-import io.github.phantamanta44.wtflux.gui.component.GCGenHeatMeter;
-import io.github.phantamanta44.wtflux.gui.component.GCReactorInfo;
-import io.github.phantamanta44.wtflux.gui.component.GCSpeedometer;
-import io.github.phantamanta44.wtflux.gui.component.GuiComponent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import io.github.phantamanta44.wtflux.gui.component.*;
 import io.github.phantamanta44.wtflux.inventory.ContainerGenerator;
 import io.github.phantamanta44.wtflux.lib.LibCore;
 import io.github.phantamanta44.wtflux.lib.LibLang;
@@ -17,9 +11,7 @@ import io.github.phantamanta44.wtflux.tile.TileGenerator;
 import io.github.phantamanta44.wtflux.util.WtfUtil;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraftforge.fluids.IFluidTank;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiGenerator<T extends TileGenerator> extends GuiContainerMod {
@@ -67,14 +59,7 @@ public abstract class GuiGenerator<T extends TileGenerator> extends GuiContainer
             resLoc = LibResource.TEX_GUI_HEAT;
             invName = LibLang.GUI_GEN_HEAT;
             comps.add(new GCGenHeatMeter(160, 18, 58, te));
-            comps.add(new GCFluidTank(79, 19, 48, new IFluidInfoHandler() {
-
-                @Override
-                public IFluidTank getTank() {
-                    return tile.getTank();
-                }
-
-            }));
+            comps.add(new GCFluidTank(79, 19, 48, tile::getTank));
         }
 
     }
@@ -100,22 +85,8 @@ public abstract class GuiGenerator<T extends TileGenerator> extends GuiContainer
             super(ipl, te);
             resLoc = LibResource.TEX_GUI_WATER;
             invName = LibLang.GUI_GEN_WATER;
-            comps.add(new GCFluidTank(56, 19, 48, new IFluidInfoHandler() {
-
-                @Override
-                public IFluidTank getTank() {
-                    return tile.getTank();
-                }
-
-            }));
-            comps.add(new GCFluidTank(101, 19, 48, new IFluidInfoHandler() {
-
-                @Override
-                public IFluidTank getTank() {
-                    return tile.getLowerTank();
-                }
-
-            }));
+            comps.add(new GCFluidTank(56, 19, 48, tile::getTank));
+            comps.add(new GCFluidTank(101, 19, 48, tile::getLowerTank));
         }
 
         @Override
@@ -134,14 +105,7 @@ public abstract class GuiGenerator<T extends TileGenerator> extends GuiContainer
             resLoc = LibResource.TEX_GUI_NUKE;
             invName = LibLang.GUI_GEN_NUKE;
             comps.add(new GCGenHeatMeter(160, 18, 58, te));
-            comps.add(new GCFluidTank(7, 11, 62, new IFluidInfoHandler() {
-
-                @Override
-                public IFluidTank getTank() {
-                    return tile.getTank();
-                }
-
-            }));
+            comps.add(new GCFluidTank(7, 11, 62, tile::getTank));
             comps.add(new GCReactorInfo(te));
         }
 

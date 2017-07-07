@@ -5,8 +5,8 @@ import net.minecraft.world.IBlockAccess;
 
 public class BlockWithMeta {
 
-    private Block block;
-    private int meta;
+    private final Block block;
+    private final int meta;
 
     public BlockWithMeta(Block type) {
         block = type;

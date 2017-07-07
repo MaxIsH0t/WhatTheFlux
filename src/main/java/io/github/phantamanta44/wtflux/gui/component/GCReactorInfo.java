@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiScreen;
 
 public class GCReactorInfo extends GuiComponent {
 
-    private TileGenerator.Nuke infoSrc;
+    private final TileGenerator.Nuke infoSrc;
 
     public GCReactorInfo(TileGenerator.Nuke te) {
         super(117, 11, 12, 62);

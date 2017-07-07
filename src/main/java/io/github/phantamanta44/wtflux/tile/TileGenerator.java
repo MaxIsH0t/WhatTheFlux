@@ -32,7 +32,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
     protected int energy = 0, energyMax = 24000;
     protected byte gen = 0, dyn = 0, cap = 0;
     protected float momentum = 0F, temp = 23.0F;
-    protected boolean useResistance;
+    protected final boolean useResistance;
 
     public TileGenerator(int slots, boolean resist) {
         super(slots);
@@ -181,7 +181,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         Set<Entry<ForgeDirection, IEnergyReceiver>> tileSet = tiles.entrySet();
         int dist = (int)Math.floor((float)Math.min(energy, getCapRate()) / (float)tileSet.size());
         for (Entry<ForgeDirection, IEnergyReceiver> tile : tileSet) {
-            int v = ((IEnergyReceiver)tile.getValue()).receiveEnergy(tile.getKey(), dist, false);
+            int v = tile.getValue().receiveEnergy(tile.getKey(), dist, false);
             energy -= v;
         }
         return !tileSet.isEmpty();
@@ -738,8 +738,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         }
 
         public void status(String s) {
-            for (int i = 0; i < 3; i++)
-                status[i + 1] = status[i];
+            System.arraycopy(status, 0, status, 1, 3);
             status[0] = s;
         }
 
@@ -758,7 +757,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                 int time = (int)(worldObj.getWorldTime() % 24000L);
                 if (time < 13000 || time > 22650) {
                     float add = (float)Math.sin(MathUtil.timeToRad(time)) * 0.1F;
-                    temp += (2F - ((float)temp / 200F) * 1F) * add;
+                    temp += (2F - (temp / 200F) * 1F) * add;
                     dirty = true;
                 }
             }

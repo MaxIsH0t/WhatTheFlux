@@ -75,9 +75,8 @@ public abstract class TileBasicInventory extends TileMod implements IInventory {
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
-        if (worldObj.getTileEntity(xCoord, yCoord, zCoord) == this)
-            return player.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) < 64D;
-        return false;
+        return worldObj.getTileEntity(xCoord, yCoord, zCoord) == this
+                && player.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) < 64D;
     }
 
     @Override

@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiScreen;
 
 public class GCGenHeatMeter extends GuiComponent {
 
-    private TileGenerator tsource;
+    private final TileGenerator tsource;
 
     public GCGenHeatMeter(int x, int y, int length, TileGenerator tc) {
         super(x, y, 4, length);

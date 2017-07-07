@@ -20,7 +20,7 @@ public class WhatTheFlux {
     @SidedProxy(clientSide = "io.github.phantamanta44.wtflux.proxy.ClientProxy", serverSide = "io.github.phantamanta44.wtflux.proxy.CommonProxy")
     public static CommonProxy proxy;
 
-    public static CreativeTabs tabWTF = new CreativeTabWtf();
+    public static final CreativeTabs tabWTF = new CreativeTabWtf();
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {

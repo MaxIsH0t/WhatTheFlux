@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiScreen;
 
 public class GCEnergyMeter extends GuiComponent {
 
-    private IEnergyContainer esource;
+    private final IEnergyContainer esource;
 
     public GCEnergyMeter(int x, int y, int length, IEnergyContainer ec) {
         super(x, y, 4, length);

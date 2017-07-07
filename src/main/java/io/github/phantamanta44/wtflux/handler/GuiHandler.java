@@ -12,8 +12,8 @@ import cpw.mods.fml.common.network.IGuiHandler;
 
 public class GuiHandler implements IGuiHandler {
 
-    public static Map<Class<? extends TileEntity>, Class<? extends Container>> containerMap = new HashMap<>();
-    public static Map<Class<? extends TileEntity>, Class<? extends GuiContainer>> guiMap = new HashMap<>();
+    public static final Map<Class<? extends TileEntity>, Class<? extends Container>> containerMap = new HashMap<>();
+    public static final Map<Class<? extends TileEntity>, Class<? extends GuiContainer>> guiMap = new HashMap<>();
 
     @Override
     public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {

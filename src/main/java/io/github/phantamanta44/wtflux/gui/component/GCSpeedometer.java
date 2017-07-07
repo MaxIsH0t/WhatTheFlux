@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiScreen;
 
 public class GCSpeedometer extends GuiComponent {
 
-    private TileGenerator msource;
+    private final TileGenerator msource;
 
     public GCSpeedometer(int x, int y, TileGenerator ms) {
         super(x, y, 7, 7);

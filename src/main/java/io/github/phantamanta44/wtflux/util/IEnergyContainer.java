@@ -2,8 +2,8 @@ package io.github.phantamanta44.wtflux.util;
 
 public interface IEnergyContainer {
 
-    public int getEnergyStored();
+    int getEnergyStored();
 
-    public int getMaxEnergyStored();
+    int getMaxEnergyStored();
 
 }

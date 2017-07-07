@@ -10,10 +10,10 @@ import cpw.mods.fml.common.IWorldGenerator;
 
 public class OreGenSimple implements IWorldGenerator { 
 
-    private BlockWithMeta genBlock, replBlock;
-    private int dim;
-    private int minYLevel, maxYLevel;
-    private int iterations, veinSize;
+    private final BlockWithMeta genBlock, replBlock;
+    private final int dim;
+    private final int minYLevel, maxYLevel;
+    private final int iterations, veinSize;
 
     public OreGenSimple(BlockWithMeta blockToGen, int dimensionToGenerate, BlockWithMeta blockToReplace, int minY, int maxY, int perChunk, int veinDensity) {
         genBlock = blockToGen;

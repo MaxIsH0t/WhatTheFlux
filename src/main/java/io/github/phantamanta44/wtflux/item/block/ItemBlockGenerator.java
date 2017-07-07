@@ -1,13 +1,12 @@
 package io.github.phantamanta44.wtflux.item.block;
 
+import cofh.api.energy.IEnergyContainerItem;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import io.github.phantamanta44.wtflux.lib.LibLang;
 import io.github.phantamanta44.wtflux.lib.LibNBT;
 import io.github.phantamanta44.wtflux.tile.TileGenerator;
-import io.github.phantamanta44.wtflux.util.IEnergyContainer;
 import io.github.phantamanta44.wtflux.util.KeyBindUtil;
-
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -15,12 +14,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
-
 import org.lwjgl.input.Keyboard;
 
-import cofh.api.energy.IEnergyContainerItem;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.List;
 
 public class ItemBlockGenerator extends ItemBlockWithMetadataAndName implements IEnergyContainerItem {
 

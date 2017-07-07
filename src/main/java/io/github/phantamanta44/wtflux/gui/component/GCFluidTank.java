@@ -10,7 +10,7 @@ import net.minecraftforge.fluids.IFluidTank;
 
 public class GCFluidTank extends GuiComponent {
 
-    private IFluidInfoHandler tankSource;
+    private final IFluidInfoHandler tankSource;
 
     public GCFluidTank(int x, int y, int length, IFluidInfoHandler fs) {
         super(x, y, 18, length);
@@ -62,9 +62,9 @@ public class GCFluidTank extends GuiComponent {
         return String.format("%s (%d / %d mB)", fa > 0 ? tankSource.getTank().getFluid().getLocalizedName() : LibLang.get(LibLang.TT_EMPTY), fa, tankSource.getTank().getCapacity());
     }
 
-    public static interface IFluidInfoHandler {
+    public interface IFluidInfoHandler {
 
-        public IFluidTank getTank();
+        IFluidTank getTank();
 
     }
 

@@ -15,7 +15,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public abstract class GuiComponent {
 
-    protected int x, y, width, height;
+    protected final int x, y, width, height;
 
     public GuiComponent(int x, int y, int width, int height) {
         this.x = x;
@@ -29,7 +29,7 @@ public abstract class GuiComponent {
             Method m = GuiScreen.class.getDeclaredMethod("func_146283_a", List.class, int.class, int.class);
             m.setAccessible(true);
             m.invoke(gui, Lists.newArrayList(string), x, y);
-        } catch (Exception ex) { }
+        } catch (Exception ignored) { }
         RenderHelper.enableGUIStandardItemLighting();
     }
 

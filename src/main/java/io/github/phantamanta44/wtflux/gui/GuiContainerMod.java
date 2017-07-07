@@ -18,9 +18,9 @@ import com.google.common.collect.Sets;
 
 public abstract class GuiContainerMod extends GuiContainer {
 
+    protected final Collection<GuiComponent> comps = Sets.newHashSet();
     protected ResourceLocation resLoc;
     protected String invName;
-    protected Collection<GuiComponent> comps = Sets.newHashSet();
 
     public GuiContainerMod(Container cont) {
         super(cont);

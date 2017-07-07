@@ -35,7 +35,7 @@ public class CommonProxy {
     }
 
     public void onPostInit() {
-
+        // NO-OP
     }
 
     protected void registerTileEntities() {
