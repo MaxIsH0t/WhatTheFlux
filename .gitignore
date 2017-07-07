@@ -7,6 +7,8 @@
 /target/
 /build/
 /out/
+/bin/
+/classes/
 
 # Gradle stuff
 /.gradle/
@@ -19,4 +21,3 @@
 # MinecraftForge
 /eclipse/
 /run/
-/bin/
