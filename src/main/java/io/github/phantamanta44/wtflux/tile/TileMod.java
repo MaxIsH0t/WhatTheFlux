@@ -1,5 +1,6 @@
 package io.github.phantamanta44.wtflux.tile;
 
+import io.github.phantamanta44.wtflux.util.VanillaPacketDispatcher;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -13,8 +14,8 @@ public abstract class TileMod extends TileEntity {
 	protected abstract void tick();
 	
 	public void markForUpdate() {
-		if (worldObj != null)
-			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		if (worldObj != null && !worldObj.isRemote)
+			VanillaPacketDispatcher.dispatchTEToNearbyPlayers(worldObj, xCoord, yCoord, zCoord);
 		markDirty();
 	}
 	

@@ -4,7 +4,6 @@ import io.github.phantamanta44.wtflux.lib.LibNBT;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
@@ -29,23 +28,39 @@ public abstract class TileBasicInventory extends TileMod implements IInventory {
 
 	@Override
 	public ItemStack decrStackSize(int slot, int amt) {
-		slots[slot].stackSize -= amt;
-		return slots[slot].stackSize > 0 ? slots[slot] : null;
+		if (slots[slot] != null) {
+			if (slots[slot].stackSize <= amt) {
+				ItemStack stack = slots[slot];
+				slots[slot] = null;
+				markDirty();
+				return stack;
+			}
+			ItemStack stack = slots[slot].splitStack(amt);
+			markDirty();
+			return stack;
+		}
+		return null;
 	}
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int slot) {
-		return slots[slot];
+		if (slots[slot] != null) {
+			ItemStack stack = getStackInSlot(slot);
+			slots[slot] = null;
+			return stack;
+		}
+		return null;
 	}
 
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack stack) {
 		slots[slot] = stack;
+		markDirty();
 	}
 
 	@Override
 	public String getInventoryName() {
-		return "wtfinventory";
+		return getClass().getTypeName();
 	}
 
 	@Override
@@ -60,7 +75,9 @@ public abstract class TileBasicInventory extends TileMod implements IInventory {
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {
-		return true;
+		if (worldObj.getTileEntity(xCoord, yCoord, zCoord) == this)
+			return player.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) < 64D;
+		return false;
 	}
 
 	@Override
@@ -82,6 +99,7 @@ public abstract class TileBasicInventory extends TileMod implements IInventory {
 	public void readFromNBT(NBTTagCompound tag) {
 		super.readFromNBT(tag);
 		NBTTagList tagList = tag.getTagList(LibNBT.ITEMS, 10);
+		slots = new ItemStack[slots.length];
 		for (int i = 0; i < tagList.tagCount(); i++) {
 			NBTTagCompound itemTag = tagList.getCompoundTagAt(i);
 			int slot = itemTag.getInteger(LibNBT.SLOT);

@@ -3,6 +3,7 @@ package io.github.phantamanta44.wtflux.tile;
 import io.github.phantamanta44.wtflux.item.ItemReactor;
 import io.github.phantamanta44.wtflux.item.WtfItems;
 import io.github.phantamanta44.wtflux.lib.LibDict;
+import io.github.phantamanta44.wtflux.lib.LibLang;
 import io.github.phantamanta44.wtflux.lib.LibNBT;
 import io.github.phantamanta44.wtflux.util.IEnergyContainer;
 import io.github.phantamanta44.wtflux.util.ITileItemNBT;
@@ -26,6 +27,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.IFluidTank;
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
 
@@ -379,6 +381,10 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 			tank.writeToNBT(tankTag);
 			tag.setTag(LibNBT.MACHINE_TANK, tankTag);
 		}
+
+		public IFluidTank getTank() {
+			return tank;
+		}
 		
 	}
 
@@ -516,6 +522,14 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 			tag.setTag(LibNBT.MACHINE_TANK, tankTag);
 			tag.setTag(LibNBT.MACHINE_TANK_2, tankTag2);
 		}
+
+		public IFluidTank getTank() {
+			return tank;
+		}
+		
+		public IFluidTank getLowerTank() {
+			return lowerTank;
+		}
 		
 	}
 	
@@ -524,6 +538,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 		private static final int TANK_SIZE = 16000;
 		private float fuel = 0, waste = 0;
 		private SingleFluidTank tank = new SingleFluidTank(FluidRegistry.WATER, TANK_SIZE);
+		private String[] status = new String[] {LibLang.NG_INIT, "", "", ""};
 		
 		public Nuke() {
 			super(6, false);
@@ -541,11 +556,16 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 			if (waste >= 1000F)
 				tryEjectWaste();
 			
-			if (tank.getFluidAmount() >= temp && temp > getPassiveTemp()) {
-				tank.drain((int)temp, true);
-				momentumFromHeat();
-				temp *= 0.9F + 0.1F * (Math.max(0F, 2000F - temp) / 2000F);
+			if (tank.getFluidAmount() >= (temp / 4F)) {
+				if (temp > getPassiveTemp()) {
+					tank.drain((int)(temp / 4F), true);
+					momentumFromHeat();
+					float tempFac = Math.max(0.01F, 2000F - temp) / 2000F;
+					temp *= 0.9858F + 0.01F * tempFac;
+				}
 			}
+			else
+				status(LibLang.NG_NOCOOL);
 			
 			if (slots[3] != null && slots[4] == null) {
 				if (slots[3].getItem() instanceof IFluidContainerItem) {
@@ -564,6 +584,9 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 				}
 			}
 			
+			if (energy >= energyMax)
+				status(LibLang.NG_FULLBUF);
+			
 			return true;
 		}
 		
@@ -574,9 +597,13 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 					float fuelCost = temp / (float)7500;
 					fuel -= fuelCost;
 					waste += fuelCost;
-					temp += (16F + worldObj.rand.nextFloat() * 24F) * Math.max(0.001F, (6000F - temp) / 6000F);
+					float tempFac = Math.max(0.01F, 30000F - temp) / 15000F;
+					temp += (16F + worldObj.rand.nextFloat() * 24F) * Math.max(0.001F, tempFac);
+					temp += worldObj.rand.nextGaussian() * worldObj.rand.nextFloat() * 100F * tempFac;
+					return;
 				}
 			}
+			status(LibLang.NG_NOCTRL);
 		}
 		
 		private void tryInjectFuel() {
@@ -592,22 +619,33 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 					flag2 = true;
 			}
 			
-			if (flag1 && flag2) {
-				slots[1] = ((ItemReactor)WtfItems.itemRct).decrementUses(slots[1]);
-				slots[0] = decrStackSize(0, 1);
-				fuel += 1000F;
+			if (flag1) {
+				if (flag2) {
+					slots[1] = ((ItemReactor)WtfItems.itemRct).decrementUses(slots[1]);
+					decrStackSize(0, 1);
+					fuel += 1000F;
+					status(LibLang.NG_INJ);
+				}
+				else
+					status(LibLang.NG_NOFUEL);
 			}
+			else
+				status(LibLang.NG_NOHOW);
 		}
 		
 		private void tryEjectWaste() {
 			if (slots[5] == null) {
 				waste -= 1000F;
 				slots[5] = new ItemStack(WtfItems.itemRct, 1, ItemReactor.WASTE);
+				status(LibLang.NG_EJC);
 			}
 			else if (slots[5].getItem() == WtfItems.itemRct && slots[5].getItemDamage() == ItemReactor.WASTE && slots[5].stackSize < slots[5].getMaxStackSize()) {
 				waste -= 1000F;
 				slots[5].stackSize++;
+				status(LibLang.NG_EJC);
 			}
+			else
+				status(LibLang.NG_FULLWASTE);
 		}
 		
 		@Override
@@ -656,6 +694,28 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 			tag.setFloat(LibNBT.MACHINE_FUEL, fuel);
 			tag.setFloat(LibNBT.MACHINE_WASTE, waste);
 			tag.setTag(LibNBT.MACHINE_TANK, tankTag);
+		}
+
+		public IFluidTank getTank() {
+			return tank;
+		}
+
+		public float getFuel() {
+			return fuel;
+		}
+		
+		public float getWaste() {
+			return waste;
+		}
+		
+		public String[] getStatus() {
+			return status;
+		}
+		
+		public void status(String s) {
+			for (int i = 0; i < 3; i++)
+				status[i + 1] = status[i];
+			status[0] = s;
 		}
 		
 	}

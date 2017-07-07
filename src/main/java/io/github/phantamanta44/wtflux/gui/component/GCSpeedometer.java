@@ -22,7 +22,7 @@ public class GCSpeedometer extends GuiComponent {
 		gui.drawTexturedModalRect(x, y, 0, 3, 7, 7);
 		
 		float m = msource.getMomentum();
-		int level = (int)Math.min((m - (m % 100F)) / 100F, 400F) / 100;
+		int level = (int)Math.min(m - (m % 12), 48F) / 12;
 		gui.drawTexturedModalRect(x, y, 7 + level * 7, 3, 7, 7);
 	}
 	

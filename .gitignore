@@ -11,6 +11,12 @@
 # Gradle stuff
 /.gradle/
 
+# Eclipse stuff
+/.settings/
+.classpath
+.project
+
 # MinecraftForge
 /eclipse/
 /run/
+/bin/

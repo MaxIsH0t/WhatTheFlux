@@ -36,6 +36,24 @@ public class LibLang {
 	
 	public static final String GUI_KEY = LibCore.MODID + ".gui.";
 	public static final String GUI_GEN_FURNACE = GUI_KEY + "genFurnace";
+	public static final String GUI_GEN_HEAT = GUI_KEY + "genHeat";
+	public static final String GUI_GEN_WIND = GUI_KEY + "genWind";
+	public static final String GUI_GEN_WATER = GUI_KEY + "genWater";
+	public static final String GUI_GEN_NUKE = GUI_KEY + "genNuke";
+	public static final String GUI_GEN_SOLAR = GUI_KEY + "genSolar";
+	
+	public static final String NG_KEY = LibCore.MODID + ".nukeStatus.";
+	public static final String NG_INIT = NG_KEY + "init";
+	public static final String NG_INJ = NG_KEY + "inject";
+	public static final String NG_EJC = NG_KEY + "eject";
+	public static final String NG_NOFUEL = NG_KEY + "noFuel";
+	public static final String NG_FULLWASTE = NG_KEY + "fullWaste";
+	public static final String NG_NOCOOL = NG_KEY + "noCoolant";
+	public static final String NG_NOHOW = NG_KEY + "noHowitzer";
+	public static final String NG_NOCTRL = NG_KEY + "noControlRod";
+	public static final String NG_FULLBUF = NG_KEY + "fullPower";
+	
+	public static final String PLAYER_INV = "container.inventory";
 	
 	public static final String[] GENTYPE = new String[] {".furnace", ".heat", ".wind", ".water", ".nuke", ".solar"};
 	

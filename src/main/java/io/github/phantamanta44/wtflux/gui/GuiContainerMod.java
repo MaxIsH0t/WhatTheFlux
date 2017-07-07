@@ -7,17 +7,19 @@ import io.github.phantamanta44.wtflux.lib.LibLang;
 import java.util.Collection;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 public abstract class GuiContainerMod extends GuiContainer {
 
-	protected static ResourceLocation resLoc;
-	protected static String invName;
+	protected ResourceLocation resLoc;
+	protected String invName;
 	protected Collection<GuiComponent> comps = Sets.newHashSet();
 	
 	public GuiContainerMod(Container cont) {
@@ -26,6 +28,7 @@ public abstract class GuiContainerMod extends GuiContainer {
 	
 	@Override
 	public void drawGuiContainerForegroundLayer(int mX, int mY) {
+		fontRendererObj.drawString(LibLang.get(LibLang.PLAYER_INV), 8, this.ySize - 96 + 2, 4210752);
 		String resolvedName = LibLang.get(invName);
 		int nameXPos = xSize / 2 - fontRendererObj.getStringWidth(resolvedName) / 2;
 		fontRendererObj.drawString(resolvedName, nameXPos, 6, LibCore.GUI_FONT_COLOR);
@@ -43,6 +46,11 @@ public abstract class GuiContainerMod extends GuiContainer {
 		mc.renderEngine.bindTexture(resLoc);
 		int x = width / 2 - xSize / 2, y = height / 2 - ySize / 2;
 		drawTexturedModalRect(x, y, 0, 0, xSize, ySize);	
+	}
+	
+	protected void drawHoveringText(String string, int x, int y) {
+		func_146283_a(Lists.newArrayList(string), x, y);
+		RenderHelper.enableGUIStandardItemLighting();
 	}
 
 }

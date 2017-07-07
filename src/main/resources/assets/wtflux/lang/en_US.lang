@@ -95,6 +95,11 @@ wtflux.itemInfo.capacitor.5=Double Electrolytic (768 RF/t)
 wtflux.itemInfo.capacitor.6=Ni-MH Cell (Infinite RF/t)
 
 wtflux.gui.genFurnace=Furnace Generator
+wtflux.gui.genHeat=Heat Generator
+wtflux.gui.genWind=Wind Turbine
+wtflux.gui.genWater=Water Turbine
+wtflux.gui.genNuke=Fission Reactor
+wtflux.gui.genSolar=Solar Boiler
 
 wtflux.tooltip.energyStored=Energy
 wtflux.tooltip.temperature=Temp
@@ -102,3 +107,13 @@ wtflux.tooltip.momentum=Speed
 wtflux.tooltip.fuel=Fuel
 wtflux.tooltip.waste=Waste
 wtflux.tooltip.empty=Empty
+
+wtflux.nukeStatus.init=INIT
+wtflux.nukeStatus.inject=fuel in
+wtflux.nukeStatus.eject=waste out
+wtflux.nukeStatus.noFuel=!FUEL
+wtflux.nukeStatus.fullWaste=!WASTE
+wtflux.nukeStatus.noCoolant=!COOL
+wtflux.nukeStatus.noHowitzer=!NSRC
+wtflux.nukeStatus.noControlRod=!CTRLROD
+wtflux.nukeStatus.fullPower=!POWER

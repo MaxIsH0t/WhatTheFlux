@@ -49,7 +49,11 @@ public class CommonProxy {
 	
 	protected void registerContainers() {
 		registerContainer(TileGenerator.Furnace.class, GuiGenerator.Furnace.class, ContainerGenerator.Furnace.class);
-		// TODO Register other containers
+		registerContainer(TileGenerator.Heat.class, GuiGenerator.Heat.class, ContainerGenerator.Heat.class);
+		registerContainer(TileGenerator.Wind.class, GuiGenerator.Wind.class, ContainerGenerator.Wind.class);
+		registerContainer(TileGenerator.Water.class, GuiGenerator.Water.class, ContainerGenerator.Water.class);
+		registerContainer(TileGenerator.Nuke.class, GuiGenerator.Nuke.class, ContainerGenerator.Nuke.class);
+		registerContainer(TileGenerator.Solar.class, GuiGenerator.Solar.class, ContainerGenerator.Solar.class);
 	}
 	
 	protected void registerContainer(Class<? extends TileEntity> tile, Class<? extends GuiContainer> gui, Class<? extends Container> cont) {
