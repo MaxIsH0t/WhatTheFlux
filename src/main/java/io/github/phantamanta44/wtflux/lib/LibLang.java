@@ -25,6 +25,9 @@ public class LibLang {
     public static final String INF_GEN = INF_KEY + "generator";
     public static final String INF_DYN = INF_KEY + "dynamo";
     public static final String INF_CAP = INF_KEY + "capacitor";
+    public static final String INF_CASING = INF_KEY + "casing";
+    public static final String INF_MP = INF_KEY + "meltingPoint";
+    public static final String INF_RPM_CAP = INF_KEY + "rpmCap";
 
     public static final String TT_KEY = LibCore.MODID + ".tooltip.";
     public static final String TT_ENERGY = TT_KEY + "energyStored";
@@ -43,9 +46,8 @@ public class LibLang {
     public static final String GUI_GEN_SOLAR = GUI_KEY + "genSolar";
 
     public static final String NG_KEY = LibCore.MODID + ".nukeStatus.";
-    public static final String NG_INIT = NG_KEY + "init";
-    public static final String NG_INJ = NG_KEY + "inject";
-    public static final String NG_EJC = NG_KEY + "eject";
+    public static final String NG_GOOD = NG_KEY + "good";
+    public static final String NG_OFF = NG_KEY + "off";
     public static final String NG_NOFUEL = NG_KEY + "noFuel";
     public static final String NG_FULLWASTE = NG_KEY + "fullWaste";
     public static final String NG_NOCOOL = NG_KEY + "noCoolant";
@@ -71,6 +73,10 @@ public class LibLang {
 
     public static String getCapType(int lvl) {
         return get(INF_CAP + "." + lvl);
+    }
+
+    public static String getCasingType(int lvl) {
+        return get(INF_CASING + "." + lvl);
     }
 
 }

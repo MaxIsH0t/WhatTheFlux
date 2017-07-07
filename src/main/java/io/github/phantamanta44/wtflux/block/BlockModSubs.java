@@ -60,7 +60,7 @@ public class BlockModSubs extends BlockMod {
     }
 
     @Override
-    public IIcon getIcon(int id, int meta) {
+    public IIcon getIcon(int face, int meta) {
         return icons[meta];
     }
 

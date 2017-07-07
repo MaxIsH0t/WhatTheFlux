@@ -11,6 +11,7 @@ public class LibNBT {
     public static final String GENTYPE = "GeneratorType";
     public static final String DYNTYPE = "DynamoType";
     public static final String CAPTYPE = "CapacitorType";
+    public static final String CASINGTYPE = "CasingType";
 
     public static final String MOMENTUM = "RotationSpeed";
     public static final String TEMP = "MachineTemp";
@@ -21,6 +22,7 @@ public class LibNBT {
     public static final String MACHINE_TANK_2 = "FluidTankSec";
     public static final String MACHINE_FUEL = "ReactorFuel";
     public static final String MACHINE_WASTE = "ReactorWaste";
+    public static final String ACTIVE = "Active";
 
     public static final String TANK_FLUID_NAME = "TankFluid";
     public static final String TANK_FLUID_STACK = "TankStack";

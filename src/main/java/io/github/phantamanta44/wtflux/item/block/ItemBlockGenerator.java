@@ -37,6 +37,9 @@ public class ItemBlockGenerator extends ItemBlockWithMetadataAndName implements 
                 info.add(String.format("%s: %s%s", LibLang.get(LibLang.INF_GEN), EnumChatFormatting.GREEN, LibLang.getGenType(stack.stackTagCompound.getByte(LibNBT.GENTYPE))));
                 info.add(String.format("%s: %s%s", LibLang.get(LibLang.INF_DYN), EnumChatFormatting.GREEN, LibLang.getDynType(stack.stackTagCompound.getByte(LibNBT.DYNTYPE))));
                 info.add(String.format("%s: %s%s", LibLang.get(LibLang.INF_CAP), EnumChatFormatting.GREEN, LibLang.getCapType(stack.stackTagCompound.getByte(LibNBT.CAPTYPE))));
+                info.add(String.format("%s: %s%s", LibLang.get(LibLang.INF_CASING), EnumChatFormatting.GREEN, LibLang.getCasingType(stack.getTagCompound().getByte(LibNBT.CASINGTYPE))));
+                info.add(String.format("%s- %s: %s%.0f°C", EnumChatFormatting.DARK_GRAY, LibLang.get(LibLang.INF_MP), EnumChatFormatting.BLUE, TileGenerator.MELTING_POINTS[stack.stackTagCompound.getByte(LibNBT.CASINGTYPE)]));
+                info.add(String.format("%s- %s: %s%.0f RPM", EnumChatFormatting.DARK_GRAY, LibLang.get(LibLang.INF_RPM_CAP), EnumChatFormatting.BLUE, TileGenerator.RPM_CAPS[stack.stackTagCompound.getByte(LibNBT.CASINGTYPE)]));
             }
         }
         else

@@ -120,6 +120,8 @@ public abstract class ContainerGenerator extends ContainerMod<TileGenerator> {
 
         public Solar(InventoryPlayer inv, TileGenerator.Solar te) {
             super(inv, te);
+            addSlotToContainer(new Slot(te, 0, 102, 28));
+            addSlotToContainer(new Slot(te, 1, 102, 50));
         }
 
         @Override

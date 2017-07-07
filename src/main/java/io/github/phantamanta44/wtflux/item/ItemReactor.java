@@ -3,13 +3,12 @@ package io.github.phantamanta44.wtflux.item;
 
 import io.github.phantamanta44.wtflux.lib.LibLang;
 import io.github.phantamanta44.wtflux.lib.LibNBT;
-
-import java.util.List;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
+
+import java.util.List;
 
 public class ItemReactor extends ItemModSubs {
 
@@ -30,6 +29,20 @@ public class ItemReactor extends ItemModSubs {
         }
     }
 
+    @Override
+    public double getDurabilityForDisplay(ItemStack stack) {
+        int damage = stack.getItemDamage();
+        if (damage == BLASTER || damage == CONTROL_ROD)
+            return (double)getVirtualDamage(stack) / (double)getVirtualMaxDamage(stack);
+        return super.getDurabilityForDisplay(stack);
+    }
+
+    @Override
+    public boolean showDurabilityBar(ItemStack stack) {
+        int damage = stack.getItemDamage();
+        return (damage == BLASTER || damage == CONTROL_ROD) && getVirtualDamage(stack) > 0;
+    }
+
     public int getVirtualDamage(ItemStack stack) {
         if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey(LibNBT.DURABILITY))
             return stack.stackTagCompound.getInteger(LibNBT.DURABILITY);
@@ -39,7 +52,7 @@ public class ItemReactor extends ItemModSubs {
     public int getVirtualMaxDamage(ItemStack stack) {
         switch (stack.getItemDamage()) {
         case BLASTER:
-            return 36;
+            return 128;
         case CONTROL_ROD:
             return 4000;
         default:

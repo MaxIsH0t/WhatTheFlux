@@ -8,19 +8,23 @@ import io.github.phantamanta44.wtflux.item.block.ItemBlockGenerator;
 import io.github.phantamanta44.wtflux.lib.LibLang;
 import io.github.phantamanta44.wtflux.tile.TileGenerator;
 import io.github.phantamanta44.wtflux.tile.TileMod;
+import io.github.phantamanta44.wtflux.util.IconHelper;
 import io.github.phantamanta44.wtflux.util.WtfUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BlockGenerator extends BlockModSubs implements ITileEntityProvider, IDismantleable {
@@ -36,6 +40,40 @@ public class BlockGenerator extends BlockModSubs implements ITileEntityProvider,
     public Block setBlockName(String name) {
         GameRegistry.registerBlock(this, ItemBlockGenerator.class, name);
         return super.setBlockName(name);
+    }
+
+    @Override
+    public void registerBlockIcons(IIconRegister registry) {
+        icons = new IIcon[subblockCount * 4 + 1];
+        icons[0] = IconHelper.forBlock(registry, this, "Bottom");
+        for (int i = 0; i < subblockCount; i++) {
+            icons[i * 4 + 1] = IconHelper.forBlock(registry, this, Integer.toString(i) + "TopOff");
+            icons[i * 4 + 2] = IconHelper.forBlock(registry, this, Integer.toString(i) + "TopOn");
+            icons[i * 4 + 3] = IconHelper.forBlock(registry, this, Integer.toString(i) + "SideOff");
+            icons[i * 4 + 4] = IconHelper.forBlock(registry, this, Integer.toString(i) + "SideOn");
+        }
+    }
+
+    @Override
+    public IIcon getIcon(IBlockAccess world, int x, int y, int z, int face) {
+        TileGenerator tile = (TileGenerator)world.getTileEntity(x, y, z);
+        boolean active = tile != null && tile.isActive();
+        if (face == 0)
+            return icons[0];
+        else if (face == 1)
+            return icons[active ? world.getBlockMetadata(x, y, z) * 4 + 2 : world.getBlockMetadata(x, y, z) * 4 + 1];
+        else
+            return icons[active ? world.getBlockMetadata(x, y, z) * 4 + 4 : world.getBlockMetadata(x, y, z) * 4 + 3];
+    }
+
+    @Override
+    public IIcon getIcon(int face, int meta) {
+        if (face == 0)
+            return icons[0];
+        else if (face == 1)
+            return icons[meta * 4 + 1];
+        else
+            return icons[meta * 4 + 3];
     }
 
     @Override

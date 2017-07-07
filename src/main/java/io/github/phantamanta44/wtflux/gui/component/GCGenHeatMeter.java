@@ -34,11 +34,11 @@ public class GCGenHeatMeter extends GuiComponent {
                 gui.drawTexturedModalRect(x + i, y + j, 1, 1, 1, 1);
         }
 
-        float t = Math.max(Math.min(tsource.getTemp(), 5000F), 0), per = t / 5000F;
+        float per = tsource.getMeltingPoint();
+        per = Math.max(Math.min(tsource.getTemp(), per), 0) / per;
         int sz = (int)(per * (height - 2));
         for (int i = 2; i < sz + 2; i++)
             gui.drawTexturedModalRect(x + 1, y + height - i, 7, 0, 2, 1);
-
     }
 
     @Override

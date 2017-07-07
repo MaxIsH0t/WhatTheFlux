@@ -48,7 +48,7 @@ public class GCReactorInfo extends GuiComponent {
             }
         }
 
-        float f = infoSrc.getFuel(), fPer = f / 1000F, w = infoSrc.getWaste(), wPer = w / 1000F;
+        float f = infoSrc.getFuel(), fPer = f / 4000F, w = infoSrc.getWaste(), wPer = w / 1000F;
         int fSz = (int)(fPer * 60), wSz = (int)(wPer * 60);
         for (int i = 2; i < fSz + 2; i++)
             gui.drawTexturedModalRect(x + 1, y + 62 - i, 5, 0, 2, 1);
@@ -59,7 +59,7 @@ public class GCReactorInfo extends GuiComponent {
     @Override
     public void mouseOver(Minecraft mc, GuiScreen gui, int mX, int mY) {
         if (WtfUtil.isMouseOver(x, y, 4, 62, mX, mY))
-            drawHoveringText(gui, String.format("%s: %.2f / 1000 mL", LibLang.get(LibLang.TT_FUEL), infoSrc.getFuel()), mX, mY);
+            drawHoveringText(gui, String.format("%s: %.2f / 4000 mL", LibLang.get(LibLang.TT_FUEL), infoSrc.getFuel()), mX, mY);
 
         if (WtfUtil.isMouseOver(x + 8, y, 4, 62, mX, mY))
             drawHoveringText(gui, String.format("%s: %.2f / 1000 mL", LibLang.get(LibLang.TT_WASTE), infoSrc.getWaste()), mX, mY);

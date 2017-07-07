@@ -2,11 +2,7 @@ package io.github.phantamanta44.wtflux.util;
 
 import io.github.phantamanta44.wtflux.lib.LibNBT;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.*;
 
 public class SingleFluidTank implements IFluidTank, INBTSerializable {
 
@@ -93,7 +89,7 @@ public class SingleFluidTank implements IFluidTank, INBTSerializable {
     }
 
     private SingleFluidTank() {
-
+        // NO-OP
     }
 
     public static SingleFluidTank loadFromNBT(NBTTagCompound tag) {

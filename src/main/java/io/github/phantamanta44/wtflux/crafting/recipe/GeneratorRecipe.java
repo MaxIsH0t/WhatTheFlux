@@ -25,22 +25,24 @@ public class GeneratorRecipe implements IRecipe {
                 return false;
         }
 
+        ItemStack gearA = inv.getStackInSlot(3);
         ItemStack dyn = inv.getStackInSlot(4);
-        String gear;
-        try {
-            gear = GEARS[dyn.getItemDamage() - 3];
-        } catch (IndexOutOfBoundsException ex) {
-            return false;
-        }
+        ItemStack gearB = inv.getStackInSlot(5);
         ItemStack cap = inv.getStackInSlot(7);
 
-        boolean valid = (inv.getStackInSlot(1).getItem() == WtfItems.itemRot);
-        valid &= LibDict.matches(inv.getStackInSlot(3), gear);
-        valid &= (dyn.getItem() == WtfItems.itemDyn && dyn.getItemDamage() > 2);
-        valid &= LibDict.matches(inv.getStackInSlot(5), gear);
-        valid &= (cap.getItem() == WtfItems.itemCap && cap.getItemDamage() > 2);
-        valid &= checkLeads(inv.getStackInSlot(6), inv.getStackInSlot(8));
-        return valid;
+        int gearTier = -1;
+        for (int i = 0; i < GEARS.length; i++) {
+            if (LibDict.matches(gearA, GEARS[i]) && LibDict.matches(gearB, GEARS[i])) {
+                gearTier = i;
+                break;
+            }
+        }
+
+        return gearTier != -1
+                && inv.getStackInSlot(1).getItem() == WtfItems.itemRot
+                && (dyn.getItem() == WtfItems.itemDyn && dyn.getItemDamage() > 2)
+                && (cap.getItem() == WtfItems.itemCap && cap.getItemDamage() > 2)
+                && checkLeads(inv.getStackInSlot(6), inv.getStackInSlot(8));
     }
 
     private static boolean checkLeads(ItemStack a, ItemStack b) {
@@ -58,14 +60,24 @@ public class GeneratorRecipe implements IRecipe {
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv) {
         ItemStack gen = inv.getStackInSlot(1);
+        ItemStack gear = inv.getStackInSlot(3);
         ItemStack dyn = inv.getStackInSlot(4);
         ItemStack cap = inv.getStackInSlot(7);
+
+        byte gearTier = 0;
+        for (byte i = 0; i < GEARS.length; i++) {
+            if (LibDict.matches(gear, GEARS[i])) {
+                gearTier = i;
+                break;
+            }
+        }
 
         ItemStack res = new ItemStack(WtfBlocks.blockGen, 1, gen.getItemDamage());
         NBTTagCompound tag = new NBTTagCompound();
         tag.setByte(LibNBT.GENTYPE, (byte)gen.getItemDamage());
         tag.setByte(LibNBT.DYNTYPE, (byte)(dyn.getItemDamage() - 3));
         tag.setByte(LibNBT.CAPTYPE, (byte)(cap.getItemDamage() - 3));
+        tag.setByte(LibNBT.CASINGTYPE, gearTier);
         tag.setInteger(LibNBT.ENERGY, 0);
         tag.setInteger(LibNBT.ENERGY_MAX, TileGenerator.CAP_AMOUNTS[cap.getItemDamage() - 3]);
         res.setTagCompound(tag);

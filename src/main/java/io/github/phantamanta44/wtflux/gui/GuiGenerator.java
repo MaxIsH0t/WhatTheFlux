@@ -72,11 +72,6 @@ public abstract class GuiGenerator<T extends TileGenerator> extends GuiContainer
             invName = LibLang.GUI_GEN_WIND;
         }
 
-        @Override
-        public void drawGuiContainerForegroundLayer(int mX, int mY) {
-            super.drawGuiContainerForegroundLayer(mX, mY);
-        }
-
     }
 
     public static class Water extends GuiGenerator<TileGenerator.Water> {
@@ -87,11 +82,6 @@ public abstract class GuiGenerator<T extends TileGenerator> extends GuiContainer
             invName = LibLang.GUI_GEN_WATER;
             comps.add(new GCFluidTank(56, 19, 48, tile::getTank));
             comps.add(new GCFluidTank(101, 19, 48, tile::getLowerTank));
-        }
-
-        @Override
-        public void drawGuiContainerForegroundLayer(int mX, int mY) {
-            super.drawGuiContainerForegroundLayer(mX, mY);
         }
 
     }
@@ -113,7 +103,7 @@ public abstract class GuiGenerator<T extends TileGenerator> extends GuiContainer
         public void drawGuiContainerForegroundLayer(int mX, int mY) {
             String[] status = tile.getStatus();
             for (int i = 0; i < 4; i++)
-                fontRendererObj.drawString(LibLang.get(status[i]), 56, lh[i], LibCore.COMP_FONT_COLOR);
+                fontRendererObj.drawString(LibLang.get(status[i]), 56, 14 + i * fontRendererObj.FONT_HEIGHT, LibCore.COMP_FONT_COLOR);
             GL11.glColor4f(1F, 1F, 1F, 1F);
 
             for (GuiComponent comp : comps)
@@ -132,11 +122,7 @@ public abstract class GuiGenerator<T extends TileGenerator> extends GuiContainer
             resLoc = LibResource.TEX_GUI_SOLAR;
             invName = LibLang.GUI_GEN_SOLAR;
             comps.add(new GCGenHeatMeter(160, 18, 58, te));
-        }
-
-        @Override
-        public void drawGuiContainerForegroundLayer(int mX, int mY) {
-            super.drawGuiContainerForegroundLayer(mX, mY);
+            comps.add(new GCFluidTank(79, 19, 48, tile::getTank));
         }
 
     }
