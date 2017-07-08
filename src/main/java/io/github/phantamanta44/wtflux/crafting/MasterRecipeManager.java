@@ -1,12 +1,9 @@
 package io.github.phantamanta44.wtflux.crafting;
 
+import cofh.api.modhelpers.ThermalExpansionHelper;
+import cpw.mods.fml.common.registry.GameRegistry;
 import io.github.phantamanta44.wtflux.crafting.recipe.GeneratorRecipe;
-import io.github.phantamanta44.wtflux.item.ItemCapacitor;
-import io.github.phantamanta44.wtflux.item.ItemDynamo;
-import io.github.phantamanta44.wtflux.item.ItemMisc;
-import io.github.phantamanta44.wtflux.item.ItemReactor;
-import io.github.phantamanta44.wtflux.item.ItemRotary;
-import io.github.phantamanta44.wtflux.item.WtfItems;
+import io.github.phantamanta44.wtflux.item.*;
 import io.github.phantamanta44.wtflux.lib.LibDict;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -15,8 +12,6 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import cofh.api.modhelpers.ThermalExpansionHelper;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 public final class MasterRecipeManager {
 
@@ -145,7 +140,7 @@ public final class MasterRecipeManager {
             addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.COOLANT_CELL), "php", "pcp", " g ", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'h', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.HEAT_COND), 'c', new ItemStack(cryo.getItem(), 1, cryo.getItemDamage()), 'g', LibDict.INGOT_END);
 
         // Reactor Plating
-        addOreDictRecipe(new ItemStack(WtfItems.itemRct, 4, ItemReactor.PLATE), "lll", "lil", "lll", 'l', LibDict.INGOT_LEAD, 'i', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.IRON_ROD));
+        addOreDictRecipe(new ItemStack(WtfItems.itemRct, 4, ItemReactor.PLATE), "vlv", "lil", "vlv", 'v', LibDict.INGOT_INVAR, 'l', LibDict.INGOT_LEAD, 'i', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.IRON_ROD));
 
         // Reactor Core
         addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.CORE), "pgp", "pup", "pgp", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'g', LibDict.INGOT_GRAPH, 'u', LibDict.GEAR_URAN);
@@ -171,7 +166,7 @@ public final class MasterRecipeManager {
         addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.ROD_CRADLE), "pvp", "p p", "p p", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'v', new ItemStack(Blocks.piston));
 
         // Reactor Casing
-        addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.CASING), "pp", "pp", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE));
+        addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.CASING), " p ", "pgp", " p ", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'c', LibDict.DUST_GRAPH);
 
         GameRegistry.addRecipe(new GeneratorRecipe());
     }
