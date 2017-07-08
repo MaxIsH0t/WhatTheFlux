@@ -346,6 +346,11 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
             return totalBurnTime;
         }
 
+        @Override
+        public boolean isItemValidForSlot(int slot, ItemStack stack) {
+            return TileEntityFurnace.isItemFuel(stack);
+        }
+
     }
 
     public static class Heat extends TileGenerator implements IFluidHandler {
@@ -449,6 +454,12 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
             return tank;
         }
 
+        @Override
+        public boolean isItemValidForSlot(int slot, ItemStack stack) {
+            return slot == 0 && stack.getItem() instanceof IFluidContainerItem
+                    || FluidContainerRegistry.isFilledContainer(stack);
+        }
+        
     }
 
     public static class Wind extends TileGenerator {
@@ -608,6 +619,12 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
             return lowerTank;
         }
 
+        @Override
+        public boolean isItemValidForSlot(int slot, ItemStack stack) {
+            return slot == 0 && stack.getItem() instanceof IFluidContainerItem
+                    || FluidContainerRegistry.isFilledContainer(stack);
+        }
+        
     }
 
     public static class Nuke extends TileGenerator implements IFluidHandler {
@@ -640,7 +657,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
             }
 
             if (fuel > 0F) {
-                if (waste < 1000F)
+                if (waste < 4000F)
                     tryDoReaction();
             } else {
                 active = false;
@@ -690,13 +707,18 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                 if (slots[2].getItem() == WtfItems.itemRct && slots[2].getItemDamage() == ItemReactor.CONTROL_ROD) {
                     float fuelCost = temp / 35F;
                     if (fuel >= fuelCost) {
-                        slots[2] = ((ItemReactor)WtfItems.itemRct).decrementUses(slots[2]);
-                        fuel -= fuelCost;
-                        waste += fuelCost;
-                        float tempFac = Math.max(0.01F, 30000F - temp) / 15000F;
-                        temp += (16F + worldObj.rand.nextFloat() * 24F) * Math.max(0.001F, tempFac);
-                        temp += worldObj.rand.nextGaussian() * worldObj.rand.nextFloat() * 100F * tempFac;
-                        active = true;
+                        if (4000F - waste >= fuelCost) {
+                            slots[2] = ((ItemReactor)WtfItems.itemRct).decrementUses(slots[2]);
+                            fuel -= fuelCost;
+                            waste += fuelCost;
+                            float tempFac = Math.max(0.01F, 30000F - temp) / 15000F;
+                            temp += (16F + worldObj.rand.nextFloat() * 24F) * Math.max(0.001F, tempFac);
+                            temp += worldObj.rand.nextGaussian() * worldObj.rand.nextFloat() * 100F * tempFac;
+                            active = true;
+                        } else {
+                            status(LibLang.NG_FULLWASTE);
+                            active = false;
+                        }
                     } else {
                         status(LibLang.NG_NOFUEL);
                         active = false;
@@ -827,6 +849,24 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                 status[statusIndex++] = s;
         }
 
+        @Override
+        public boolean isItemValidForSlot(int slot, ItemStack stack) {
+            switch (slot) {
+                case 0: // fuel
+                    return LibDict.matches(stack, LibDict.INGOT_URAN);
+                case 1: // neutron howitzer
+                    return stack.getItem() == WtfItems.itemRct && stack.getItemDamage() == ItemReactor.BLASTER;
+                case 2: // control rod
+                    return stack.getItem() == WtfItems.itemRct && stack.getItemDamage() == ItemReactor.CONTROL_ROD;
+                case 3: // fluid in
+                    return stack.getItem() instanceof IFluidContainerItem || FluidContainerRegistry.isFilledContainer(stack);
+                case 4: // fluid out
+                case 5: // waste
+                    return false;
+            }
+            return true;
+        }
+        
     }
 
     public static class Solar extends TileGenerator implements IFluidHandler {
@@ -942,6 +982,12 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
             return tank;
         }
 
+        @Override
+        public boolean isItemValidForSlot(int slot, ItemStack stack) {
+            return slot == 0 && (stack.getItem() instanceof IFluidContainerItem
+                    || FluidContainerRegistry.isFilledContainer(stack));
+        }
+        
     }
 
 }
