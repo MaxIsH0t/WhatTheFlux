@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import io.github.phantamanta44.wtflux.tile.TileGenerator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
@@ -37,16 +38,40 @@ public abstract class ContainerGenerator extends ContainerMod<TileGenerator> {
         addPlayerInventory(inv);
     }
 
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer player, int index) {
+        Slot slot = (Slot)inventorySlots.get(index);
+        if (slot != null && slot.getHasStack()) {
+            ItemStack stack = slot.getStack();
+            ItemStack orig = stack.copy();
+            if (index >= 36) {
+                if (!this.mergeItemStack(stack, 0, 36, true))
+                    return null;
+            } else {
+                for (int i = 36; i < 36 + tile.getSizeInventory(); i++) {
+                    if (((Slot)inventorySlots.get(i)).isItemValid(stack)) {
+                        if (!this.mergeItemStack(stack, i, i + 1, false))
+                            return null;
+                        if (stack.stackSize != orig.stackSize)
+                            break;
+                    }
+                }
+            }
+            if (stack.stackSize <= 0)
+                slot.putStack(null);
+            else
+                slot.onSlotChanged();
+            if (stack.stackSize != orig.stackSize)
+                return orig;
+        }
+        return null;
+    }
+
     public static class Furnace extends ContainerGenerator {
 
         public Furnace(InventoryPlayer inv, TileGenerator.Furnace te) {
             super(inv, te);
             addSlotToContainer(new SlotMod(te, 0, 80, 43));
-        }
-
-        @Override
-        public ItemStack transferStackInSlot(EntityPlayer player, int SlotMod) {
-            return null;
         }
 
     }
@@ -59,22 +84,12 @@ public abstract class ContainerGenerator extends ContainerMod<TileGenerator> {
             addSlotToContainer(new SlotMod(te, 1, 102, 50));
         }
 
-        @Override
-        public ItemStack transferStackInSlot(EntityPlayer player, int SlotMod) {
-            return null;
-        }
-
     }
 
     public static class Wind extends ContainerGenerator {
 
         public Wind(InventoryPlayer inv, TileGenerator.Wind te) {
             super(inv, te);
-        }
-
-        @Override
-        public ItemStack transferStackInSlot(EntityPlayer player, int SlotMod) {
-            return null;
         }
 
     }
@@ -85,11 +100,6 @@ public abstract class ContainerGenerator extends ContainerMod<TileGenerator> {
             super(inv, te);
             addSlotToContainer(new SlotMod(te, 0, 80, 28));
             addSlotToContainer(new SlotMod(te, 1, 80, 50));
-        }
-
-        @Override
-        public ItemStack transferStackInSlot(EntityPlayer player, int SlotMod) {
-            return null;
         }
 
     }
@@ -106,11 +116,6 @@ public abstract class ContainerGenerator extends ContainerMod<TileGenerator> {
             addSlotToContainer(new SlotMod(te, 5, 96, 56));
         }
 
-        @Override
-        public ItemStack transferStackInSlot(EntityPlayer player, int SlotMod) {
-            return null;
-        }
-
     }
 
     public static class Solar extends ContainerGenerator {
@@ -119,11 +124,6 @@ public abstract class ContainerGenerator extends ContainerMod<TileGenerator> {
             super(inv, te);
             addSlotToContainer(new SlotMod(te, 0, 102, 28));
             addSlotToContainer(new SlotMod(te, 1, 102, 50));
-        }
-
-        @Override
-        public ItemStack transferStackInSlot(EntityPlayer player, int SlotMod) {
-            return null;
         }
 
     }
