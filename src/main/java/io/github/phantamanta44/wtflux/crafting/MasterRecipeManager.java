@@ -2,6 +2,8 @@ package io.github.phantamanta44.wtflux.crafting;
 
 import cofh.api.modhelpers.ThermalExpansionHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
+import io.github.phantamanta44.wtflux.block.BlockSensor;
+import io.github.phantamanta44.wtflux.block.WtfBlocks;
 import io.github.phantamanta44.wtflux.crafting.recipe.GeneratorRecipe;
 import io.github.phantamanta44.wtflux.item.*;
 import io.github.phantamanta44.wtflux.lib.LibDict;
@@ -167,6 +169,16 @@ public final class MasterRecipeManager {
 
         // Reactor Casing
         addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.CASING), " p ", "pgp", " p ", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'c', LibDict.DUST_GRAPH);
+
+        // Generator Thermometer
+        ItemStack coilElectrum = new ItemStack(GameRegistry.findItem("ThermalExpansion", "material"), 1, 3);
+        addOreDictRecipe(new ItemStack(WtfBlocks.blockSensor, 1, BlockSensor.TEMP), "igi", "rmr", "iei", 'i', LibDict.INGOT_IRON, 'g', LibDict.GLASS, 'e', coilElectrum, 'm', new ItemStack(WtfItems.itemRot, 1, ItemRotary.HEAT), 'r', LibDict.REDSTONE);
+
+        // Generator Voltometer
+        addOreDictRecipe(new ItemStack(WtfBlocks.blockSensor, 1, BlockSensor.ENERGY), "igi", "rmr", "iei", 'i', LibDict.INGOT_IRON, 'g', LibDict.GLASS, 'e', coilElectrum, 'm', new ItemStack(GameRegistry.findItem("ThermalExpansion", "meter")), 'r', LibDict.REDSTONE);
+
+        // Generator Dynamometer
+        addOreDictRecipe(new ItemStack(WtfBlocks.blockSensor, 1, BlockSensor.RPM), "igi", "rmr", "iei", 'i', LibDict.INGOT_IRON, 'g', LibDict.GLASS, 'e', coilElectrum, 'm', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.SOLENOID), 'r', LibDict.REDSTONE);
 
         GameRegistry.addRecipe(new GeneratorRecipe());
     }

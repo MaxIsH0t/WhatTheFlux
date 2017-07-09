@@ -164,6 +164,9 @@ public class LibDict {
     public static final String BUCKET_PYRO = BUCKET + PYRO;
 
     public static final String GLASS_PANE = "paneGlassColorless";
+    public static final Object GLASS = "blockGlass";
+
+    public static final Object REDSTONE = "dustRedstone";
 
     public static boolean matches(ItemStack stack, String key) {
         int[] ids = OreDictionary.getOreIDs(stack);

@@ -39,8 +39,14 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
     public static final int[] COIL_AMOUNTS = new int[] {128, 256, 512, 1024};
     public static final int[] CAP_AMOUNTS = new int[] {24000, 80000, 50000, 48000, 160000, 100000, 48000};
     public static final int[] CAP_RATES = new int[] {128, 256, 384, 256, 512, 768, -1};
-    public static final float[] MELTING_POINTS = new float[] {300F, 1500F, 2000F, 3500F};
-    public static final float[] RPM_CAPS = new float[] {20F, 35F, 50F, 65F};
+    public static final float[] MELTING_POINTS = new float[] {
+            449F, 1427F, 3215F, 3422F, 950F, 1085F, 1001F, 1063F,
+            1593F, 328F, 512F, 1453F, 1084F, 961F, 1132F, 420F
+    };
+    public static final float[] RPM_CAPS = new float[] {
+            12F, 34F, 32F, 60F, 24F, 20F, 20F, 20F, 36F, 15F, 15F,
+            32, 26F, 20F, 27F, 20F
+    };
     public static final Class<? extends TileGenerator>[] GEN_TYPES = new Class[] {Furnace.class, Heat.class, Wind.class, Water.class, Nuke.class, Solar.class};
 
     int energy = 0, energyMax = 24000;

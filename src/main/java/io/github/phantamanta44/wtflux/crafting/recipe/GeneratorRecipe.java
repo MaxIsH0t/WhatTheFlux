@@ -14,7 +14,12 @@ import net.minecraft.world.World;
 
 public class GeneratorRecipe implements IRecipe {
 
-    public static final String[] GEARS = new String[] {LibDict.GEAR_TIN, LibDict.GEAR_INVAR, LibDict.GEAR_PLAT, LibDict.GEAR_END};
+    public static final String[] GEARS = new String[] {
+            LibDict.GEAR_TIN, LibDict.GEAR_INVAR, LibDict.GEAR_PLAT, LibDict.GEAR_END,
+            LibDict.GEAR_BRONZE, LibDict.GEAR_COPPER, LibDict.GEAR_ELEC, LibDict.GEAR_GOLD,
+            LibDict.GEAR_IRON, LibDict.GEAR_LEAD, LibDict.GEAR_LUM, LibDict.GEAR_NICKEL,
+            LibDict.GEAR_SIG, LibDict.GEAR_SILVER, LibDict.GEAR_URAN, LibDict.GEAR_ZINC
+    };
 
     @Override
     public boolean matches(InventoryCrafting inv, World world) {
