@@ -68,6 +68,9 @@ tile.wtflux:blockGenerator2.name=Wind Generator
 tile.wtflux:blockGenerator3.name=Hydroelectric Generator
 tile.wtflux:blockGenerator4.name=Nuclear Generator
 tile.wtflux:blockGenerator5.name=Solar Boiler Generator
+tile.wtflux:blockSensor0.name=Generator Thermometer
+tile.wtflux:blockSensor1.name=Generator Voltmeter
+tile.wtflux:blockSensor2.name=Generator Dynamometer
 
 wtflux.itemInfo.noTag=Uninitialized
 wtflux.itemInfo.charge=Charge
@@ -107,6 +110,9 @@ wtflux.gui.genWind=Wind Turbine
 wtflux.gui.genWater=Water Turbine
 wtflux.gui.genNuke=Fission Reactor
 wtflux.gui.genSolar=Solar Boiler
+wtflux.gui.sensorTemp=Thermometer
+wtflux.gui.sensorEnergy=Voltmeter
+wtflux.gui.sensorRpm=Dynamometer
 
 wtflux.tooltip.energyStored=Energy
 wtflux.tooltip.temperature=Temp

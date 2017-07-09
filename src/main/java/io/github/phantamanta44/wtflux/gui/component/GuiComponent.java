@@ -1,16 +1,14 @@
 package io.github.phantamanta44.wtflux.gui.component;
 
-import java.lang.reflect.Method;
-import java.util.List;
-
+import com.google.common.collect.Lists;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.RenderHelper;
 
-import com.google.common.collect.Lists;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.lang.reflect.Method;
+import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiComponent {
@@ -36,5 +34,13 @@ public abstract class GuiComponent {
     public abstract void render(Minecraft mc, GuiScreen gui);
 
     public abstract void mouseOver(Minecraft mc, GuiScreen gui, int mX, int mY);
+
+    public void onClick(Minecraft mc, GuiScreen gui, int mX, int mY, int button) {
+        // NO-OP
+    }
+
+    public boolean onKeyPress(Minecraft mc, GuiScreen gui, int keyCode, char typed) {
+        return true;
+    }
 
 }

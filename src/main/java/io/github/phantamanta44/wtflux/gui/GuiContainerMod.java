@@ -1,20 +1,18 @@
 package io.github.phantamanta44.wtflux.gui;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import io.github.phantamanta44.wtflux.gui.component.GuiComponent;
 import io.github.phantamanta44.wtflux.lib.LibCore;
 import io.github.phantamanta44.wtflux.lib.LibLang;
-
-import java.util.Collection;
-
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import java.util.Collection;
 
 public abstract class GuiContainerMod extends GuiContainer {
 
@@ -42,6 +40,12 @@ public abstract class GuiContainerMod extends GuiContainer {
     }
 
     @Override
+    protected void mouseClicked(int x, int y, int button) {
+        comps.forEach(c -> c.onClick(Minecraft.getMinecraft(), this, x - guiLeft, y - guiTop, button));
+        super.mouseClicked(x, y, button);
+    }
+
+    @Override
     protected void drawGuiContainerBackgroundLayer(float some, int random, int args) {
         mc.renderEngine.bindTexture(resLoc);
         int x = width / 2 - xSize / 2, y = height / 2 - ySize / 2;
@@ -51,6 +55,12 @@ public abstract class GuiContainerMod extends GuiContainer {
     protected void drawHoveringText(String string, int x, int y) {
         func_146283_a(Lists.newArrayList(string), x, y);
         RenderHelper.enableGUIStandardItemLighting();
+    }
+
+    @Override
+    protected void keyTyped(char typed, int keyCode) {
+        if (comps.stream().allMatch(c -> c.onKeyPress(Minecraft.getMinecraft(), this, keyCode, typed)))
+            super.keyTyped(typed, keyCode);
     }
 
 }

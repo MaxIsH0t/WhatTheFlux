@@ -1,22 +1,26 @@
 package io.github.phantamanta44.wtflux.proxy;
 
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 import io.github.phantamanta44.wtflux.WhatTheFlux;
 import io.github.phantamanta44.wtflux.block.BlockOre;
 import io.github.phantamanta44.wtflux.block.WtfBlocks;
 import io.github.phantamanta44.wtflux.crafting.MasterRecipeManager;
 import io.github.phantamanta44.wtflux.gui.GuiGenerator;
+import io.github.phantamanta44.wtflux.gui.GuiSensor;
 import io.github.phantamanta44.wtflux.handler.GuiHandler;
+import io.github.phantamanta44.wtflux.inventory.ContainerDummy;
 import io.github.phantamanta44.wtflux.inventory.ContainerGenerator;
 import io.github.phantamanta44.wtflux.item.WtfItems;
+import io.github.phantamanta44.wtflux.network.WtfNet;
 import io.github.phantamanta44.wtflux.tile.TileGenerator;
+import io.github.phantamanta44.wtflux.tile.TileSensor;
 import io.github.phantamanta44.wtflux.util.BlockWithMeta;
 import io.github.phantamanta44.wtflux.worldgen.OreGenSimple;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 public class CommonProxy {
 
@@ -25,6 +29,7 @@ public class CommonProxy {
         WtfBlocks.init();
         registerTileEntities();
         registerContainers();
+        WtfNet.init();
     }
 
     public void onInit() {
@@ -45,6 +50,9 @@ public class CommonProxy {
         addTEMapping(TileGenerator.Water.class);
         addTEMapping(TileGenerator.Nuke.class);
         addTEMapping(TileGenerator.Solar.class);
+        addTEMapping(TileSensor.Temperature.class);
+        addTEMapping(TileSensor.Energy.class);
+        addTEMapping(TileSensor.RPM.class);
     }
 
     protected void registerContainers() {
@@ -54,6 +62,9 @@ public class CommonProxy {
         registerContainer(TileGenerator.Water.class, GuiGenerator.Water.class, ContainerGenerator.Water.class);
         registerContainer(TileGenerator.Nuke.class, GuiGenerator.Nuke.class, ContainerGenerator.Nuke.class);
         registerContainer(TileGenerator.Solar.class, GuiGenerator.Solar.class, ContainerGenerator.Solar.class);
+        registerContainer(TileSensor.Temperature.class, GuiSensor.class, ContainerDummy.class);
+        registerContainer(TileSensor.Energy.class, GuiSensor.class, ContainerDummy.class);
+        registerContainer(TileSensor.RPM.class, GuiSensor.class, ContainerDummy.class);
     }
 
     protected void registerContainer(Class<? extends TileEntity> tile, Class<? extends GuiContainer> gui, Class<? extends Container> cont) {

@@ -16,6 +16,7 @@ public class LibLang {
     public static final String METAL_BLOCK_NAME = "blockMetal";
     public static final String ORE_NAME = "blockOre";
     public static final String GENERATOR_BLOCK_NAME = "blockGenerator";
+    public static final String SENSOR_BLOCK_NAME = "blockSensor";
 
     public static final String INF_KEY = LibCore.MODID + ".itemInfo.";
     public static final String INF_NO_TAG = INF_KEY + "noTag";
@@ -44,6 +45,9 @@ public class LibLang {
     public static final String GUI_GEN_WATER = GUI_KEY + "genWater";
     public static final String GUI_GEN_NUKE = GUI_KEY + "genNuke";
     public static final String GUI_GEN_SOLAR = GUI_KEY + "genSolar";
+    public static final String GUI_SENSOR_TEMP = GUI_KEY + "sensorTemp";
+    public static final String GUI_SENSOR_ENERGY = GUI_KEY + "sensorEnergy";
+    public static final String GUI_SENSOR_RPM = GUI_KEY + "sensorRpm";
 
     public static final String NG_KEY = LibCore.MODID + ".nukeStatus.";
     public static final String NG_GOOD = NG_KEY + "good";

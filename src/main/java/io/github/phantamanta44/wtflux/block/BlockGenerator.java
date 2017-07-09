@@ -47,10 +47,10 @@ public class BlockGenerator extends BlockModSubs implements ITileEntityProvider,
         icons = new IIcon[subblockCount * 4 + 1];
         icons[0] = IconHelper.forBlock(registry, this, "Bottom");
         for (int i = 0; i < subblockCount; i++) {
-            icons[i * 4 + 1] = IconHelper.forBlock(registry, this, Integer.toString(i) + "TopOff");
-            icons[i * 4 + 2] = IconHelper.forBlock(registry, this, Integer.toString(i) + "TopOn");
-            icons[i * 4 + 3] = IconHelper.forBlock(registry, this, Integer.toString(i) + "SideOff");
-            icons[i * 4 + 4] = IconHelper.forBlock(registry, this, Integer.toString(i) + "SideOn");
+            icons[i * 4 + 1] = IconHelper.forBlock(registry, this, i, "topOff");
+            icons[i * 4 + 2] = IconHelper.forBlock(registry, this, i, "topOn");
+            icons[i * 4 + 3] = IconHelper.forBlock(registry, this, i, "sideOff");
+            icons[i * 4 + 4] = IconHelper.forBlock(registry, this, i, "sideOn");
         }
     }
 

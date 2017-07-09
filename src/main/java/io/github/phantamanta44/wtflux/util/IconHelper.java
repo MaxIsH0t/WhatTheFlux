@@ -13,7 +13,7 @@ public final class IconHelper {
         }
 
         public static IIcon forName(IIconRegister registry, String name, String dregistry) {
-            return registry.registerIcon(LibCore.MODPREF + dregistry + "/" + name);
+            return registry.registerIcon(LibCore.MODPREF + name + "/" + dregistry);
         }
 
         public static IIcon forBlock(IIconRegister registry, Block block) {

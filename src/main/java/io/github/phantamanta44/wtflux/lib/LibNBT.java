@@ -23,6 +23,7 @@ public class LibNBT {
     public static final String MACHINE_FUEL = "ReactorFuel";
     public static final String MACHINE_WASTE = "ReactorWaste";
     public static final String ACTIVE = "Active";
+    public static final String FACING = "Facing";
 
     public static final String TANK_FLUID_NAME = "TankFluid";
     public static final String TANK_FLUID_STACK = "TankStack";
