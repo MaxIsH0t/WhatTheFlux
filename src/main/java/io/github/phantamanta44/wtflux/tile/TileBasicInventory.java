@@ -6,6 +6,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 
 public abstract class TileBasicInventory extends TileMod implements IInventory {
 
@@ -97,12 +99,14 @@ public abstract class TileBasicInventory extends TileMod implements IInventory {
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
-        NBTTagList tagList = tag.getTagList(LibNBT.ITEMS, 10);
-        slots = new ItemStack[slots.length];
-        for (int i = 0; i < tagList.tagCount(); i++) {
-            NBTTagCompound itemTag = tagList.getCompoundTagAt(i);
-            int slot = itemTag.getInteger(LibNBT.SLOT);
-            slots[slot] = ItemStack.loadItemStackFromNBT(itemTag);
+        if (tag.hasKey(LibNBT.ITEMS)) {
+            NBTTagList tagList = tag.getTagList(LibNBT.ITEMS, 10);
+            slots = new ItemStack[slots.length];
+            for (int i = 0; i < tagList.tagCount(); i++) {
+                NBTTagCompound itemTag = tagList.getCompoundTagAt(i);
+                int slot = itemTag.getInteger(LibNBT.SLOT);
+                slots[slot] = ItemStack.loadItemStackFromNBT(itemTag);
+            }
         }
     }
 
@@ -119,6 +123,13 @@ public abstract class TileBasicInventory extends TileMod implements IInventory {
             }
         }
         tag.setTag(LibNBT.ITEMS, tagList);
+    }
+
+    @Override
+    public Packet getDescriptionPacket() {
+        S35PacketUpdateTileEntity packet = (S35PacketUpdateTileEntity)super.getDescriptionPacket();
+        packet.func_148857_g().removeTag(LibNBT.ITEMS);
+        return packet;
     }
 
 }
