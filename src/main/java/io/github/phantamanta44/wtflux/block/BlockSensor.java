@@ -71,8 +71,6 @@ public class BlockSensor extends BlockModSubs implements ITileEntityProvider, ID
     @Override
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int face) {
         TileSensor tile = (TileSensor)world.getTileEntity(x, y, z);
-//        if (tile instanceof TileSensor.Energy)
-//            System.out.println(Boolean.toString(tile.isTripped()));
         return tile != null ? (face == tile.getOppositeFace() ? 0 : (tile.isTripped() ? 15 : 0)) : 0;
     }
 

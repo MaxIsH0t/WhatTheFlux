@@ -11,6 +11,8 @@
   "credits": "Vazkii, because I keep using her code, Team CoFH for their libraries, aidancbrady because I also borrowed some code from him",
   "logoFile": "",
   "screenshots": [],
-  "dependencies": ["CoFHCore", "ThermalFoundation", "ThermalExpansion"]
+  "requiredMods": ["CoFHCore", "ThermalFoundation", "ThermalExpansion"],
+  "dependencies": ["CoFHCore", "ThermalFoundation", "ThermalExpansion", "ComputerCraft"],
+  "useDependencyInformation": true
 }
 ]

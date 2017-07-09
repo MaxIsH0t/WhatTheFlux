@@ -3,6 +3,8 @@ package io.github.phantamanta44.wtflux.block;
 import cofh.api.block.IDismantleable;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.registry.GameRegistry;
+import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import io.github.phantamanta44.wtflux.WhatTheFlux;
 import io.github.phantamanta44.wtflux.item.block.ItemBlockGenerator;
 import io.github.phantamanta44.wtflux.lib.LibLang;
@@ -24,10 +26,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class BlockGenerator extends BlockModSubs implements ITileEntityProvider, IDismantleable {
+public class BlockGenerator extends BlockModSubs implements ITileEntityProvider, IDismantleable, IPeripheralProvider {
 
     public BlockGenerator() {
         super(Material.iron, 6);
@@ -144,6 +145,11 @@ public class BlockGenerator extends BlockModSubs implements ITileEntityProvider,
 
         player.openGui(WhatTheFlux.instance, 255, world, x, y, z);
         return true;
+    }
+
+    @Override
+    public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
+        return (IPeripheral)world.getTileEntity(x, y, z);
     }
 
 }

@@ -2,13 +2,22 @@ package io.github.phantamanta44.wtflux.tile;
 
 import cofh.api.energy.IEnergyProvider;
 import cofh.api.energy.IEnergyReceiver;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import io.github.phantamanta44.wtflux.item.ItemReactor;
 import io.github.phantamanta44.wtflux.item.WtfItems;
 import io.github.phantamanta44.wtflux.lib.LibDict;
 import io.github.phantamanta44.wtflux.lib.LibLang;
 import io.github.phantamanta44.wtflux.lib.LibNBT;
 import io.github.phantamanta44.wtflux.util.*;
+import io.github.phantamanta44.wtflux.util.computercraft.CCMethod;
+import io.github.phantamanta44.wtflux.util.computercraft.CCMethodBoolGetter;
+import io.github.phantamanta44.wtflux.util.computercraft.CCMethodFloatGetter;
+import io.github.phantamanta44.wtflux.util.computercraft.CCMethodIntGetter;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -20,11 +29,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public abstract class TileGenerator extends TileBasicInventory implements IEnergyProvider, IEnergyContainer, ITileItemNBT {
+public abstract class TileGenerator extends TileBasicInventory implements IEnergyProvider, IEnergyContainer, ITileItemNBT, IPeripheral {
 
     public static final int[] COIL_AMOUNTS = new int[] {128, 256, 512, 1024};
     public static final int[] CAP_AMOUNTS = new int[] {24000, 80000, 50000, 48000, 160000, 100000, 48000};
@@ -33,15 +43,26 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
     public static final float[] RPM_CAPS = new float[] {20F, 35F, 50F, 65F};
     public static final Class<? extends TileGenerator>[] GEN_TYPES = new Class[] {Furnace.class, Heat.class, Wind.class, Water.class, Nuke.class, Solar.class};
 
-    protected int energy = 0, energyMax = 24000;
-    protected byte gen = 0, dyn = 0, cap = 0, casing = 0;
-    protected float momentum = 0F, temp = 23.0F;
-    protected final boolean useResistance;
+    int energy = 0, energyMax = 24000;
+    byte gen = 0, dyn = 0, cap = 0, casing = 0;
+    float momentum = 0F, temp = 23.0F;
+    final boolean useResistance;
+    final List<CCMethod> ccMethods;
     private boolean wasActive = false;
 
     public TileGenerator(int slots, boolean resist) {
         super(slots);
         useResistance = resist;
+        ccMethods = Lists.newArrayList(
+                new CCMethodBoolGetter("isActive", this::isActive),
+                new CCMethodIntGetter("getOutputPower", this::getCapRate),
+                new CCMethodIntGetter("getEnergy", this::getEnergyStored),
+                new CCMethodIntGetter("getEnergyMax", this::getMaxEnergyStored),
+                new CCMethodFloatGetter("getTemperature", this::getTemp),
+                new CCMethodFloatGetter("getMeltingPoint", this::getMeltingPoint),
+                new CCMethodFloatGetter("getVelocity", this::getMomentum),
+                new CCMethodFloatGetter("getVelocityMax", this::getVelocityCap)
+        );
     }
 
     @Override
@@ -143,7 +164,6 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
     public int getMaxEnergyStored() {
         return energyMax;
     }
-
 
     @Override
     protected void tick() {
@@ -282,6 +302,36 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         worldObj.createExplosion(null, xCoord, yCoord, zCoord, momentum * 0.3F, false);
     }
 
+    @Override
+    public String[] getMethodNames() {
+        return ccMethods.stream().map(CCMethod::getName).toArray(String[]::new);
+    }
+
+    @Override
+    public Object[] callMethod(IComputerAccess com, ILuaContext ctx, int method, Object[] args) throws LuaException, InterruptedException {
+        return ccMethods.get(method).execute(com, ctx, args);
+    }
+
+    @Override
+    public void attach(IComputerAccess computer) {
+        // NO-OP
+    }
+
+    @Override
+    public void detach(IComputerAccess computer) {
+        // NO-OP
+    }
+
+    @Override
+    public String getType() {
+        return "wtfGen" + this.getClass().getSimpleName();
+    }
+
+    @Override
+    public boolean equals(IPeripheral o) {
+        return this == o;
+    }
+
     public static class Furnace extends TileGenerator {
 
         private int burnTime = 0;
@@ -289,6 +339,8 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
         public Furnace() {
             super(1, true);
+            ccMethods.add(new CCMethodIntGetter("getBurnTime", this::getBurnTime));
+            ccMethods.add(new CCMethodIntGetter("getFuelEnergy", this::getBurnTimeMax));
         }
 
         @Override
@@ -360,6 +412,9 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
         public Heat() {
             super(2, false);
+            ccMethods.add(new CCMethodBoolGetter("isTankEmpty", () -> tank.getFluidAmount() <= 0));
+            ccMethods.add(new CCMethodIntGetter("getTankAmount", tank::getFluidAmount));
+            ccMethods.add(new CCMethodIntGetter("getTankCapacity", tank::getCapacity));
         }
 
         @Override
@@ -507,6 +562,12 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
         public Water() {
             super(2, true);
+            ccMethods.add(new CCMethodBoolGetter("isTankEmpty", () -> tank.getFluidAmount() <= 0));
+            ccMethods.add(new CCMethodIntGetter("getTankAmount", tank::getFluidAmount));
+            ccMethods.add(new CCMethodIntGetter("getTankCapacity", tank::getCapacity));
+            ccMethods.add(new CCMethodBoolGetter("isLowerTankEmpty", () -> lowerTank.getFluidAmount() <= 0));
+            ccMethods.add(new CCMethodIntGetter("getLowerTankAmount", lowerTank::getFluidAmount));
+            ccMethods.add(new CCMethodIntGetter("getLowerTankCapacity", lowerTank::getCapacity));
         }
 
         @Override
@@ -638,6 +699,11 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
         public Nuke() {
             super(6, false);
+            ccMethods.add(new CCMethodBoolGetter("isTankEmpty", () -> tank.getFluidAmount() <= 0));
+            ccMethods.add(new CCMethodIntGetter("getTankAmount", tank::getFluidAmount));
+            ccMethods.add(new CCMethodIntGetter("getTankCapacity", tank::getCapacity));
+            ccMethods.add(new CCMethodFloatGetter("getFuel", () -> fuel));
+            ccMethods.add(new CCMethodFloatGetter("getWaste", () -> waste));
         }
 
         @Override
@@ -876,6 +942,9 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
         public Solar() {
             super(2, true);
+            ccMethods.add(new CCMethodBoolGetter("isTankEmpty", () -> tank.getFluidAmount() <= 0));
+            ccMethods.add(new CCMethodIntGetter("getTankAmount", tank::getFluidAmount));
+            ccMethods.add(new CCMethodIntGetter("getTankCapacity", tank::getCapacity));
         }
 
         @Override
