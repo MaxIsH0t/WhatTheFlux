@@ -45,7 +45,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
     };
     public static final float[] RPM_CAPS = new float[] {
             12F, 34F, 32F, 60F, 24F, 20F, 20F, 20F, 36F, 15F, 15F,
-            32, 26F, 20F, 27F, 20F
+            32F, 26F, 20F, 27F, 20F
     };
     public static final Class<? extends TileGenerator>[] GEN_TYPES = new Class[] {Furnace.class, Heat.class, Wind.class, Water.class, Nuke.class, Solar.class};
 
