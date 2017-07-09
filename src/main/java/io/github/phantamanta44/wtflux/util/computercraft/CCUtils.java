@@ -6,7 +6,7 @@ public class CCUtils {
 
     public static void argsZeroLength(Object[] args) throws LuaException {
         if (args.length != 0)
-            throw new LuaException("Wrong number of arguments. 1 expected.");
+            throw new LuaException("Wrong number of arguments. 0 expected.");
     }
 
 }

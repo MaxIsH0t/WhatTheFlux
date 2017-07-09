@@ -158,6 +158,18 @@ public abstract class TileSensor extends TileMod implements IReconfigurableFacin
             this.threshold = (float)value;
         }
 
+        @Override
+        public void readFromNBT(NBTTagCompound nbt) {
+            super.readFromNBT(nbt);
+            threshold = nbt.getFloat(LibNBT.THRESHOLD);
+        }
+
+        @Override
+        public void writeToNBT(NBTTagCompound nbt) {
+            super.writeToNBT(nbt);
+            nbt.setFloat(LibNBT.THRESHOLD, threshold);
+        }
+        
     }
 
     public static class Energy extends TileSensor {
@@ -201,6 +213,18 @@ public abstract class TileSensor extends TileMod implements IReconfigurableFacin
         @Override
         public void setParameter(Object value) {
             this.threshold = (int)value;
+        }
+
+        @Override
+        public void readFromNBT(NBTTagCompound nbt) {
+            super.readFromNBT(nbt);
+            threshold = nbt.getInteger(LibNBT.THRESHOLD);
+        }
+
+        @Override
+        public void writeToNBT(NBTTagCompound nbt) {
+            super.writeToNBT(nbt);
+            nbt.setInteger(LibNBT.THRESHOLD, threshold);
         }
 
     }
@@ -247,6 +271,18 @@ public abstract class TileSensor extends TileMod implements IReconfigurableFacin
         @Override
         public void setParameter(Object value) {
             this.threshold = (float)value;
+        }
+
+        @Override
+        public void readFromNBT(NBTTagCompound nbt) {
+            super.readFromNBT(nbt);
+            threshold = nbt.getFloat(LibNBT.THRESHOLD);
+        }
+
+        @Override
+        public void writeToNBT(NBTTagCompound nbt) {
+            super.writeToNBT(nbt);
+            nbt.setFloat(LibNBT.THRESHOLD, threshold);
         }
 
     }

@@ -2,6 +2,7 @@ package io.github.phantamanta44.wtflux.proxy;
 
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import dan200.computercraft.api.ComputerCraftAPI;
 import io.github.phantamanta44.wtflux.WhatTheFlux;
 import io.github.phantamanta44.wtflux.block.BlockOre;
 import io.github.phantamanta44.wtflux.block.WtfBlocks;
@@ -16,6 +17,7 @@ import io.github.phantamanta44.wtflux.network.WtfNet;
 import io.github.phantamanta44.wtflux.tile.TileGenerator;
 import io.github.phantamanta44.wtflux.tile.TileSensor;
 import io.github.phantamanta44.wtflux.util.BlockWithMeta;
+import io.github.phantamanta44.wtflux.util.computercraft.CCPeripheralProvider;
 import io.github.phantamanta44.wtflux.worldgen.OreGenSimple;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.init.Blocks;
@@ -37,6 +39,7 @@ public class CommonProxy {
         GameRegistry.registerWorldGenerator(new OreGenSimple(new BlockWithMeta(WtfBlocks.blockOre, BlockOre.ZINC), 0, new BlockWithMeta(Blocks.stone), 4, 72, 12, 8), 8);
         GameRegistry.registerWorldGenerator(new OreGenSimple(new BlockWithMeta(WtfBlocks.blockOre, BlockOre.URAN), 0, new BlockWithMeta(Blocks.stone), 4, 30, 6, 10), 5);
         NetworkRegistry.INSTANCE.registerGuiHandler(WhatTheFlux.instance, new GuiHandler());
+        ComputerCraftAPI.registerPeripheralProvider(new CCPeripheralProvider());
     }
 
     public void onPostInit() {
