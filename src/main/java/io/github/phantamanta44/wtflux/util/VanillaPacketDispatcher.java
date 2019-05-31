@@ -9,13 +9,14 @@ import net.minecraft.world.World;
 public final class VanillaPacketDispatcher {
 
     public static void dispatchTEToNearbyPlayers(TileEntity tile) {
-        World world = tile.getWorldObj();
+        World world = tile.getWorld();
         List players = world.playerEntities;
         for (Object player : players)
             if(player instanceof EntityPlayerMP) {
                 EntityPlayerMP mp = (EntityPlayerMP)player;
-                if(pointDistancePlane(mp.posX, mp.posZ, tile.xCoord + 0.5, tile.zCoord + 0.5) < 64)
+                if(pointDistancePlane(mp.posX, mp.posZ, tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5) < 64)
                     ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(tile.getDescriptionPacket());
+                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(tile.getDescriptionPacket());
             }
     }
 

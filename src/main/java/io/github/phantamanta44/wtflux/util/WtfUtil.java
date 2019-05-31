@@ -2,6 +2,7 @@ package io.github.phantamanta44.wtflux.util;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 
@@ -16,12 +17,13 @@ public class WtfUtil {
         ent.motionX = (double)((float)world.rand.nextGaussian() * f3);
         ent.motionY = (double)((float)world.rand.nextGaussian() * f3 + 0.2F);
         ent.motionZ = (double)((float)world.rand.nextGaussian() * f3);
-        ent.delayBeforeCanPickup = 10;
-        world.spawnEntityInWorld(ent);
+        ent.setPickupDelay(10);
+        world.spawnEntity(ent);
     }
 
     public static boolean canHarvest(World world, int x, int y, int z, EntityPlayer player) {
-        return !player.capabilities.isCreativeMode && !world.isRemote && world.getBlock(x, y, z).canHarvestBlock(player, world.getBlockMetadata(x, y, z));
+        BlockPos blockPos = new BlockPos(x, y, z);
+        return !player.capabilities.isCreativeMode && !world.isRemote; //&& world.getBlockState(blockPos).canHarvestBlock(player, world.getBlockMetadata(x, y, z));
     }
 
     public static boolean isMouseOver(int x, int y, int width, int height, int mX, int mY) {

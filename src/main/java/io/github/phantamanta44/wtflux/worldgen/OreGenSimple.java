@@ -4,11 +4,14 @@ import io.github.phantamanta44.wtflux.util.BlockWithMeta;
 
 import java.util.Random;
 
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import cpw.mods.fml.common.IWorldGenerator;
+import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraftforge.fml.common.IWorldGenerator;
 
-public class OreGenSimple implements IWorldGenerator { 
+public class OreGenSimple implements IWorldGenerator {
 
     private final BlockWithMeta genBlock, replBlock;
     private final int dim;
@@ -26,15 +29,16 @@ public class OreGenSimple implements IWorldGenerator {
     }
 
     @Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
-        if (world.getWorldInfo().getVanillaDimension() == dim) {
+    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
+        if (world.getWorldInfo().getWorldName() == "Overworld") {
             for(int i = 0; i < iterations; i++) {
                 int x = chunkX * 16 + random.nextInt(16);
                 int y = random.nextInt(maxYLevel - minYLevel) + minYLevel;
                 int z = chunkZ * 16 + random.nextInt(16);
+                BlockPos blockPos = new BlockPos(x, y, z);
                 for (int j = 0; j < veinSize; j++) {
-                    if (world.getBlock(x, y, z).equals(replBlock.getBlock()) && world.getBlockMetadata(x, y, z) == replBlock.getMeta())
-                        world.setBlock(x, y, z, genBlock.getBlock(), genBlock.getMeta(), 0);
+                    if (world.getBlockState(blockPos).equals(replBlock.getBlock()) && world.getBlockState(blockPos) == replBlock.getMeta())
+                        world.setBlockState(blockPos, genBlock.getBlock(), genBlock.getMeta(), 0);
                     int dir = random.nextInt(3);
                     if (dir == 0)
                         x += random.nextBoolean() ? 1 : -1;

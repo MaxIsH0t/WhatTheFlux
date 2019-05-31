@@ -19,8 +19,8 @@ public class CreativeTabWtf extends CreativeTabs {
     }
 
     @Override
-    public Item getTabIconItem() {
-        return WtfItems.itemRot;
+    public ItemStack getTabIconItem() {
+        return new ItemStack(WtfItems.itemRot);
     }
 
 }

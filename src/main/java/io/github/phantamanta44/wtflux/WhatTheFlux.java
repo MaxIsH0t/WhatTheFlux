@@ -3,18 +3,16 @@ package io.github.phantamanta44.wtflux;
 import io.github.phantamanta44.wtflux.lib.LibCore;
 import io.github.phantamanta44.wtflux.proxy.CommonProxy;
 import net.minecraft.creativetab.CreativeTabs;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = LibCore.MODID, version = LibCore.MODVER)
 public class WhatTheFlux {
 
-    @Instance(LibCore.MODID)
+    @Mod.Instance(LibCore.MODID)
     public static WhatTheFlux instance;
 
     @SidedProxy(clientSide = "io.github.phantamanta44.wtflux.proxy.ClientProxy", serverSide = "io.github.phantamanta44.wtflux.proxy.CommonProxy")
@@ -22,17 +20,17 @@ public class WhatTheFlux {
 
     public static final CreativeTabs tabWTF = new CreativeTabWtf();
 
-    @EventHandler
+    @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         proxy.onPreInit();
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         proxy.onInit();
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         proxy.onPostInit();
     }
