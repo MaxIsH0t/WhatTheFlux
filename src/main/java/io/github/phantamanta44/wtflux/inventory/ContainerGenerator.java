@@ -52,16 +52,16 @@ public abstract class ContainerGenerator extends ContainerMod<TileGenerator> {
                     if (((Slot)inventorySlots.get(i)).isItemValid(stack)) {
                         if (!this.mergeItemStack(stack, i, i + 1, false))
                             return null;
-                        if (stack.stackSize != orig.stackSize)
+                        if (stack.getMaxStackSize() != orig.getMaxStackSize())
                             break;
                     }
                 }
             }
-            if (stack.stackSize <= 0)
+            if (stack.getMaxStackSize() <= 0)
                 slot.putStack(null);
             else
                 slot.onSlotChanged();
-            if (stack.stackSize != orig.stackSize)
+            if (stack.getMaxStackSize() != orig.getMaxStackSize())
                 return orig;
         }
         return null;

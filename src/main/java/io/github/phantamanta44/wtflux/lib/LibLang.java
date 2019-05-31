@@ -1,6 +1,6 @@
 package io.github.phantamanta44.wtflux.lib;
 
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 
 public class LibLang {
 
@@ -64,7 +64,7 @@ public class LibLang {
     public static final String[] GENTYPE = new String[] {".furnace", ".heat", ".wind", ".water", ".nuke", ".solar"};
 
     public static String get(String key) {
-        return StatCollector.translateToLocal(key);
+        return I18n.translateToLocal(key);
     }
 
     public static String getGenType(int type) {

@@ -1,6 +1,7 @@
 package io.github.phantamanta44.wtflux.crafting;
 
 import cofh.api.modhelpers.ThermalExpansionHelper;
+import cofh.api.util.ThermalExpansionHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import io.github.phantamanta44.wtflux.block.BlockSensor;
 import io.github.phantamanta44.wtflux.block.WtfBlocks;
@@ -11,6 +12,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -81,7 +83,7 @@ public final class MasterRecipeManager {
         addOreDictRecipe(new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.DYN_4), "wew", "csc", "wew", 'c', new ItemStack(WtfItems.itemDyn, 1, ItemDynamo.DYN_3), 's', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.SOLENOID), 'e', LibDict.GEAR_END, 'w', new ItemStack(WtfItems.itemRct, 1, ItemReactor.COOLANT_CELL));
 
         // Heat Furnace
-        addOreDictRecipe(new ItemStack(WtfItems.itemRot, 1, ItemRotary.FURN), "ppp", "bfb", 'f', new ItemStack(Blocks.furnace), 'p', new ItemStack(Blocks.heavy_weighted_pressure_plate), 'b', new ItemStack(Blocks.brick_block));
+        addOreDictRecipe(new ItemStack(WtfItems.itemRot, 1, ItemRotary.FURN), "ppp", "bfb", 'f', new ItemStack(Blocks.FURNACE), 'p', new ItemStack(Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE), 'b', new ItemStack(Blocks.BRICK_BLOCK));
 
         // Heat Sink
         addOreDictRecipe(new ItemStack(WtfItems.itemRot, 1, ItemRotary.HEAT), "rrr", "iti", 'r', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.IRON_ROD), 'i', LibDict.INGOT_IRON, 't', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.HEAT_COND));
@@ -97,17 +99,17 @@ public final class MasterRecipeManager {
         addOreDictRecipe(new ItemStack(WtfItems.itemRot, 1, ItemRotary.NUKE), "crc", "fvh", "ccc", 'c', new ItemStack(WtfItems.itemRct, 1, ItemReactor.CASING), 'r', new ItemStack(WtfItems.itemRct, 1, ItemReactor.ROD_CRADLE), 'h', new ItemStack(WtfItems.itemRct, 1, ItemReactor.HOW_CRADLE), 'v', new ItemStack(WtfItems.itemRct, 1, ItemReactor.RPV), 'f', new ItemStack(WtfItems.itemRct, 1, ItemReactor.CONDENSER));
 
         // Parabolic Trough
-        addOreDictRecipe(new ItemStack(WtfItems.itemRot, 1, ItemRotary.SOLAR), "ggg", "mbm", "hmh", 'g', LibDict.GLASS_PANE, 'h', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.HEAT_COND), 'm', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.MIRROR), 'b', new ItemStack(Items.bucket));
+        addOreDictRecipe(new ItemStack(WtfItems.itemRot, 1, ItemRotary.SOLAR), "ggg", "mbm", "hmh", 'g', LibDict.GLASS_PANE, 'h', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.HEAT_COND), 'm', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.MIRROR), 'b', new ItemStack(Items.BUCKET));
 
         // Ceramic Dielectric
-        ThermalExpansionHelper.addSmelterRecipe(2400, new ItemStack(Items.clay_ball, 2), new ItemStack(Blocks.sand), new ItemStack(WtfItems.itemCap, 2, ItemCapacitor.DIELEC_1));
+        ThermalExpansionHelper.addSmelterRecipe(2400, new ItemStack(Items.CLAY_BALL, 2), new ItemStack(Blocks.SAND), new ItemStack(WtfItems.itemCap, 2, ItemCapacitor.DIELEC_1));
 
         // Plastic Film Dielectric
         addShapelessOreDictRecipe(new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.DIELEC_2), new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC), new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC), LibDict.DUST_TIN);
 
         // Zinc Oxide Dielectric
         for (ItemStack zinc : OreDictionary.getOres(LibDict.NUGGET_ZINC))
-            ThermalExpansionHelper.addSmelterRecipe(4000, new ItemStack(zinc.getItem(), 64, zinc.getItemDamage()), new ItemStack(Items.flint, 4), new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.DIELEC_3));
+            ThermalExpansionHelper.addSmelterRecipe(4000, new ItemStack(zinc.getItem(), 64, zinc.getItemDamage()), new ItemStack(Items.FLINT, 4), new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.DIELEC_3));
 
         // Ceramic Capacitor
         addOreDictRecipe(new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.CAP_1), "ndn", "ndn", "a c", 'n', LibDict.NUGGET_ELEC, 'd', new ItemStack(WtfItems.itemCap, 1, ItemCapacitor.DIELEC_1), 'a', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.ANODE), 'c', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.CATHODE));
@@ -158,14 +160,14 @@ public final class MasterRecipeManager {
         addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.INJECTOR), "pp ", "v c", "ppp", 'c', new ItemStack(WtfItems.itemRct, 1, ItemReactor.COOLANT_CELL), 'v', new ItemStack(WtfItems.itemRct, 1, ItemReactor.VALVE), 'p', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC));
 
         // Pressure Valve
-        addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.VALVE), " l ", "pvp", 'l', new ItemStack(Blocks.lever), 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'v', new ItemStack(Blocks.piston));
+        addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.VALVE), " l ", "pvp", 'l', new ItemStack(Blocks.lever), 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'v', new ItemStack(Blocks.PISTON));
 
         // Neutron Howitzer Cradle
         addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.HOW_CRADLE), "ppp", "w  ", "ppp", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'w', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC));
         addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.HOW_CRADLE), "ppp", "  w", "ppp", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'w', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC));
 
         // Control Rod Cradle
-        addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.ROD_CRADLE), "pvp", "p p", "p p", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'v', new ItemStack(Blocks.piston));
+        addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.ROD_CRADLE), "pvp", "p p", "p p", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'v', new ItemStack(Blocks.PISTON));
 
         // Reactor Casing
         addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.CASING), " p ", "pgp", " p ", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'c', LibDict.DUST_GRAPH);
@@ -180,7 +182,7 @@ public final class MasterRecipeManager {
         // Generator Dynamometer
         addOreDictRecipe(new ItemStack(WtfBlocks.blockSensor, 1, BlockSensor.RPM), "igi", "rmr", "iei", 'i', LibDict.INGOT_IRON, 'g', LibDict.GLASS, 'e', coilElectrum, 'm', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.SOLENOID), 'r', LibDict.REDSTONE);
 
-        GameRegistry.addRecipe(new GeneratorRecipe());
+        GameRegistry.addShapedRecipe(new GeneratorRecipe());
     }
 
     protected static void addSmelting(ItemStack output, ItemStack input, int xp) {

@@ -2,10 +2,10 @@ package io.github.phantamanta44.wtflux.item.block;
 
 import io.github.phantamanta44.wtflux.lib.LibCore;
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlockWithMetadata;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-public class ItemBlockWithMetadataAndName extends ItemBlockWithMetadata {
+public class ItemBlockWithMetadataAndName extends ItemBlock {
 
     public ItemBlockWithMetadataAndName(Block block) {
         super(block, block);

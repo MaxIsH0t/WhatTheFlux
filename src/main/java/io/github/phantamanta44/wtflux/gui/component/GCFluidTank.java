@@ -35,12 +35,13 @@ public class GCFluidTank extends GuiComponent {
                 gui.drawTexturedModalRect(x + i, y + j, 1, 1, 1, 1);
         }
 
-        mc.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+        mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         float t = tankSource.getTank().getFluidAmount(), tMax = tankSource.getTank().getCapacity(), per = t / tMax;
         int sz = (int)(per * (height - 2));
         for (int i = 0; i < sz; i+= 16) {
             int yOpp = Math.min(16, sz - i);
-            gui.drawTexturedModelRectFromIcon(x + 1, y + height - (yOpp + 1 + i), tankSource.getTank().getFluid().getFluid().getStillIcon(), 16, yOpp);
+            //gui.drawTexturedModelRectFromIcon(x + 1, y + height - (yOpp + 1 + i), tankSource.getTank().getFluid().getFluid().getStillIcon(), 16, yOpp);
+            //gui.drawTexturedModalRect(x + 1, y + height - (yOpp + 1 + i), tankSource.getTank().getFluid().getFluid().getStillIcon(), 16, yOpp);
         }
 
         mc.renderEngine.bindTexture(LibResource.TEX_GC_BASE);

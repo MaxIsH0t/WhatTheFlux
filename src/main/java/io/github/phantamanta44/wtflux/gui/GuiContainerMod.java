@@ -12,6 +12,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.util.Collection;
 
 public abstract class GuiContainerMod extends GuiContainer {
@@ -26,10 +27,10 @@ public abstract class GuiContainerMod extends GuiContainer {
 
     @Override
     public void drawGuiContainerForegroundLayer(int mX, int mY) {
-        fontRendererObj.drawString(LibLang.get(LibLang.PLAYER_INV), 8, this.ySize - 96 + 2, 4210752);
+        fontRenderer.drawString(LibLang.get(LibLang.PLAYER_INV), 8, this.ySize - 96 + 2, 4210752);
         String resolvedName = LibLang.get(invName);
-        int nameXPos = xSize / 2 - fontRendererObj.getStringWidth(resolvedName) / 2;
-        fontRendererObj.drawString(resolvedName, nameXPos, 6, LibCore.GUI_FONT_COLOR);
+        int nameXPos = xSize / 2 - fontRenderer.getStringWidth(resolvedName) / 2;
+        fontRenderer.drawString(resolvedName, nameXPos, 6, LibCore.GUI_FONT_COLOR);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         for (GuiComponent comp : comps)
@@ -40,7 +41,7 @@ public abstract class GuiContainerMod extends GuiContainer {
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int button) {
+    protected void mouseClicked(int x, int y, int button) throws IOException {
         comps.forEach(c -> c.onClick(Minecraft.getMinecraft(), this, x - guiLeft, y - guiTop, button));
         super.mouseClicked(x, y, button);
     }
@@ -52,13 +53,13 @@ public abstract class GuiContainerMod extends GuiContainer {
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
     }
 
-    protected void drawHoveringText(String string, int x, int y) {
-        func_146283_a(Lists.newArrayList(string), x, y);
+    public void drawHoveringText(String string, int x, int y) {
+        //func_146283_a(Lists.newArrayList(string), x, y);
         RenderHelper.enableGUIStandardItemLighting();
     }
 
     @Override
-    protected void keyTyped(char typed, int keyCode) {
+    protected void keyTyped(char typed, int keyCode) throws IOException {
         if (comps.stream().allMatch(c -> c.onKeyPress(Minecraft.getMinecraft(), this, keyCode, typed)))
             super.keyTyped(typed, keyCode);
     }

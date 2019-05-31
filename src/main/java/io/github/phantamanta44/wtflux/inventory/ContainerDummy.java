@@ -20,7 +20,7 @@ public class ContainerDummy extends ContainerMod {
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {
-        return player.getDistanceSq(tile.xCoord + 0.5D, tile.yCoord + 0.5D, tile.zCoord + 0.5D) < 64D;
+        return player.getDistanceSq(tile.getPos().getX() + 0.5D, tile.getPos().getY() + 0.5D, tile.getPos().getZ() + 0.5D) < 64D;
     }
 
     @Override

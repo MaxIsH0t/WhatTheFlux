@@ -1,7 +1,5 @@
 package io.github.phantamanta44.wtflux.gui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import io.github.phantamanta44.wtflux.gui.component.*;
 import io.github.phantamanta44.wtflux.inventory.ContainerGenerator;
 import io.github.phantamanta44.wtflux.lib.LibCore;
@@ -11,6 +9,8 @@ import io.github.phantamanta44.wtflux.tile.TileGenerator;
 import io.github.phantamanta44.wtflux.util.WtfUtil;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
@@ -103,7 +103,7 @@ public abstract class GuiGenerator<T extends TileGenerator> extends GuiContainer
         public void drawGuiContainerForegroundLayer(int mX, int mY) {
             String[] status = tile.getStatus();
             for (int i = 0; i < 4; i++)
-                fontRendererObj.drawString(LibLang.get(status[i]), 56, 14 + i * fontRendererObj.FONT_HEIGHT, LibCore.COMP_FONT_COLOR);
+                fontRenderer.drawString(LibLang.get(status[i]), 56, 14 + i * fontRenderer.FONT_HEIGHT, LibCore.COMP_FONT_COLOR);
             GL11.glColor4f(1F, 1F, 1F, 1F);
 
             for (GuiComponent comp : comps)

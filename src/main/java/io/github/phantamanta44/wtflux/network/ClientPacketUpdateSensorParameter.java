@@ -1,13 +1,13 @@
 package io.github.phantamanta44.wtflux.network;
 
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.github.phantamanta44.wtflux.inventory.ContainerDummy;
 import io.github.phantamanta44.wtflux.tile.TileSensor;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class ClientPacketUpdateSensorParameter implements IMessage {
 
@@ -66,7 +66,7 @@ public class ClientPacketUpdateSensorParameter implements IMessage {
 
         @Override
         public IMessage onMessage(ClientPacketUpdateSensorParameter msg, MessageContext ctx) {
-            Container cont = ctx.getServerHandler().playerEntity.openContainer;
+            Container cont = ctx.getServerHandler().player.openContainer;
             if (cont != null && cont instanceof ContainerDummy) {
                 TileEntity tile = ((ContainerDummy)cont).getWrappedTile();
                 if (tile != null && tile instanceof TileSensor) {

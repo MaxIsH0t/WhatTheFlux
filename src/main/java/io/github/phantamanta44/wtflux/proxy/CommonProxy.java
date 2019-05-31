@@ -1,7 +1,5 @@
 package io.github.phantamanta44.wtflux.proxy;
 
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.computercraft.api.ComputerCraftAPI;
 import io.github.phantamanta44.wtflux.WhatTheFlux;
 import io.github.phantamanta44.wtflux.block.BlockOre;
@@ -13,18 +11,27 @@ import io.github.phantamanta44.wtflux.handler.GuiHandler;
 import io.github.phantamanta44.wtflux.inventory.ContainerDummy;
 import io.github.phantamanta44.wtflux.inventory.ContainerGenerator;
 import io.github.phantamanta44.wtflux.item.WtfItems;
+import io.github.phantamanta44.wtflux.lib.LibCore;
 import io.github.phantamanta44.wtflux.network.WtfNet;
 import io.github.phantamanta44.wtflux.tile.TileGenerator;
 import io.github.phantamanta44.wtflux.tile.TileSensor;
 import io.github.phantamanta44.wtflux.util.BlockWithMeta;
+import io.github.phantamanta44.wtflux.util.ModUtil;
 import io.github.phantamanta44.wtflux.util.computercraft.CCPeripheralProvider;
 import io.github.phantamanta44.wtflux.worldgen.OreGenSimple;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class CommonProxy {
+public class CommonProxy
+{
+    public static final Logger LOGGER = LogManager.getLogger();
 
     public void onPreInit() {
         WtfItems.init();
@@ -36,8 +43,8 @@ public class CommonProxy {
 
     public void onInit() {
         MasterRecipeManager.addRecipes();
-        GameRegistry.registerWorldGenerator(new OreGenSimple(new BlockWithMeta(WtfBlocks.blockOre, BlockOre.ZINC), 0, new BlockWithMeta(Blocks.stone), 4, 72, 12, 8), 8);
-        GameRegistry.registerWorldGenerator(new OreGenSimple(new BlockWithMeta(WtfBlocks.blockOre, BlockOre.URAN), 0, new BlockWithMeta(Blocks.stone), 4, 30, 6, 10), 5);
+        GameRegistry.registerWorldGenerator(new OreGenSimple(new BlockWithMeta(WtfBlocks.blockOre, BlockOre.ZINC), 0, new BlockWithMeta(Blocks.STONE), 4, 72, 12, 8), 8);
+        GameRegistry.registerWorldGenerator(new OreGenSimple(new BlockWithMeta(WtfBlocks.blockOre, BlockOre.URAN), 0, new BlockWithMeta(Blocks.STONE), 4, 30, 6, 10), 5);
         NetworkRegistry.INSTANCE.registerGuiHandler(WhatTheFlux.instance, new GuiHandler());
         ComputerCraftAPI.registerPeripheralProvider(new CCPeripheralProvider());
     }
@@ -47,15 +54,15 @@ public class CommonProxy {
     }
 
     protected void registerTileEntities() {
-        addTEMapping(TileGenerator.Furnace.class);
-        addTEMapping(TileGenerator.Heat.class);
-        addTEMapping(TileGenerator.Wind.class);
-        addTEMapping(TileGenerator.Water.class);
-        addTEMapping(TileGenerator.Nuke.class);
-        addTEMapping(TileGenerator.Solar.class);
-        addTEMapping(TileSensor.Temperature.class);
-        addTEMapping(TileSensor.Energy.class);
-        addTEMapping(TileSensor.RPM.class);
+        registerTileEntity(TileGenerator.Furnace.class);
+        registerTileEntity(TileGenerator.Heat.class);
+        registerTileEntity(TileGenerator.Wind.class);
+        registerTileEntity(TileGenerator.Water.class);
+        registerTileEntity(TileGenerator.Nuke.class);
+        registerTileEntity(TileGenerator.Solar.class);
+        registerTileEntity(TileSensor.Temperature.class);
+        registerTileEntity(TileSensor.Energy.class);
+        registerTileEntity(TileSensor.RPM.class);
     }
 
     protected void registerContainers() {
@@ -75,8 +82,15 @@ public class CommonProxy {
         GuiHandler.containerMap.put(tile, cont);
     }
 
-    protected void addTEMapping(Class c) {
-        TileEntity.addMapping(c, c.getName());
+    private static void registerTileEntity(final Class<? extends TileEntity> clazz) {
+
+        try {
+            GameRegistry.registerTileEntity(clazz, new ResourceLocation(LibCore.MODID, ModUtil.getRegistryNameForClass(clazz, "TileEntity")));
+        }
+        catch (final Exception e) {
+            LOGGER.error("Error registering Tile Entity " + clazz.getSimpleName());
+            e.printStackTrace();
+        }
     }
 
 }

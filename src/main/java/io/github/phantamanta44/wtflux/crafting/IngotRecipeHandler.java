@@ -1,5 +1,6 @@
 package io.github.phantamanta44.wtflux.crafting;
 
+import cofh.api.util.ThermalExpansionHelper;
 import io.github.phantamanta44.wtflux.block.BlockCompressed;
 import io.github.phantamanta44.wtflux.block.BlockOre;
 import io.github.phantamanta44.wtflux.block.WtfBlocks;
@@ -9,7 +10,6 @@ import io.github.phantamanta44.wtflux.lib.LibDict;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import cofh.api.modhelpers.ThermalExpansionHelper;
 
 public final class IngotRecipeHandler {
 

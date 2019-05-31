@@ -86,7 +86,7 @@ public class GCTextInput extends GuiComponent {
             focused = false;
         }
         if (mouseOver && valid) {
-            mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(LibResource.SND_GUI_BUTTON, 1F));
+            //mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(LibResource.SND_GUI_BUTTON, 1F));
             callback.accept(value);
         }
     }
