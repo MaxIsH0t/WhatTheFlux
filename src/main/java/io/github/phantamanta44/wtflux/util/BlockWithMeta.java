@@ -1,6 +1,7 @@
 package io.github.phantamanta44.wtflux.util;
 
 import net.minecraft.block.Block;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 public class BlockWithMeta {
@@ -18,9 +19,11 @@ public class BlockWithMeta {
         meta = damage;
     }
 
-    public BlockWithMeta(IBlockAccess world, int x, int y, int z) {
-        block = world.getBlock(x, y, z);
-        meta = world.getBlockMetadata(x, y, z);
+    public BlockWithMeta(IBlockAccess world, int x, int y, int z, int meta) {
+        this.meta = meta;
+        BlockPos blockPos = new BlockPos(x, y, z);
+        block = (Block) world.getBlockState(blockPos);
+        //meta = world.getBlockState(blockPos);
     }
 
     public Block getBlock() {

@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.util.math.BlockPos;
 
 public abstract class TileBasicInventory extends TileMod implements IInventory {
 
@@ -31,8 +32,8 @@ public abstract class TileBasicInventory extends TileMod implements IInventory {
     @Override
     public ItemStack decrStackSize(int slot, int amt) {
         if (slots[slot] != null) {
-            if (slots[slot].stackSize <= amt) {
-                ItemStack stack = slots[slot];
+            if (slots[slot].getMaxStackSize() <= amt) {
+                    ItemStack stack = slots[slot];
                 slots[slot] = null;
                 markDirty();
                 return stack;
@@ -44,6 +45,7 @@ public abstract class TileBasicInventory extends TileMod implements IInventory {
         return null;
     }
 
+    /**
     @Override
     public ItemStack getStackInSlotOnClosing(int slot) {
         if (slots[slot] != null) {
@@ -52,7 +54,7 @@ public abstract class TileBasicInventory extends TileMod implements IInventory {
             return stack;
         }
         return null;
-    }
+    }**/
 
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack) {
@@ -61,12 +63,12 @@ public abstract class TileBasicInventory extends TileMod implements IInventory {
     }
 
     @Override
-    public String getInventoryName() {
+    public String getName() {
         return getClass().getTypeName();
     }
 
     @Override
-    public boolean hasCustomInventoryName() {
+    public boolean hasCustomName() {
         return false;
     }
 
@@ -76,19 +78,20 @@ public abstract class TileBasicInventory extends TileMod implements IInventory {
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
-        return worldObj.getTileEntity(xCoord, yCoord, zCoord) == this
-                && player.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) < 64D;
+    public boolean isUsableByPlayer(EntityPlayer player) {
+        BlockPos blockPos = BlockPos.ORIGIN;
+        return world.getTileEntity(blockPos) == this
+                && player.getDistanceSq(blockPos.getX() + 0.5D, blockPos.getY() + 0.5D, blockPos.getZ() + 0.5D) < 64D;
     }
 
     @Override
-    public void openInventory() {
-        // NO-OP
+    public void openInventory(EntityPlayer player) {
+
     }
 
     @Override
-    public void closeInventory() {
-        // NO-OP
+    public void closeInventory(EntityPlayer player) {
+
     }
 
     @Override

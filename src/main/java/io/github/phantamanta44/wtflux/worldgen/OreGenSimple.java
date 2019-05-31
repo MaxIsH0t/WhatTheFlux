@@ -7,7 +7,6 @@ import java.util.Random;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
-import cpw.mods.fml.common.IWorldGenerator;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.common.IWorldGenerator;
 
@@ -37,8 +36,8 @@ public class OreGenSimple implements IWorldGenerator {
                 int z = chunkZ * 16 + random.nextInt(16);
                 BlockPos blockPos = new BlockPos(x, y, z);
                 for (int j = 0; j < veinSize; j++) {
-                    if (world.getBlockState(blockPos).equals(replBlock.getBlock()) && world.getBlockState(blockPos) == replBlock.getMeta())
-                        world.setBlockState(blockPos, genBlock.getBlock(), genBlock.getMeta(), 0);
+                    //if (world.getBlockState(blockPos).equals(replBlock.getBlock()) && world.getBlockState(blockPos) == replBlock.getMeta())
+                        //world.setBlockState(blockPos, genBlock.getBlock(), genBlock.getMeta(), 0);
                     int dir = random.nextInt(3);
                     if (dir == 0)
                         x += random.nextBoolean() ? 1 : -1;
