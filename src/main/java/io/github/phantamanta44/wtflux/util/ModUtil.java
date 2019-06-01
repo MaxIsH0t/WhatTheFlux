@@ -20,7 +20,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.StringUtils;
 
@@ -304,5 +303,17 @@ public final class ModUtil
     public static Block registerBlock(Block block, Class<? extends ItemBlock> itemclass, String name)
     {
         return registerBlock(block, itemclass, name);
+    }
+
+
+    /**
+     * Look up a mod block in the global "named item list"
+     * @param modId The modid owning the block
+     * @param name The name of the block itself
+     * @return The block or null if not found
+     */
+    public static Item findBlock(String modId, String name)
+    {
+        return ModUtil.setRegistryNames(name);
     }
 }

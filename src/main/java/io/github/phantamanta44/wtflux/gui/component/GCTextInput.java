@@ -3,7 +3,6 @@ package io.github.phantamanta44.wtflux.gui.component;
 import io.github.phantamanta44.wtflux.lib.LibResource;
 import io.github.phantamanta44.wtflux.util.WtfUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Keyboard;
 

@@ -1,6 +1,5 @@
 package io.github.phantamanta44.wtflux.block;
 
-import io.github.phantamanta44.wtflux.lib.LibLang;
 import io.github.phantamanta44.wtflux.renderer.IIcon;
 import io.github.phantamanta44.wtflux.util.ModUtil;
 import net.minecraft.block.material.Material;
@@ -8,6 +7,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -22,7 +22,6 @@ public class BlockCompressed extends BlockModSubs {
         ModUtil.setRegistryNames(this, name);
         setHardness(4F);
         setResistance(7.5F);
-        setBlockName(LibLang.METAL_BLOCK_NAME);
     }
 
     @Override
@@ -43,6 +42,16 @@ public class BlockCompressed extends BlockModSubs {
     @Override
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int face) {
         return 0;
+    }
+
+    @Override
+    public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean canHarvest) {
+        return false;
+    }
+
+    @Override
+    public ItemStack getPickBlock(RayTraceResult target, World world, int x, int y, int z, EntityPlayer player) {
+        return null;
     }
 
     @Override

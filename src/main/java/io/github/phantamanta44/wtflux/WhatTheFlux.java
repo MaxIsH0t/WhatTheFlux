@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-@Mod(modid = LibCore.MODID, version = LibCore.MODVER)
+@Mod(modid = LibCore.MODID, version = LibCore.MODVER, dependencies = "required-after:cofhapi")
 public class WhatTheFlux {
 
     @Mod.Instance(LibCore.MODID)

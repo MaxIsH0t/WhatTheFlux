@@ -20,6 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -33,13 +34,6 @@ public class BlockSensor extends BlockModSubs implements ITileEntityProvider, ID
         super(name, material, 2);
         setHardness(4F);
         setResistance(7.5F);
-        setBlockName(LibLang.SENSOR_BLOCK_NAME);
-    }
-
-    @Override
-    public Block setBlockName(String name) {
-        ModUtil.registerBlock(this, ItemBlockDirectional.class, name);
-        return super.setBlockName(name);
     }
 
     @Override
@@ -81,6 +75,16 @@ public class BlockSensor extends BlockModSubs implements ITileEntityProvider, ID
         BlockPos blockPos = new BlockPos(x, y, z);
         TileSensor tile = (TileSensor)world.getTileEntity(blockPos);
         return tile != null ? (face == tile.getOppositeFace() ? 0 : (tile.isTripped() ? 15 : 0)) : 0;
+    }
+
+    @Override
+    public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean canHarvest) {
+        return false;
+    }
+
+    @Override
+    public ItemStack getPickBlock(RayTraceResult target, World world, int x, int y, int z, EntityPlayer player) {
+        return null;
     }
 
     @Override

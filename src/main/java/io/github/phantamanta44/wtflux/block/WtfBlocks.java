@@ -1,6 +1,7 @@
 package io.github.phantamanta44.wtflux.block;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 
 public final class WtfBlocks {
 
@@ -10,10 +11,10 @@ public final class WtfBlocks {
     public static Block blockSensor;
 
     public static void init() {
-        blockMetal = new BlockCompressed();
-        blockOre = new BlockOre();
-        blockGen = new BlockGenerator();
-        blockSensor = new BlockSensor();
+        blockMetal = new BlockCompressed("block_compressed", Material.IRON);
+        blockOre = new BlockOre("block_ore", Material.IRON, 1);
+        blockGen = new BlockGenerator("block_generator", Material.IRON);
+        blockSensor = new BlockSensor("block_sensor", Material.IRON);
     }
 
 }

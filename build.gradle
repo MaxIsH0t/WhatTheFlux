@@ -1,12 +1,14 @@
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
         maven {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
-        jcenter()
-        maven { url = "https://files.minecraftforge.net/maven" }
+        maven {
+            url = "https://files.minecraftforge.net/maven"
+        }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -16,6 +18,22 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 repositories {
     jcenter()
+
+    maven {
+        name = "CoFH Maven"
+        url = "http://maven.covers1624.net"
+    }
+
+    maven {
+        // location of the maven that hosts JEI files
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.k-4u.nl"
+    }
 }
 
 version = "1.0.0"
@@ -36,6 +54,19 @@ minecraft {
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
+    deobfCompile "cofh:RedstoneFlux:1.12-2.0.0.1:universal"
+    deobfCompile "cofh:CoFHWorld:1.12.2-1.3.1.7:universal"
+    deobfCompile "cofh:ThermalExpansion:1.12.2-5.5.4.43:universal"
+    deobfCompile "cofh:ThermalFoundation:1.12.2-2.6.3.27:universal"
+    deobfCompile "cofh:CoFHCore:1.12.2-4.6.3.27:universal"
+    deobfCompile "codechicken:CodeChickenLib:1.12.2-3.2.2.355:universal"
+
+    deobfProvided "mezz.jei:jei_1.12.2:4.15.0.279:api"
+
+    // compile against the JEI API but do not include it at runtime
+    //compileOnly fg.deobf("mezz.jei:jei-${1.12}:${4.15}:api")
+    // at runtime, use the full JEI jar
+    //runtimeOnly fg.deobf("mezz.jei:jei-${1.12}:${jei_version}")
 }
 
 processResources {

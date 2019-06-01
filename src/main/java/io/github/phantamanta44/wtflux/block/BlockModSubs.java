@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -44,13 +45,6 @@ public abstract class BlockModSubs extends BlockMod {
     }
 
     @Override
-    public Block setBlockName(String name) {
-        //if (GameRegistry.findBlock(LibCore.MODID, name) == null)
-            //GameRegistry.registerBlock(this, ItemBlockWithMetadataAndName.class, name);
-        return super.setBlockName(name);
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister registry) {
         icons = new IIcon[subblockCount];
@@ -76,6 +70,10 @@ public abstract class BlockModSubs extends BlockMod {
     public abstract boolean canProvidePower();
 
     public abstract int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int face);
+
+    public abstract boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean canHarvest);
+
+    public abstract ItemStack getPickBlock(RayTraceResult target, World world, int x, int y, int z, EntityPlayer player);
 
     public abstract ArrayList<ItemStack> dismantleBlock(EntityPlayer player, World world, int x, int y, int z, boolean returnDrops);
 
