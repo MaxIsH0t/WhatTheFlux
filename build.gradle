@@ -61,7 +61,7 @@ dependencies {
     deobfCompile "cofh:CoFHCore:1.12.2-4.6.3.27:universal"
     deobfCompile "codechicken:CodeChickenLib:1.12.2-3.2.2.355:universal"
 
-    deobfProvided "mezz.jei:jei_1.12.2:4.15.0.279:api"
+    deobfProvided "mezz.jei:jei_1.12.2:4.15.0.277:api"
 
     // compile against the JEI API but do not include it at runtime
     //compileOnly fg.deobf("mezz.jei:jei-${1.12}:${4.15}:api")
