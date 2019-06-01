@@ -54,12 +54,12 @@ minecraft {
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    deobfCompile "cofh:RedstoneFlux:1.12-2.0.0.1:deobf"
-    deobfCompile "cofh:CoFHWorld:1.12.2-1.3.1.7:deobf"
-    deobfCompile "cofh:ThermalExpansion:1.12.2-5.5.4.43:deobf"
-    deobfCompile "cofh:ThermalFoundation:1.12.2-2.6.3.27:deobf"
-    deobfCompile "cofh:CoFHCore:1.12.2-4.6.3.27:deobf"
-    deobfCompile "codechicken:CodeChickenLib:1.12.2-3.2.2.355:deobf"
+    deobfCompile "cofh:RedstoneFlux:1.12-2.1.0.6:universal"
+    deobfCompile "cofh:CoFHWorld:1.12.2-1.3.1.7:universal"
+    deobfCompile "cofh:ThermalExpansion:1.12.2-5.5.4.43:universal"
+    deobfCompile "cofh:ThermalFoundation:1.12.2-2.6.3.27:universal"
+    deobfCompile "cofh:CoFHCore:1.12.2-4.6.3.27:universal"
+    deobfCompile "codechicken:CodeChickenLib:1.12.2-3.2.2.355:universal"
 
     deobfProvided "mezz.jei:jei_1.12.2:4.15.0.277:api"
 }
