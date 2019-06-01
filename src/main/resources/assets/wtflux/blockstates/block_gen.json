@@ -2,7 +2,7 @@
   "_comment": "Generated using MiningMark48's JSON Generator.",
   "variants": {
     "normal": {
-      "model": "wflux:block_compressed"
+      "model": "wtflux:block_gen"
     }
   }
 }

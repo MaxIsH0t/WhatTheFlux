@@ -15,6 +15,6 @@ public class CCPeripheralProvider implements IPeripheralProvider {
     @Nullable
     @Override
     public IPeripheral getPeripheral(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull EnumFacing side) {
-        return world.getBlockState(pos) == ModBlocks.blockGen ? (IPeripheral)world.getTileEntity(pos) : null;
+        return world.getBlockState(pos) == ModBlocks.BLOCK_GEN ? (IPeripheral)world.getTileEntity(pos) : null;
     }
 }

@@ -6,7 +6,7 @@ public class LibLang {
 
     public static final String CREATIVE_TAB_NAME = "tab_" + LibCore.MODID;
 
-    public static final String RES_NAME = "itemRes";
+    public static final String RES_NAME = "ITEM_RES";
     public static final String MISC_NAME = "itemMisc";
     public static final String DYNAMO_NAME = "itemDyn";
     public static final String GEN_COMPONENT_NAME = "itemGen";
@@ -15,7 +15,7 @@ public class LibLang {
 
     public static final String METAL_BLOCK_NAME = "blockMetal";
     public static final String ORE_NAME = "blockOre";
-    public static final String GENERATOR_BLOCK_NAME = "blockGenerator";
+    public static final String GENERATOR_BLOCK_NAME = "BLOCK_GENerator";
     public static final String SENSOR_BLOCK_NAME = "blockSensor";
 
     public static final String INF_KEY = LibCore.MODID + ".itemInfo.";

@@ -3,8 +3,6 @@ package io.github.phantamanta44.wtflux.block;
 import cofh.api.block.IDismantleable;
 import com.google.common.collect.Lists;
 import io.github.phantamanta44.wtflux.WhatTheFlux;
-import io.github.phantamanta44.wtflux.item.block.ItemBlockGenerator;
-import io.github.phantamanta44.wtflux.lib.LibLang;
 import io.github.phantamanta44.wtflux.renderer.IIcon;
 import io.github.phantamanta44.wtflux.renderer.IIconRegister;
 import io.github.phantamanta44.wtflux.tile.TileGenerator;
@@ -12,7 +10,6 @@ import io.github.phantamanta44.wtflux.tile.TileMod;
 import io.github.phantamanta44.wtflux.util.IconHelper;
 import io.github.phantamanta44.wtflux.util.ModUtil;
 import io.github.phantamanta44.wtflux.util.WtfUtil;
-import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -33,6 +30,7 @@ public class BlockGenerator extends BlockModSubs implements ITileEntityProvider,
 
     public BlockGenerator(final String name, final Material material) {
         super(name, material, 6);
+        ModUtil.setRegistryNames(this, name);
         setHardness(4F);
         setResistance(7.5F);
     }

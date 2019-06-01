@@ -14,8 +14,8 @@ import net.minecraftforge.oredict.OreDictionary;
 public final class IngotRecipeHandler {
 
     protected static void registerRecipes() {
-        addIngot(new ItemStack(ModBlocks.blockMetal, 1, BlockCompressed.ZINC), ModItems.itemRes, ItemResource.INGOT_ZINC, LibDict.ZINC, 4000, new ItemStack(ModBlocks.blockOre, 1, BlockOre.ZINC));
-        addIngot(new ItemStack(ModBlocks.blockMetal, 1, BlockCompressed.URAN), ModItems.itemRes, ItemResource.INGOT_URAN, LibDict.URAN, 4000, new ItemStack(ModBlocks.blockOre, 1, BlockOre.URAN));
+        addIngot(new ItemStack(ModBlocks.blockMetal, 1, BlockCompressed.ZINC), ModItems.ITEM_RES, ItemResource.INGOT_ZINC, LibDict.ZINC, 4000, new ItemStack(ModBlocks.blockOre, 1, BlockOre.ZINC));
+        addIngot(new ItemStack(ModBlocks.blockMetal, 1, BlockCompressed.URAN), ModItems.ITEM_RES, ItemResource.INGOT_URAN, LibDict.URAN, 4000, new ItemStack(ModBlocks.blockOre, 1, BlockOre.URAN));
     }
 
     private static void addIngot(ItemStack block, Item ingot, int meta, String dict, int xp) {

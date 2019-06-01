@@ -19,21 +19,5 @@ public abstract class ItemMod extends Item {
         setCreativeTab(ModCreativeTab.MOD_TAB);
     }
 
-    @Override
-    public Item setUnlocalizedName(String name) {
-        return super.setUnlocalizedName(name);
-    }
-
-    @Override
-    public String getUnlocalizedNameInefficiently(ItemStack itemstack) {
-        return super.getUnlocalizedNameInefficiently(itemstack).replaceAll("item\\.", "item." + LibCore.MODPREF);
-    }
-
     public abstract void getSubItems(Item parent, CreativeTabs tab, List items);
-
-
-    @SideOnly(Side.CLIENT)
-    public abstract void registerIcons(IIconRegister registry);
-
-    public abstract IIcon getIconFromDamage(int meta);
 }

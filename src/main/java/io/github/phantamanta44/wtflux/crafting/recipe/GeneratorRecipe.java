@@ -80,7 +80,7 @@ public class GeneratorRecipe implements IRecipe {
             }
         }
 
-        ItemStack res = new ItemStack(ModBlocks.blockGen, 1, gen.getItemDamage());
+        ItemStack res = new ItemStack(ModBlocks.BLOCK_GEN, 1, gen.getItemDamage());
         NBTTagCompound tag = new NBTTagCompound();
         tag.setByte(LibNBT.GENTYPE, (byte)gen.getItemDamage());
         tag.setByte(LibNBT.DYNTYPE, (byte)(dyn.getItemDamage() - 3));
