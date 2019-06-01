@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public final class VanillaPacketDispatcher {
@@ -15,13 +16,14 @@ public final class VanillaPacketDispatcher {
             if(player instanceof EntityPlayerMP) {
                 EntityPlayerMP mp = (EntityPlayerMP)player;
                 if(pointDistancePlane(mp.posX, mp.posZ, tile.getPos().getX() + 0.5, tile.getPos().getY() + 0.5) < 64)
-                    ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(tile.getDescriptionPacket());
-                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(tile.getDescriptionPacket());
+                    ((EntityPlayerMP) player).connection.sendPacket(tile.getUpdatePacket());
             }
     }
 
-    public static void dispatchTEToNearbyPlayers(World world, int x, int y, int z) {
-        TileEntity tile = world.getTileEntity(x, y, z);
+    public static void dispatchTEToNearbyPlayers(World world, int x, int y, int z)
+    {
+        BlockPos blockPos = new BlockPos(x, y, z);
+        TileEntity tile = world.getTileEntity(blockPos);
         if (tile != null)
             dispatchTEToNearbyPlayers(tile);
     }

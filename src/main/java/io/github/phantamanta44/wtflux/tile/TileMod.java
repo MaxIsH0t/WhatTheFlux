@@ -4,8 +4,10 @@ import io.github.phantamanta44.wtflux.util.VanillaPacketDispatcher;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+
+import javax.annotation.Nullable;
 
 public abstract class TileMod extends TileEntity {
 
@@ -14,8 +16,8 @@ public abstract class TileMod extends TileEntity {
     protected abstract void tick();
 
     public void markForUpdate() {
-        if (worldObj != null && !worldObj.isRemote)
-            VanillaPacketDispatcher.dispatchTEToNearbyPlayers(worldObj, xCoord, yCoord, zCoord);
+        if (world != null && !world.isRemote)
+            VanillaPacketDispatcher.dispatchTEToNearbyPlayers(world, getPos().getX(), getPos().getY(), getPos().getZ());
         markDirty();
     }
 
@@ -23,23 +25,32 @@ public abstract class TileMod extends TileEntity {
         return init;
     }
 
-    @Override
-    public void updateEntity() {
+    public TileMod() {
         if (init)
             tick();
     }
 
+    /**
     @Override
     public Packet getDescriptionPacket() {
         NBTTagCompound tag = new NBTTagCompound();
         writeToNBT(tag);
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
+        return new SPacketUpdateTileEntity();
+        //return new SPacketUpdateTileEntity(getPos().getX(), getPos().getY(), getPos().getZ(), 0, tag);
+    }**/
+
+    @Nullable
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        NBTTagCompound tag = new NBTTagCompound();
+        writeToNBT(tag);
+        return super.getUpdatePacket();
     }
 
     @Override
-    public void onDataPacket(NetworkManager manager, S35PacketUpdateTileEntity packet) {
+    public void onDataPacket(NetworkManager manager, SPacketUpdateTileEntity packet) {
         super.onDataPacket(manager, packet);
-        readFromNBT(packet.func_148857_g());
+        readFromNBT(packet.getNbtCompound());
     }
 
 

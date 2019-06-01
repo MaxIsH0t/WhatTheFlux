@@ -1,5 +1,6 @@
 package io.github.phantamanta44.wtflux.tile;
 
+import cofh.api.fluid.IFluidContainerItem;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -17,17 +18,28 @@ import io.github.phantamanta44.wtflux.util.computercraft.CCMethodBoolGetter;
 import io.github.phantamanta44.wtflux.util.computercraft.CCMethodFloatGetter;
 import io.github.phantamanta44.wtflux.util.computercraft.CCMethodIntGetter;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class TileGenerator extends TileBasicInventory implements IEnergyProvider, IEnergyContainer, ITileItemNBT, IPeripheral {
+
+    BlockPos blockPos = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
 
     public static final int[] COIL_AMOUNTS = new int[] {128, 256, 512, 1024};
     public static final int[] CAP_AMOUNTS = new int[] {24000, 80000, 50000, 48000, 160000, 100000, 48000};
@@ -76,7 +88,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         } else {
             energy = 0;
             energyMax = CAP_AMOUNTS[4];
-            gen = (byte)blockMetadata;
+            gen = (byte)getBlockMetadata();
             dyn = (byte)3;
             cap = (byte)4;
             casing = (byte)3;
@@ -114,7 +126,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tag) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
         tag.setInteger(LibNBT.ENERGY, energy);
         tag.setInteger(LibNBT.ENERGY_MAX, energyMax);
@@ -124,15 +136,16 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         tag.setByte(LibNBT.CASINGTYPE, casing);
         tag.setFloat(LibNBT.MOMENTUM, momentum);
         tag.setFloat(LibNBT.TEMP, temp);
+        return tag;
     }
 
     @Override
-    public boolean canConnectEnergy(ForgeDirection from) {
+    public boolean canConnectEnergy(EnumFacing from) {
         return init;
     }
 
     @Override
-    public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
+    public int extractEnergy(EnumFacing from, int maxExtract, boolean simulate) {
         if (init) {
             int toTransfer = Math.max(Math.min(Math.min(getCapRate(), maxExtract), energy), 0);
             if (toTransfer > 0 && !simulate) {
@@ -145,12 +158,12 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
     }
 
     @Override
-    public int getEnergyStored(ForgeDirection from) {
+    public int getEnergyStored(EnumFacing from) {
         return energy;
     }
 
     @Override
-    public int getMaxEnergyStored(ForgeDirection from) {
+    public int getMaxEnergyStored(EnumFacing from) {
         return energyMax;
     }
 
@@ -178,10 +191,10 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
             if (dirty)
                 markForUpdate();
 
-            if (worldObj.isRemote) {
+            if (world.isRemote) {
                 boolean active = isActive();
                 if (active != wasActive)
-                    worldObj.markBlockRangeForRenderUpdate(xCoord, yCoord, zCoord, xCoord + 1, yCoord + 1, zCoord + 1);
+                    world.markBlockRangeForRenderUpdate(getPos().getX(), getPos().getY(), getPos().getZ(), getPos().getZ() + 1, getPos().getY() + 1, getPos().getZ() + 1);
                 wasActive = active;
             }
         } catch (MachineOverloadException ignored) { }
@@ -205,15 +218,15 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
     }
 
     public boolean distributeEnergy() {
-        Map<ForgeDirection, IEnergyReceiver> tiles = Maps.newHashMap();
-        for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-            TileEntity tile = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
+        Map<EnumFacing, IEnergyReceiver> tiles = Maps.newHashMap();
+        for (EnumFacing dir : EnumFacing.VALUES) {
+            TileEntity tile = world.getTileEntity(blockPos);
             if (tile != null && tile instanceof IEnergyReceiver)
                 tiles.put(dir.getOpposite(), (IEnergyReceiver)tile);
         }
-        Set<Entry<ForgeDirection, IEnergyReceiver>> tileSet = tiles.entrySet();
+        Set<Map.Entry<EnumFacing, IEnergyReceiver>> tileSet = tiles.entrySet();
         int dist = (int)Math.floor((float)Math.min(energy, getCapRate()) / (float)tileSet.size());
-        for (Entry<ForgeDirection, IEnergyReceiver> tile : tileSet) {
+        for (Map.Entry<EnumFacing, IEnergyReceiver> tile : tileSet) {
             int v = tile.getValue().receiveEnergy(tile.getKey(), dist, false);
             energy -= v;
         }
@@ -222,7 +235,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
     public boolean simulateHeat() throws MachineOverloadException {
         float prevTemp = temp;
-        temp += (0.01F + worldObj.rand.nextFloat()) * 0.001F * (getPassiveTemp() - temp);
+        temp += (0.01F + world.rand.nextFloat()) * 0.001F * (getPassiveTemp() - temp);
         if (temp > MELTING_POINTS[casing]) {
             doMeltdown();
             throw new MachineOverloadException();
@@ -232,16 +245,16 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
     public float getPassiveTemp() {
         float temp = 23.0F;
-        temp *= 0.95F + 0.15F * worldObj.getSunBrightnessFactor(1.0F);
-        temp *= 0.6F + 0.75F * worldObj.getBiomeGenForCoords(xCoord, zCoord).getFloatTemperature(xCoord, yCoord, zCoord);
-        temp += 8F * (Math.max(70 - yCoord, 0F) / 70F);
-        for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-            int x = xCoord + dir.offsetX, y = yCoord + dir.offsetY, z = zCoord + dir.offsetZ;
-            Fluid fluid = FluidRegistry.lookupFluidForBlock(worldObj.getBlock(x, y, z));
+        temp *= 0.95F + 0.15F * world.getSunBrightnessFactor(1.0F);
+        temp *= 0.6F + 0.75F * world.getBiome(blockPos).getTemperature(blockPos);
+        temp += 8F * (Math.max(70 - getPos().getY(), 0F) / 70F);
+        for (EnumFacing dir : EnumFacing.VALUES) {
+            int x = getPos().getX() + getPos().getX(), y = getPos().getY() + getPos().getY(), z = getPos().getZ() + getPos().getZ();
+            Fluid fluid = FluidRegistry.lookupFluidForBlock((Block) world.getBlockState(blockPos));
             if (fluid != null) {
                 float effTemp = useResistance
-                        ? temp + (Math.min(fluid.getTemperature(worldObj, x, y, z) - 273.15F, 1000F) - temp) / 60F
-                        : fluid.getTemperature(worldObj, x, y, z) - 273.15F;
+                        ? temp + (Math.min(fluid.getTemperature(world, blockPos) - 273.15F, 1000F) - temp) / 60F
+                        : fluid.getTemperature(world, blockPos) - 273.15F;
                 temp = (temp + effTemp) / 2F;
             }
         }
@@ -289,7 +302,8 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
     }
 
     public void doMeltdown() {
-        worldObj.setBlock(xCoord, yCoord, zCoord, Blocks.lava);
+        BlockPos blockPos = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
+        world.setBlockState(blockPos, Blocks.LAVA.getDefaultState());
     }
 
     public float getVelocityCap() {
@@ -297,8 +311,9 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
     }
 
     public void doOverspeed() {
-        worldObj.setBlock(xCoord, yCoord, zCoord, Blocks.air);
-        worldObj.createExplosion(null, xCoord, yCoord, zCoord, momentum * 0.3F, false);
+        BlockPos blockPos = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
+        world.setBlockState(blockPos, Blocks.AIR.getDefaultState());
+        world.createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), momentum * 0.3F, false);
     }
 
     @Override
@@ -344,19 +359,21 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
         @Override
         public boolean isActive() {
-            return burnTime > 0 && !worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+            BlockPos blockPos = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
+            //return burnTime > 0 && !world.isBlockIndirectlyGettingPowered(blockPos);
+            return burnTime > world.isBlockIndirectlyGettingPowered(blockPos);
         }
 
         @Override
         protected boolean doGeneration() {
-        	if (worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
-        		return false;
+        	//if (world.isBlockIndirectlyGettingPowered(blockPos))
+        		//return false;
 
             boolean dirty = false;
 
             if (burnTime > 0) {
                 burnTime--;
-                temp += (float)totalBurnTime / (worldObj.rand.nextFloat() * 2857F + 80000F);
+                temp += (float)totalBurnTime / (world.rand.nextFloat() * 2857F + 80000F);
                 dirty = true;
             }
 
@@ -365,8 +382,8 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
             if (burnTime == 0 && slots[0] != null) {
                 int fuelValue = TileEntityFurnace.getItemBurnTime(slots[0]);
                 if (fuelValue > 0) {
-                    slots[0].stackSize--;
-                    if (slots[0].stackSize <= 0)
+                    //slots[0].getMaxStackSize()--;
+                    if (slots[0].getMaxStackSize() <= 0)
                         slots[0] = slots[0].getItem().getContainerItem(slots[0]);
                     burnTime = totalBurnTime = fuelValue;
                     dirty = true;
@@ -383,10 +400,11 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         }
 
         @Override
-        public void writeToNBT(NBTTagCompound tag) {
+        public NBTTagCompound writeToNBT(NBTTagCompound tag) {
             super.writeToNBT(tag);
             tag.setInteger(LibNBT.BURN_TIME, burnTime);
             tag.setInteger(LibNBT.BURN_TIME_TOTAL, totalBurnTime);
+            return tag;
         }
 
         public int getBurnTime() {
@@ -398,8 +416,38 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         }
 
         @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public ItemStack removeStackFromSlot(int index) {
+            return null;
+        }
+
+        @Override
         public boolean isItemValidForSlot(int slot, ItemStack stack) {
             return TileEntityFurnace.isItemFuel(stack);
+        }
+
+        @Override
+        public int getField(int id) {
+            return 0;
+        }
+
+        @Override
+        public void setField(int id, int value) {
+
+        }
+
+        @Override
+        public int getFieldCount() {
+            return 0;
+        }
+
+        @Override
+        public void clear() {
+
         }
 
     }
@@ -437,8 +485,8 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                         dirty = true;
                     }
                 }
-                else if (FluidContainerRegistry.isFilledContainer(slots[0])) {
-                    FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(slots[0]);
+                else if (ModUtil.isFilledContainer(slots[0])) {
+                    FluidStack fluid = ModUtil.getFluidForFilledItem(slots[0]);
                     if (fluid.getFluid() == FluidRegistry.WATER && TANK_SIZE - tank.getFluidAmount() >= fluid.amount) {
                         tank.fill(fluid, true);
                         slots[1] = slots[0].getItem().getContainerItem(slots[0]);
@@ -454,41 +502,42 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         public float getPassiveTemp() {
             float orig = super.getPassiveTemp();
             if (orig > 0) {
-                float yMod = 1.15F * (float)(worldObj.getActualHeight() - yCoord) / (float)worldObj.getActualHeight();
+                float yMod = 1.15F * (float)(world.getActualHeight() - getPos().getY()) / (float)world.getActualHeight();
                 return orig * yMod;
             }
             return orig;
         }
 
+        /**
         @Override
-        public int fill(ForgeDirection from, FluidStack stack, boolean doFill) {
+        public int fill(EnumFacing from, FluidStack stack, boolean doFill) {
             return tank.fill(stack, doFill);
         }
 
         @Override
-        public FluidStack drain(ForgeDirection from, FluidStack stack, boolean doDrain) {
+        public FluidStack drain(EnumFacing from, FluidStack stack, boolean doDrain) {
             return null;
         }
 
         @Override
-        public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+        public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
             return null;
         }
 
         @Override
-        public boolean canFill(ForgeDirection from, Fluid fluid) {
+        public boolean canFill(EnumFacing from, Fluid fluid) {
             return fluid == FluidRegistry.WATER;
         }
 
         @Override
-        public boolean canDrain(ForgeDirection from, Fluid fluid) {
+        public boolean canDrain(EnumFacing from, Fluid fluid) {
             return false;
         }
 
         @Override
-        public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+        public FluidTankInfo[] getTankInfo(EnumFacing from) {
             return new FluidTankInfo[] {new FluidTankInfo(tank)};
-        }
+        }**/
 
         @Override
         public void readFromNBT(NBTTagCompound tag) {
@@ -497,11 +546,12 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         }
 
         @Override
-        public void writeToNBT(NBTTagCompound tag) {
+        public NBTTagCompound writeToNBT(NBTTagCompound tag) {
             super.writeToNBT(tag);
             NBTTagCompound tankTag = new NBTTagCompound();
             tank.writeToNBT(tankTag);
             tag.setTag(LibNBT.MACHINE_TANK, tankTag);
+            return tankTag;
         }
 
         public IFluidTank getTank() {
@@ -509,11 +559,62 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         }
 
         @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public ItemStack removeStackFromSlot(int index) {
+            return null;
+        }
+
+        @Override
         public boolean isItemValidForSlot(int slot, ItemStack stack) {
             return slot == 0 && stack.getItem() instanceof IFluidContainerItem
-                    || FluidContainerRegistry.isFilledContainer(stack);
+                    || ModUtil.isFilledContainer(stack);
         }
-        
+
+        @Override
+        public int getField(int id) {
+            return 0;
+        }
+
+        @Override
+        public void setField(int id, int value) {
+
+        }
+
+        @Override
+        public int getFieldCount() {
+            return 0;
+        }
+
+        @Override
+        public void clear() {
+
+        }
+
+        @Override
+        public IFluidTankProperties[] getTankProperties() {
+            return new IFluidTankProperties[0];
+        }
+
+        @Override
+        public int fill(FluidStack resource, boolean doFill) {
+            return 0;
+        }
+
+        @Nullable
+        @Override
+        public FluidStack drain(FluidStack resource, boolean doDrain) {
+            return null;
+        }
+
+        @Nullable
+        @Override
+        public FluidStack drain(int maxDrain, boolean doDrain) {
+            return null;
+        }
     }
 
     public static class Wind extends TileGenerator {
@@ -524,22 +625,22 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
         @Override
         public boolean isActive() {
-            return yCoord >= 64;
+            return getPos().getY() >= 64;
         }
 
         @Override
         protected boolean doGeneration() {
-            if (yCoord < 64)
+            if (getPos().getY() < 64)
                 return false;
 
-            float powerFactor = 0.23F * (float)Math.pow((float)(yCoord - 63) / (float)(worldObj.getActualHeight() - 63), 2);
-            if (worldObj.isThundering())
+            float powerFactor = 0.23F * (float)Math.pow((float)(getPos().getY() - 63) / (float)(world.getActualHeight() - 63), 2);
+            if (world.isThundering())
                 powerFactor *= 1.5F;
             for (int x = -3; x <= 3; x++) {
                 for (int z = -3; z <= 3; z++) {
                     for (int y = -1; y <= 1; y++) {
-                        if (!worldObj.isAirBlock(xCoord + x, yCoord + y, zCoord + z)) {
-                            if (worldObj.isBlockNormalCubeDefault(xCoord + x, yCoord + y, zCoord + z, true))
+                        if (!world.isAirBlock(blockPos)) {
+                            if (world.isBlockFullCube(blockPos))
                                 powerFactor *= 0.5F;
                             else
                                 powerFactor *= 0.8F;
@@ -551,6 +652,35 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
             return true;
         }
 
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public ItemStack removeStackFromSlot(int index) {
+            return null;
+        }
+
+        @Override
+        public int getField(int id) {
+            return 0;
+        }
+
+        @Override
+        public void setField(int id, int value) {
+
+        }
+
+        @Override
+        public int getFieldCount() {
+            return 0;
+        }
+
+        @Override
+        public void clear() {
+
+        }
     }
 
     public static class Water extends TileGenerator implements IFluidHandler {
@@ -571,14 +701,15 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
         @Override
         public boolean isActive() {
-            return tank.getFluidAmount() >= 1 && lowerTank.getFluidAmount() < 1000
-                    && !worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+            //return tank.getFluidAmount() >= 1 && lowerTank.getFluidAmount() < 1000
+                    //&& !world.isBlockIndirectlyGettingPowered(blockPos);
+            return tank.getFluidAmount() >= 1; //&& lowerTank.getFluidAmount();// < 1000 world.isBlockIndirectlyGettingPowered(blockPos);
         }
 
         @Override
         protected boolean doGeneration() {
-			if (worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
-				return false;
+			//if (world.isBlockIndirectlyGettingPowered(blockPos))
+				//return false;
 
             boolean dirty = false;
             if (tank.getFluidAmount() >= 1 && lowerTank.getFluidAmount() < 1000) {
@@ -589,9 +720,10 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                 dirty = true;
             }
             if (lowerTank.getFluidAmount() >= 1000) {
-                if (worldObj.isAirBlock(xCoord, yCoord - 1, zCoord) && yCoord > 1) {
+                BlockPos blockPos2 = new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ());
+                if (world.isAirBlock(blockPos2)) {
                     lowerTank.drain(1000, true);
-                    worldObj.setBlock(xCoord, yCoord - 1, zCoord, Blocks.flowing_water);
+                    world.setBlockState(blockPos, Blocks.FLOWING_WATER.getDefaultState());
                 }
             }
             if (slots[0] != null && slots[1] == null) {
@@ -603,8 +735,8 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                         dirty = true;
                     }
                 }
-                else if (FluidContainerRegistry.isFilledContainer(slots[0])) {
-                    FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(slots[0]);
+                else if (ModUtil.isFilledContainer(slots[0])) {
+                    FluidStack fluid = ModUtil.getFluidForFilledItem(slots[0]);
                     if (fluid.getFluid() == FluidRegistry.WATER && TANK_SIZE - tank.getFluidAmount() >= fluid.amount) {
                         tank.fill(fluid, true);
                         slots[1] = slots[0].getItem().getContainerItem(slots[0]);
@@ -616,6 +748,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
             return dirty;
         }
 
+        /**
         @Override
         public int fill(ForgeDirection from, FluidStack stack, boolean doFill) {
             if (from == ForgeDirection.DOWN)
@@ -652,7 +785,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
             if (from == ForgeDirection.DOWN)
                 return new FluidTankInfo[] {new FluidTankInfo(lowerTank)};
             return new FluidTankInfo[] {new FluidTankInfo(tank)};
-        }
+        }**/
 
         @Override
         public void readFromNBT(NBTTagCompound tag) {
@@ -662,13 +795,14 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         }
 
         @Override
-        public void writeToNBT(NBTTagCompound tag) {
+        public NBTTagCompound writeToNBT(NBTTagCompound tag) {
             super.writeToNBT(tag);
             NBTTagCompound tankTag = new NBTTagCompound(), tankTag2 = new NBTTagCompound();
             tank.writeToNBT(tankTag);
             lowerTank.writeToNBT(tankTag2);
             tag.setTag(LibNBT.MACHINE_TANK, tankTag);
             tag.setTag(LibNBT.MACHINE_TANK_2, tankTag2);
+            return tankTag;
         }
 
         public IFluidTank getTank() {
@@ -680,11 +814,62 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         }
 
         @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public ItemStack removeStackFromSlot(int index) {
+            return null;
+        }
+
+        @Override
         public boolean isItemValidForSlot(int slot, ItemStack stack) {
             return slot == 0 && stack.getItem() instanceof IFluidContainerItem
-                    || FluidContainerRegistry.isFilledContainer(stack);
+                    || ModUtil.isFilledContainer(stack);
         }
-        
+
+        @Override
+        public int getField(int id) {
+            return 0;
+        }
+
+        @Override
+        public void setField(int id, int value) {
+
+        }
+
+        @Override
+        public int getFieldCount() {
+            return 0;
+        }
+
+        @Override
+        public void clear() {
+
+        }
+
+        @Override
+        public IFluidTankProperties[] getTankProperties() {
+            return new IFluidTankProperties[0];
+        }
+
+        @Override
+        public int fill(FluidStack resource, boolean doFill) {
+            return 0;
+        }
+
+        @Nullable
+        @Override
+        public FluidStack drain(FluidStack resource, boolean doDrain) {
+            return null;
+        }
+
+        @Nullable
+        @Override
+        public FluidStack drain(int maxDrain, boolean doDrain) {
+            return null;
+        }
     }
 
     public static class Nuke extends TileGenerator implements IFluidHandler {
@@ -716,10 +901,10 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
             status[0] = LibLang.NG_GOOD;
             statusIndex = 0;
 
-            if (worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)) {
-                status(LibLang.NG_OFF);
-                return false;
-            }
+            //if (world.isBlockIndirectlyGettingPowered(blockPos)) {
+                //status(LibLang.NG_OFF);
+                //return false;
+            //}
 
             if (fuel > 0F) {
                 if (waste < 4000F)
@@ -752,8 +937,8 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                     FluidStack fluid = bucket.getFluid(slots[3]);
                     if (fluid.getFluid() == FluidRegistry.WATER)
                         tank.fill(bucket.drain(slots[3], Math.min(1000, TANK_SIZE - tank.getFluidAmount()), true), true);
-                } else if (FluidContainerRegistry.isFilledContainer(slots[3])) {
-                    FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(slots[3]);
+                } else if (ModUtil.isFilledContainer(slots[3])) {
+                    FluidStack fluid = ModUtil.getFluidForFilledItem(slots[3]);
                     if (fluid.getFluid() == FluidRegistry.WATER && TANK_SIZE - tank.getFluidAmount() >= fluid.amount) {
                         tank.fill(fluid, true);
                         slots[4] = slots[3].getItem().getContainerItem(slots[3]);
@@ -777,8 +962,8 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                             fuel -= fuelCost;
                             waste += fuelCost;
                             float tempFac = Math.max(0.01F, 30000F - temp) / 15000F;
-                            temp += (16F + worldObj.rand.nextFloat() * 24F) * Math.max(0.001F, tempFac);
-                            temp += worldObj.rand.nextGaussian() * worldObj.rand.nextFloat() * 100F * tempFac;
+                            temp += (16F + world.rand.nextFloat() * 24F) * Math.max(0.001F, tempFac);
+                            temp += world.rand.nextGaussian() * world.rand.nextFloat() * 100F * tempFac;
                             active = true;
                         } else {
                             status(LibLang.NG_FULLWASTE);
@@ -823,14 +1008,15 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                 waste -= 1000F;
                 slots[5] = new ItemStack(WtfItems.itemRct, 1, ItemReactor.WASTE);
             }
-            else if (slots[5].getItem() == WtfItems.itemRct && slots[5].getItemDamage() == ItemReactor.WASTE && slots[5].stackSize < slots[5].getMaxStackSize()) {
+            else if (slots[5].getItem() == WtfItems.itemRct && slots[5].getItemDamage() == ItemReactor.WASTE && slots[5].getMaxStackSize() < slots[5].getMaxStackSize()) {
                 waste -= 1000F;
-                slots[5].stackSize++;
+                //slots[5].stackSize++;
             }
             else
                 status(LibLang.NG_FULLWASTE);
         }
 
+        /**
         @Override
         public int fill(ForgeDirection from, FluidStack stack, boolean doFill) {
             return tank.fill(stack, doFill);
@@ -859,12 +1045,12 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         @Override
         public FluidTankInfo[] getTankInfo(ForgeDirection from) {
             return new FluidTankInfo[] {new FluidTankInfo(tank)};
-        }
+        }**/
 
         @Override
         public void doMeltdown() {
-            worldObj.createExplosion(null, xCoord, yCoord, zCoord, 21.67F, true);
-            worldObj.setBlock(xCoord, yCoord, zCoord, Block.getBlockFromName("ThermalFoundation:FluidPyrotheum"));
+            world.createExplosion(null, getPos().getX(), getPos().getY(), getPos().getZ(), 21.67F, true);
+            world.setBlockState(blockPos, (IBlockState) Block.getBlockFromName("ThermalFoundation:FluidPyrotheum"));
             // TODO Radioactive harm of some kind
         }
 
@@ -883,7 +1069,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         }
 
         @Override
-        public void writeToNBT(NBTTagCompound tag) {
+        public NBTTagCompound writeToNBT(NBTTagCompound tag) {
             super.writeToNBT(tag);
             NBTTagCompound tankTag = new NBTTagCompound();
             tank.writeToNBT(tankTag);
@@ -891,6 +1077,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
             tag.setFloat(LibNBT.MACHINE_WASTE, waste);
             tag.setTag(LibNBT.MACHINE_TANK, tankTag);
             tag.setBoolean(LibNBT.ACTIVE, active);
+            return tankTag;
         }
 
         public IFluidTank getTank() {
@@ -915,6 +1102,16 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         }
 
         @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public ItemStack removeStackFromSlot(int index) {
+            return null;
+        }
+
+        @Override
         public boolean isItemValidForSlot(int slot, ItemStack stack) {
             switch (slot) {
                 case 0: // fuel
@@ -924,14 +1121,55 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                 case 2: // control rod
                     return stack.getItem() == WtfItems.itemRct && stack.getItemDamage() == ItemReactor.CONTROL_ROD;
                 case 3: // fluid in
-                    return stack.getItem() instanceof IFluidContainerItem || FluidContainerRegistry.isFilledContainer(stack);
+                    return stack.getItem() instanceof IFluidContainerItem || ModUtil.isFilledContainer(stack);
                 case 4: // fluid out
                 case 5: // waste
                     return false;
             }
             return true;
         }
-        
+
+        @Override
+        public int getField(int id) {
+            return 0;
+        }
+
+        @Override
+        public void setField(int id, int value) {
+
+        }
+
+        @Override
+        public int getFieldCount() {
+            return 0;
+        }
+
+        @Override
+        public void clear() {
+
+        }
+
+        @Override
+        public IFluidTankProperties[] getTankProperties() {
+            return new IFluidTankProperties[0];
+        }
+
+        @Override
+        public int fill(FluidStack resource, boolean doFill) {
+            return 0;
+        }
+
+        @Nullable
+        @Override
+        public FluidStack drain(FluidStack resource, boolean doDrain) {
+            return null;
+        }
+
+        @Nullable
+        @Override
+        public FluidStack drain(int maxDrain, boolean doDrain) {
+            return null;
+        }
     }
 
     public static class Solar extends TileGenerator implements IFluidHandler {
@@ -948,7 +1186,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
         @Override
         public boolean isActive() {
-            return worldObj.isDaytime() && !worldObj.provider.hasNoSky && worldObj.canBlockSeeTheSky(xCoord, yCoord + 1, zCoord);
+            return world.isDaytime() && !world.provider.hasSkyLight() && world.canSeeSky(blockPos);
         }
 
         @Override
@@ -963,8 +1201,8 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                         dirty = true;
                     }
                 }
-                else if (FluidContainerRegistry.isFilledContainer(slots[0])) {
-                    FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(slots[0]);
+                else if (ModUtil.isFilledContainer(slots[0])) {
+                    FluidStack fluid = ModUtil.getFluidForFilledItem(slots[0]);
                     if (fluid.getFluid() == FluidRegistry.WATER && TANK_SIZE - tank.getFluidAmount() >= fluid.amount) {
                         tank.fill(fluid, true);
                         slots[1] = slots[0].getItem().getContainerItem(slots[0]);
@@ -973,8 +1211,8 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                     }
                 }
             }
-            if (worldObj.isDaytime() && !worldObj.provider.hasNoSky && worldObj.canBlockSeeTheSky(xCoord, yCoord + 1, zCoord)) {
-                int time = (int)(worldObj.getWorldTime() % 24000L);
+            if (world.isDaytime() && !world.provider.hasSkyLight() && world.canSeeSky(blockPos)) {
+                int time = (int)(world.getWorldTime() % 24000L);
                 if (time < 13000 || time > 22650) {
                     float add = (float)Math.sin(MathUtil.timeToRad(time)) * 0.1F;
                     temp += (2F - (temp / 200F)) * add;
@@ -982,7 +1220,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                 }
             }
             if (tank.getFluidAmount() > 0) {
-                int toConsume = Math.max(MathHelper.floor_double(Math.pow(temp - 100F, 0.5F)), 0);
+                int toConsume = Math.max(MathHelper.floor(Math.pow(temp - 100F, 0.5F)), 0);
                 if (toConsume > 0) {
                     int drained = tank.drain(toConsume, true).amount;
                     momentum += (float)drained / 100F;
@@ -996,41 +1234,42 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         public float getPassiveTemp() {
             float orig = super.getPassiveTemp();
             if (orig > 0) {
-                float yMod = 1.15F * (float)(worldObj.getActualHeight() - yCoord) / (float)worldObj.getActualHeight();
+                float yMod = 1.15F * (float)(world.getActualHeight() - getPos().getY()) / (float)world.getActualHeight();
                 return orig * yMod;
             }
             return orig;
         }
 
+        /**
         @Override
-        public int fill(ForgeDirection from, FluidStack stack, boolean doFill) {
+        public int fill(EnumFacing from, FluidStack stack, boolean doFill) {
             return tank.fill(stack, doFill);
         }
 
         @Override
-        public FluidStack drain(ForgeDirection from, FluidStack stack, boolean doDrain) {
+        public FluidStack drain(EnumFacing from, FluidStack stack, boolean doDrain) {
             return null;
         }
 
         @Override
-        public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+        public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
             return null;
         }
 
         @Override
-        public boolean canFill(ForgeDirection from, Fluid fluid) {
+        public boolean canFill(EnumFacing from, Fluid fluid) {
             return fluid == FluidRegistry.WATER;
         }
 
         @Override
-        public boolean canDrain(ForgeDirection from, Fluid fluid) {
+        public boolean canDrain(EnumFacing from, Fluid fluid) {
             return false;
         }
 
         @Override
-        public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+        public FluidTankInfo[] getTankInfo(EnumFacing from) {
             return new FluidTankInfo[] {new FluidTankInfo(tank)};
-        }
+        }**/
 
         @Override
         public void readFromNBT(NBTTagCompound tag) {
@@ -1039,11 +1278,12 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         }
 
         @Override
-        public void writeToNBT(NBTTagCompound tag) {
+        public NBTTagCompound writeToNBT(NBTTagCompound tag) {
             super.writeToNBT(tag);
             NBTTagCompound tankTag = new NBTTagCompound();
             tank.writeToNBT(tankTag);
             tag.setTag(LibNBT.MACHINE_TANK, tankTag);
+            return tankTag;
         }
 
         public IFluidTank getTank() {
@@ -1051,11 +1291,62 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         }
 
         @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public ItemStack removeStackFromSlot(int index) {
+            return null;
+        }
+
+        @Override
         public boolean isItemValidForSlot(int slot, ItemStack stack) {
             return slot == 0 && (stack.getItem() instanceof IFluidContainerItem
-                    || FluidContainerRegistry.isFilledContainer(stack));
+                    || ModUtil.isFilledContainer(stack));
         }
-        
+
+        @Override
+        public int getField(int id) {
+            return 0;
+        }
+
+        @Override
+        public void setField(int id, int value) {
+
+        }
+
+        @Override
+        public int getFieldCount() {
+            return 0;
+        }
+
+        @Override
+        public void clear() {
+
+        }
+
+        @Override
+        public IFluidTankProperties[] getTankProperties() {
+            return new IFluidTankProperties[0];
+        }
+
+        @Override
+        public int fill(FluidStack resource, boolean doFill) {
+            return 0;
+        }
+
+        @Nullable
+        @Override
+        public FluidStack drain(FluidStack resource, boolean doDrain) {
+            return null;
+        }
+
+        @Nullable
+        @Override
+        public FluidStack drain(int maxDrain, boolean doDrain) {
+            return null;
+        }
     }
 
 }

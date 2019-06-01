@@ -2,15 +2,19 @@ package io.github.phantamanta44.wtflux.item;
 
 import io.github.phantamanta44.wtflux.WhatTheFlux;
 import io.github.phantamanta44.wtflux.lib.LibCore;
+import io.github.phantamanta44.wtflux.renderer.IIcon;
+import io.github.phantamanta44.wtflux.renderer.IIconRegister;
 import io.github.phantamanta44.wtflux.util.IconHelper;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import io.github.phantamanta44.wtflux.util.ModUtil;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemMod extends Item {
+import java.util.List;
+
+public abstract class ItemMod extends Item {
 
     public ItemMod() {
         super();
@@ -19,7 +23,7 @@ public class ItemMod extends Item {
 
     @Override
     public Item setUnlocalizedName(String name) {
-        GameRegistry.registerItem(this, name);
+        ModUtil.registerItem(this, name);
         return super.setUnlocalizedName(name);
     }
 
@@ -28,10 +32,11 @@ public class ItemMod extends Item {
         return super.getUnlocalizedNameInefficiently(itemstack).replaceAll("item\\.", "item." + LibCore.MODPREF);
     }
 
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister registry) {
-        itemIcon = IconHelper.forItem(registry, this);
-    }
+    public abstract void getSubItems(Item parent, CreativeTabs tab, List items);
 
+
+    @SideOnly(Side.CLIENT)
+    public abstract void registerIcons(IIconRegister registry);
+
+    public abstract IIcon getIconFromDamage(int meta);
 }

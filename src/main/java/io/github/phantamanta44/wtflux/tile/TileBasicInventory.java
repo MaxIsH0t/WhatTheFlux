@@ -1,13 +1,12 @@
 package io.github.phantamanta44.wtflux.tile;
 
 import io.github.phantamanta44.wtflux.lib.LibNBT;
+import io.github.phantamanta44.wtflux.util.ModUtil;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.math.BlockPos;
 
 public abstract class TileBasicInventory extends TileMod implements IInventory {
@@ -108,13 +107,13 @@ public abstract class TileBasicInventory extends TileMod implements IInventory {
             for (int i = 0; i < tagList.tagCount(); i++) {
                 NBTTagCompound itemTag = tagList.getCompoundTagAt(i);
                 int slot = itemTag.getInteger(LibNBT.SLOT);
-                slots[slot] = ItemStack.loadItemStackFromNBT(itemTag);
+                slots[slot] = ModUtil.loadItemStackFromNBT(itemTag);
             }
         }
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tag) {
+    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
         NBTTagList tagList = new NBTTagList();
         for (int i = 0; i < slots.length; i++) {
@@ -126,13 +125,15 @@ public abstract class TileBasicInventory extends TileMod implements IInventory {
             }
         }
         tag.setTag(LibNBT.ITEMS, tagList);
+        return tag;
     }
 
+    /**
     @Override
     public Packet getDescriptionPacket() {
-        S35PacketUpdateTileEntity packet = (S35PacketUpdateTileEntity)super.getDescriptionPacket();
-        packet.func_148857_g().removeTag(LibNBT.ITEMS);
-        return packet;
-    }
+        NBTTagCompound packet = (NBTTagCompound)super.getUpdatePacket();
+        packet.removeTag(LibNBT.ITEMS);
+        return (Packet) packet;
+    }**/
 
 }

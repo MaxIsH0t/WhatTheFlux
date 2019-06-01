@@ -7,7 +7,8 @@ import io.github.phantamanta44.wtflux.network.ClientPacketUpdateSensorParameter;
 import io.github.phantamanta44.wtflux.network.WtfNet;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -26,11 +27,11 @@ public abstract class TileSensor extends TileMod implements IReconfigurableFacin
         }
     }
 
-    private ForgeDirection facing;
+    private EnumFacing facing;
     private boolean tripped;
 
     public TileSensor() {
-        this.facing = ForgeDirection.DOWN;
+        this.facing = EnumFacing.DOWN;
         this.tripped = false;
         init = true;
     }
@@ -42,14 +43,14 @@ public abstract class TileSensor extends TileMod implements IReconfigurableFacin
             boolean trippedThisTick = exceedsThreshold(tile);
             if (tripped != trippedThisTick) {
                 tripped = trippedThisTick;
-                worldObj.markBlockRangeForRenderUpdate(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord);
-                worldObj.notifyBlockChange(xCoord, yCoord, zCoord, blockType);
+                world.markBlockRangeForRenderUpdate(getPos().getX(), getPos().getY(), getPos().getZ(), getPos().getX(), getPos().getY(), getPos().getZ());
+                //world.notifyBlockChange(getPos().getX(), getPos().getY(), getPos().getZ(), blockType);
                 markForUpdate();
             }
         } else if (tripped) {
             tripped = false;
-            worldObj.markBlockRangeForRenderUpdate(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord);
-            worldObj.notifyBlockChange(xCoord, yCoord, zCoord, blockType);
+            world.markBlockRangeForRenderUpdate(getPos().getX(), getPos().getY(), getPos().getZ(), getPos().getX(), getPos().getY(), getPos().getZ());
+            //world.notifyBlockUpdate(getPos().getX(), getPos().getY(), getPos().getZ(), blockType);
             markForUpdate();
         }
     }
@@ -82,18 +83,19 @@ public abstract class TileSensor extends TileMod implements IReconfigurableFacin
 
     @Override
     public boolean rotateBlock() {
-        facing = ForgeDirection.getOrientation((facing.ordinal() + 1) % 6);
+        facing = EnumFacing.getHorizontal((facing.ordinal() + 1) % 6);
         return true;
     }
 
     @Override
-    public boolean setFacing(int side) {
-        facing = ForgeDirection.getOrientation(side);
+    public boolean setFacing(int side, boolean alternate) {
+        facing = EnumFacing.getHorizontal(side);
         return true;
     }
 
     public TileGenerator getObservedTile() {
-        TileEntity tile = worldObj.getTileEntity(xCoord + facing.offsetX, yCoord + facing.offsetY, zCoord + facing.offsetZ);
+        BlockPos blockPos = new BlockPos(getPos().getX(), getPos().getY(), getPos().getZ());
+        TileEntity tile = world.getTileEntity(blockPos);
         return tile != null && tile instanceof TileGenerator ? (TileGenerator)tile : null;
     }
 
@@ -104,15 +106,16 @@ public abstract class TileSensor extends TileMod implements IReconfigurableFacin
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
-        facing = ForgeDirection.getOrientation(nbt.getInteger(LibNBT.FACING));
+        facing = EnumFacing.getHorizontal(nbt.getInteger(LibNBT.FACING));
         tripped = nbt.getBoolean(LibNBT.ACTIVE);
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         super.writeToNBT(nbt);
         nbt.setInteger(LibNBT.FACING, facing.ordinal());
         nbt.setBoolean(LibNBT.ACTIVE, tripped);
+        return nbt;
     }
 
     public static class Temperature extends TileSensor {
@@ -165,9 +168,10 @@ public abstract class TileSensor extends TileMod implements IReconfigurableFacin
         }
 
         @Override
-        public void writeToNBT(NBTTagCompound nbt) {
+        public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             super.writeToNBT(nbt);
             nbt.setFloat(LibNBT.THRESHOLD, threshold);
+            return nbt;
         }
         
     }
@@ -222,9 +226,10 @@ public abstract class TileSensor extends TileMod implements IReconfigurableFacin
         }
 
         @Override
-        public void writeToNBT(NBTTagCompound nbt) {
+        public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             super.writeToNBT(nbt);
             nbt.setInteger(LibNBT.THRESHOLD, threshold);
+            return nbt;
         }
 
     }
@@ -280,9 +285,10 @@ public abstract class TileSensor extends TileMod implements IReconfigurableFacin
         }
 
         @Override
-        public void writeToNBT(NBTTagCompound nbt) {
+        public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
             super.writeToNBT(nbt);
             nbt.setFloat(LibNBT.THRESHOLD, threshold);
+            return nbt;
         }
 
     }
