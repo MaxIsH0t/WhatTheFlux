@@ -3,6 +3,7 @@ package io.github.phantamanta44.wtflux.block;
 import cofh.api.block.IDismantleable;
 import com.google.common.collect.Lists;
 import io.github.phantamanta44.wtflux.WhatTheFlux;
+import io.github.phantamanta44.wtflux.creativetabs.ModCreativeTab;
 import io.github.phantamanta44.wtflux.item.block.ItemBlockDirectional;
 import io.github.phantamanta44.wtflux.lib.LibLang;
 import io.github.phantamanta44.wtflux.renderer.IIcon;
@@ -34,6 +35,7 @@ public class BlockSensor extends BlockModSubs implements ITileEntityProvider, ID
         super(name, material, 2);
         setHardness(4F);
         setResistance(7.5F);
+        setCreativeTab(ModCreativeTab.MOD_TAB);
     }
 
     @Override

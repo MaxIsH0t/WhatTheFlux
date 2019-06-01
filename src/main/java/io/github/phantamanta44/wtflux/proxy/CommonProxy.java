@@ -3,14 +3,12 @@ package io.github.phantamanta44.wtflux.proxy;
 import dan200.computercraft.api.ComputerCraftAPI;
 import io.github.phantamanta44.wtflux.WhatTheFlux;
 import io.github.phantamanta44.wtflux.block.BlockOre;
-import io.github.phantamanta44.wtflux.block.WtfBlocks;
 import io.github.phantamanta44.wtflux.crafting.MasterRecipeManager;
 import io.github.phantamanta44.wtflux.gui.GuiGenerator;
 import io.github.phantamanta44.wtflux.gui.GuiSensor;
 import io.github.phantamanta44.wtflux.handler.GuiHandler;
 import io.github.phantamanta44.wtflux.inventory.ContainerDummy;
 import io.github.phantamanta44.wtflux.inventory.ContainerGenerator;
-import io.github.phantamanta44.wtflux.item.WtfItems;
 import io.github.phantamanta44.wtflux.lib.LibCore;
 import io.github.phantamanta44.wtflux.network.WtfNet;
 import io.github.phantamanta44.wtflux.tile.TileGenerator;
@@ -34,8 +32,6 @@ public class CommonProxy
     public static final Logger LOGGER = LogManager.getLogger();
 
     public void onPreInit() {
-        WtfItems.init();
-        WtfBlocks.init();
         registerTileEntities();
         registerContainers();
         WtfNet.init();
@@ -43,8 +39,8 @@ public class CommonProxy
 
     public void onInit() {
         MasterRecipeManager.addRecipes();
-        GameRegistry.registerWorldGenerator(new OreGenSimple(new BlockWithMeta(WtfBlocks.blockOre, BlockOre.ZINC), 0, new BlockWithMeta(Blocks.STONE), 4, 72, 12, 8), 8);
-        GameRegistry.registerWorldGenerator(new OreGenSimple(new BlockWithMeta(WtfBlocks.blockOre, BlockOre.URAN), 0, new BlockWithMeta(Blocks.STONE), 4, 30, 6, 10), 5);
+        //GameRegistry.registerWorldGenerator(new OreGenSimple(new BlockWithMeta(WtfBlocks.blockOre, BlockOre.ZINC), 0, new BlockWithMeta(Blocks.STONE), 4, 72, 12, 8), 8);
+        //GameRegistry.registerWorldGenerator(new OreGenSimple(new BlockWithMeta(WtfBlocks.blockOre, BlockOre.URAN), 0, new BlockWithMeta(Blocks.STONE), 4, 30, 6, 10), 5);
         NetworkRegistry.INSTANCE.registerGuiHandler(WhatTheFlux.instance, new GuiHandler());
         ComputerCraftAPI.registerPeripheralProvider(new CCPeripheralProvider());
     }

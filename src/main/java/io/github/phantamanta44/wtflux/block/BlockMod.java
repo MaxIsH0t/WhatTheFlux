@@ -1,6 +1,7 @@
 package io.github.phantamanta44.wtflux.block;
 
 import io.github.phantamanta44.wtflux.WhatTheFlux;
+import io.github.phantamanta44.wtflux.creativetabs.ModCreativeTab;
 import io.github.phantamanta44.wtflux.lib.LibCore;
 import io.github.phantamanta44.wtflux.renderer.IIcon;
 import io.github.phantamanta44.wtflux.renderer.IIconRegister;
@@ -34,7 +35,7 @@ public abstract class BlockMod extends Block {
     public abstract int damageDropped(int metadata);
 
     public void addToCreative() {
-        setCreativeTab(WhatTheFlux.tabWTF);
+        setCreativeTab(ModCreativeTab.MOD_TAB);
     }
 
     /**

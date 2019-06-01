@@ -7,8 +7,8 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import io.github.phantamanta44.wtflux.init.ModItems;
 import io.github.phantamanta44.wtflux.item.ItemReactor;
-import io.github.phantamanta44.wtflux.item.WtfItems;
 import io.github.phantamanta44.wtflux.lib.LibDict;
 import io.github.phantamanta44.wtflux.lib.LibLang;
 import io.github.phantamanta44.wtflux.lib.LibNBT;
@@ -954,11 +954,11 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
         private void tryDoReaction() {
             if (slots[2] != null) {
-                if (slots[2].getItem() == WtfItems.itemRct && slots[2].getItemDamage() == ItemReactor.CONTROL_ROD) {
+                if (slots[2].getItem() == ModItems.itemRct && slots[2].getItemDamage() == ItemReactor.CONTROL_ROD) {
                     float fuelCost = temp / 35F;
                     if (fuel >= fuelCost) {
                         if (4000F - waste >= fuelCost) {
-                            slots[2] = ((ItemReactor)WtfItems.itemRct).decrementUses(slots[2]);
+                            slots[2] = ((ItemReactor)ModItems.itemRct).decrementUses(slots[2]);
                             fuel -= fuelCost;
                             waste += fuelCost;
                             float tempFac = Math.max(0.01F, 30000F - temp) / 15000F;
@@ -983,7 +983,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         private void tryInjectFuel() {
             boolean flag1 = false, flag2 = false;
             if (slots[1] != null) {
-                if (slots[1].getItem() == WtfItems.itemRct && slots[1].getItemDamage() == ItemReactor.BLASTER)
+                if (slots[1].getItem() == ModItems.itemRct && slots[1].getItemDamage() == ItemReactor.BLASTER)
                     flag1 = true;
             }
 
@@ -994,7 +994,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
             if (flag1) {
                 if (flag2) {
-                    slots[1] = ((ItemReactor)WtfItems.itemRct).decrementUses(slots[1]);
+                    slots[1] = ((ItemReactor)ModItems.itemRct).decrementUses(slots[1]);
                     decrStackSize(0, 1);
                     fuel += 1000F;
                 }
@@ -1006,9 +1006,9 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         private void tryEjectWaste() {
             if (slots[5] == null) {
                 waste -= 1000F;
-                slots[5] = new ItemStack(WtfItems.itemRct, 1, ItemReactor.WASTE);
+                slots[5] = new ItemStack(ModItems.itemRct, 1, ItemReactor.WASTE);
             }
-            else if (slots[5].getItem() == WtfItems.itemRct && slots[5].getItemDamage() == ItemReactor.WASTE && slots[5].getMaxStackSize() < slots[5].getMaxStackSize()) {
+            else if (slots[5].getItem() == ModItems.itemRct && slots[5].getItemDamage() == ItemReactor.WASTE && slots[5].getMaxStackSize() < slots[5].getMaxStackSize()) {
                 waste -= 1000F;
                 //slots[5].stackSize++;
             }
@@ -1117,9 +1117,9 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                 case 0: // fuel
                     return LibDict.matches(stack, LibDict.INGOT_URAN);
                 case 1: // neutron howitzer
-                    return stack.getItem() == WtfItems.itemRct && stack.getItemDamage() == ItemReactor.BLASTER;
+                    return stack.getItem() == ModItems.itemRct && stack.getItemDamage() == ItemReactor.BLASTER;
                 case 2: // control rod
-                    return stack.getItem() == WtfItems.itemRct && stack.getItemDamage() == ItemReactor.CONTROL_ROD;
+                    return stack.getItem() == ModItems.itemRct && stack.getItemDamage() == ItemReactor.CONTROL_ROD;
                 case 3: // fluid in
                     return stack.getItem() instanceof IFluidContainerItem || ModUtil.isFilledContainer(stack);
                 case 4: // fluid out

@@ -29,7 +29,6 @@ public abstract class BlockModSubs extends BlockMod {
 
     public BlockModSubs(final String name, Material material, int blocks) {
         super(material);
-        ModUtil.setRegistryNames(this, name);
         subblockCount = blocks;
     }
 

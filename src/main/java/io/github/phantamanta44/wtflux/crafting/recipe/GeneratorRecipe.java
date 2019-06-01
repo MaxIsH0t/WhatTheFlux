@@ -1,8 +1,8 @@
 package io.github.phantamanta44.wtflux.crafting.recipe;
 
-import io.github.phantamanta44.wtflux.block.WtfBlocks;
+import io.github.phantamanta44.wtflux.init.ModBlocks;
+import io.github.phantamanta44.wtflux.init.ModItems;
 import io.github.phantamanta44.wtflux.item.ItemMisc;
-import io.github.phantamanta44.wtflux.item.WtfItems;
 import io.github.phantamanta44.wtflux.lib.LibDict;
 import io.github.phantamanta44.wtflux.lib.LibNBT;
 import io.github.phantamanta44.wtflux.tile.TileGenerator;
@@ -47,9 +47,9 @@ public class GeneratorRecipe implements IRecipe {
         }
 
         return gearTier != -1
-                && inv.getStackInSlot(1).getItem() == WtfItems.itemRot
-                && (dyn.getItem() == WtfItems.itemDyn && dyn.getItemDamage() > 2)
-                && (cap.getItem() == WtfItems.itemCap && cap.getItemDamage() > 2)
+                && inv.getStackInSlot(1).getItem() == ModItems.itemRot
+                && (dyn.getItem() == ModItems.itemDyn && dyn.getItemDamage() > 2)
+                && (cap.getItem() == ModItems.itemCap && cap.getItemDamage() > 2)
                 && checkLeads(inv.getStackInSlot(6), inv.getStackInSlot(8));
     }
 
@@ -58,11 +58,11 @@ public class GeneratorRecipe implements IRecipe {
     }
 
     private static boolean isCathode(ItemStack stack) {
-        return stack.getItem() == WtfItems.itemMisc && stack.getItemDamage() == ItemMisc.CATHODE;
+        return stack.getItem() == ModItems.itemMisc && stack.getItemDamage() == ItemMisc.CATHODE;
     }
 
     private static boolean isAnode(ItemStack stack) {
-        return stack.getItem() == WtfItems.itemMisc && stack.getItemDamage() == ItemMisc.ANODE;
+        return stack.getItem() == ModItems.itemMisc && stack.getItemDamage() == ItemMisc.ANODE;
     }
 
     @Override
@@ -80,7 +80,7 @@ public class GeneratorRecipe implements IRecipe {
             }
         }
 
-        ItemStack res = new ItemStack(WtfBlocks.blockGen, 1, gen.getItemDamage());
+        ItemStack res = new ItemStack(ModBlocks.blockGen, 1, gen.getItemDamage());
         NBTTagCompound tag = new NBTTagCompound();
         tag.setByte(LibNBT.GENTYPE, (byte)gen.getItemDamage());
         tag.setByte(LibNBT.DYNTYPE, (byte)(dyn.getItemDamage() - 3));

@@ -2,6 +2,7 @@ package io.github.phantamanta44.wtflux.util;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import io.github.phantamanta44.wtflux.creativetabs.ModCreativeTab;
 import io.github.phantamanta44.wtflux.lib.LibCore;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
@@ -20,6 +21,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.relauncher.libraries.ModList;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,6 +34,67 @@ import static net.minecraft.util.EnumFacing.*;
 
 public final class ModUtil
 {
+    /**
+     * Sets the {@link IForgeRegistryEntry.Impl#setRegistryName(ResourceLocation) Registry Name} and the
+     *
+     * @param entry the {@link IForgeRegistryEntry.Impl IForgeRegistryEntry.Impl<?>} to set the names for
+     * @param name  the name for the entry that the registry name is derived from
+     *
+     * @return the entry
+     */
+    public static <T extends IForgeRegistryEntry.Impl<?>> T setRegistryNames(final T entry, final String name) {
+
+        return setRegistryNames(entry, new ResourceLocation(LibCore.MODID, name));
+    }
+
+    /**
+     * Sets the {@link IForgeRegistryEntry.Impl#setRegistryName(ResourceLocation) Registry Name} and the
+     *
+     * @param entry        the {@link net.minecraftforge.registries.IForgeRegistryEntry.Impl IForgeRegistryEntry.Impl<?>} to set the names for
+     * @param registryName the registry name for the entry that the unlocalised name is also gotten from
+     *
+     * @return the entry
+     */
+    public static <T extends IForgeRegistryEntry.Impl<?>> T setRegistryNames(final T entry, final ResourceLocation registryName) {
+
+        return setRegistryNames(entry, registryName, registryName.getResourcePath());
+    }
+
+    /**
+     * Sets the {@link IForgeRegistryEntry.Impl#setRegistryName(ResourceLocation) Registry Name} and the
+     *
+     * @param entry          the {@link IForgeRegistryEntry.Impl IForgeRegistryEntry.Impl<?>} to set the names for
+     * @param registryName   the registry name for the entry
+     * @param translationKey the translationKey for the entry
+     *
+     * @return the entry
+     */
+    public static <T extends IForgeRegistryEntry.Impl<?>> T setRegistryNames(final T entry, final ResourceLocation registryName, final String translationKey) {
+
+        entry.setRegistryName(registryName);
+        if (entry instanceof Block) {
+            ((Block) entry).setUnlocalizedName(translationKey);
+            setCreativeTab((Block) entry);
+        }
+        if (entry instanceof Item) {
+            ((Item) entry).setUnlocalizedName(translationKey);
+            setCreativeTab(Block.getBlockFromItem((Item) entry));
+        }
+        return entry;
+    }
+
+    /**
+     * Utility method to make sure that all our blocks appear on our creative tab
+     *
+     * @param block the {@link Block Block}
+     */
+    public static void setCreativeTab(final Block block) {
+
+        if (block.getCreativeTabToDisplayOn() == null) {
+            block.setCreativeTab(ModCreativeTab.MOD_TAB);
+        }
+    }
+
     public static final EnumFacing[] VALID_DIRECTIONS = {DOWN, UP, NORTH, SOUTH, WEST, EAST};
 
     private static class ContainerKey
@@ -76,19 +139,6 @@ public final class ModUtil
     private static final ItemStack NULL_EMPTYCONTAINER = new ItemStack(Items.BUCKET);
     private static Map<ContainerKey, FluidContainerData> filledContainerMap = Maps.newHashMap();
     private static Set<ContainerKey> emptyContainers = Sets.newHashSet();
-
-    /**
-     * Sets the {@link IForgeRegistryEntry.Impl#setRegistryName(ResourceLocation) Registry Name} and the
-     *
-     * @param entry the {@link IForgeRegistryEntry.Impl IForgeRegistryEntry.Impl<?>} to set the names for
-     * @param name  the name for the entry that the registry name is derived from
-     *
-     * @return the entry
-     */
-    public static <T extends IForgeRegistryEntry.Impl<?>> T setRegistryNames(final T entry, final String name) {
-
-        return setRegistryNames(entry, String.valueOf(new ResourceLocation(LibCore.MODID, name)));
-    }
 
     /**
      * Turns a class's name into a registry name<br>
@@ -212,17 +262,6 @@ public final class ModUtil
 
         FluidContainerData data = containerFluidMap.get(new ContainerKey(container));
         return data == null ? null : data.fluid.copy();
-    }
-
-    /**
-     * Register an item with the item registry with a custom name : this allows for easier server->client resolution
-     *
-     * @param item The item to register
-     * @param name The mod-unique name of the item
-     */
-    public static void registerItem(net.minecraft.item.Item item, String name)
-    {
-        registerItem(item, name);
     }
 
     /**
