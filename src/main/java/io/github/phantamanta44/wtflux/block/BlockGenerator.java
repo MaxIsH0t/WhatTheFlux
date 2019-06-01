@@ -6,6 +6,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import io.github.phantamanta44.wtflux.WhatTheFlux;
 import io.github.phantamanta44.wtflux.item.block.ItemBlockGenerator;
 import io.github.phantamanta44.wtflux.lib.LibLang;
+import io.github.phantamanta44.wtflux.renderer.IIcon;
 import io.github.phantamanta44.wtflux.tile.TileGenerator;
 import io.github.phantamanta44.wtflux.tile.TileMod;
 import io.github.phantamanta44.wtflux.util.IconHelper;
@@ -13,12 +14,14 @@ import io.github.phantamanta44.wtflux.util.WtfUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
@@ -28,8 +31,8 @@ import java.util.List;
 
 public class BlockGenerator extends BlockModSubs implements ITileEntityProvider, IDismantleable {
 
-    public BlockGenerator() {
-        super(Material.iron, 6);
+    public BlockGenerator(final String name, final Material material) {
+        super(name, material, 6);
         setHardness(4F);
         setResistance(7.5F);
         setBlockName(LibLang.GENERATOR_BLOCK_NAME);
@@ -66,6 +69,11 @@ public class BlockGenerator extends BlockModSubs implements ITileEntityProvider,
     }
 
     @Override
+    protected IIcon icons(IBlockState blockState) {
+        return null;
+    }
+
+    @Override
     public IIcon getIcon(int face, int meta) {
         if (face == 0)
             return icons[0];
@@ -73,6 +81,16 @@ public class BlockGenerator extends BlockModSubs implements ITileEntityProvider,
             return icons[meta * 4 + 1];
         else
             return icons[meta * 4 + 3];
+    }
+
+    @Override
+    public boolean canProvidePower() {
+        return false;
+    }
+
+    @Override
+    public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int face) {
+        return 0;
     }
 
     @Override
@@ -145,4 +163,13 @@ public class BlockGenerator extends BlockModSubs implements ITileEntityProvider,
         return true;
     }
 
+    @Override
+    public ArrayList<ItemStack> dismantleBlock(World world, BlockPos pos, IBlockState state, EntityPlayer player, boolean returnDrops) {
+        return null;
+    }
+
+    @Override
+    public boolean canDismantle(World world, BlockPos pos, IBlockState state, EntityPlayer player) {
+        return false;
+    }
 }

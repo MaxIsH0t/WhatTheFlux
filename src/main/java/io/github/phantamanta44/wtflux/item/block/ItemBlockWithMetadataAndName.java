@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 public class ItemBlockWithMetadataAndName extends ItemBlock {
 
     public ItemBlockWithMetadataAndName(Block block) {
-        super(block, block);
+        super(block);
     }
 
     @Override

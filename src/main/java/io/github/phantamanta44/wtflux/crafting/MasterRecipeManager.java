@@ -1,13 +1,12 @@
 package io.github.phantamanta44.wtflux.crafting;
 
-import cofh.api.modhelpers.ThermalExpansionHelper;
 import cofh.api.util.ThermalExpansionHelper;
-import cpw.mods.fml.common.registry.GameRegistry;
 import io.github.phantamanta44.wtflux.block.BlockSensor;
 import io.github.phantamanta44.wtflux.block.WtfBlocks;
 import io.github.phantamanta44.wtflux.crafting.recipe.GeneratorRecipe;
 import io.github.phantamanta44.wtflux.item.*;
 import io.github.phantamanta44.wtflux.lib.LibDict;
+import io.github.phantamanta44.wtflux.util.ModUtil;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -54,14 +53,14 @@ public final class MasterRecipeManager {
         addOreDictRecipe(new ItemStack(WtfItems.itemMisc, 1, ItemMisc.MIRROR), "sb", "sb", "sb", 's', LibDict.DUST_SILVER, 'b', LibDict.INGOT_NICKEL);
 
         // Carborundum
-        ThermalExpansionHelper.addSmelterRecipe(2400, new ItemStack(Items.clay_ball, 2), new ItemStack(Items.coal), new ItemStack(WtfItems.itemMisc, 1, ItemMisc.RAW_GRAPHITE));
+        ThermalExpansionHelper.addSmelterRecipe(2400, new ItemStack(Items.CLAY_BALL, 2), new ItemStack(Items.COAL), new ItemStack(WtfItems.itemMisc, 1, ItemMisc.RAW_GRAPHITE));
 
         // Graphite
         addSmelting(new ItemStack(WtfItems.itemMisc, 1, ItemMisc.GRAPHITE), new ItemStack(WtfItems.itemMisc, 1, ItemMisc.RAW_GRAPHITE), 0);
 
         // Granular ethylethylene
         for (ItemStack coal : OreDictionary.getOres(LibDict.ORE_COAL))
-            ThermalExpansionHelper.addSmelterRecipe(2400, new ItemStack(coal.getItem(), 1, coal.getItemDamage()), new ItemStack(Items.flint, 2), new ItemStack(Items.coal, 5), new ItemStack(WtfItems.itemMisc, 2, ItemMisc.PROPENE), 30);
+            ThermalExpansionHelper.addSmelterRecipe(2400, new ItemStack(coal.getItem(), 1, coal.getItemDamage()), new ItemStack(Items.FLINT, 2), new ItemStack(Items.COAL, 5), new ItemStack(WtfItems.itemMisc, 2, ItemMisc.PROPENE), 30);
 
         // Polypropylene
         for (ItemStack nickel : OreDictionary.getOres(LibDict.DUST_NICKEL))
@@ -160,7 +159,7 @@ public final class MasterRecipeManager {
         addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.INJECTOR), "pp ", "v c", "ppp", 'c', new ItemStack(WtfItems.itemRct, 1, ItemReactor.COOLANT_CELL), 'v', new ItemStack(WtfItems.itemRct, 1, ItemReactor.VALVE), 'p', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC));
 
         // Pressure Valve
-        addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.VALVE), " l ", "pvp", 'l', new ItemStack(Blocks.lever), 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'v', new ItemStack(Blocks.PISTON));
+        addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.VALVE), " l ", "pvp", 'l', new ItemStack(Blocks.LEVER), 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'v', new ItemStack(Blocks.PISTON));
 
         // Neutron Howitzer Cradle
         addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.HOW_CRADLE), "ppp", "w  ", "ppp", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'w', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.PLASTIC));
@@ -173,16 +172,16 @@ public final class MasterRecipeManager {
         addOreDictRecipe(new ItemStack(WtfItems.itemRct, 1, ItemReactor.CASING), " p ", "pgp", " p ", 'p', new ItemStack(WtfItems.itemRct, 1, ItemReactor.PLATE), 'c', LibDict.DUST_GRAPH);
 
         // Generator Thermometer
-        ItemStack coilElectrum = new ItemStack(GameRegistry.findItem("ThermalExpansion", "material"), 1, 3);
+        ItemStack coilElectrum = new ItemStack(ModUtil.findItem("ThermalExpansion", "material"), 1, 3);
         addOreDictRecipe(new ItemStack(WtfBlocks.blockSensor, 1, BlockSensor.TEMP), "igi", "rmr", "iei", 'i', LibDict.INGOT_IRON, 'g', LibDict.GLASS, 'e', coilElectrum, 'm', new ItemStack(WtfItems.itemRot, 1, ItemRotary.HEAT), 'r', LibDict.REDSTONE);
 
         // Generator Voltometer
-        addOreDictRecipe(new ItemStack(WtfBlocks.blockSensor, 1, BlockSensor.ENERGY), "igi", "rmr", "iei", 'i', LibDict.INGOT_IRON, 'g', LibDict.GLASS, 'e', coilElectrum, 'm', new ItemStack(GameRegistry.findItem("ThermalExpansion", "meter")), 'r', LibDict.REDSTONE);
+        addOreDictRecipe(new ItemStack(WtfBlocks.blockSensor, 1, BlockSensor.ENERGY), "igi", "rmr", "iei", 'i', LibDict.INGOT_IRON, 'g', LibDict.GLASS, 'e', coilElectrum, 'm', new ItemStack(ModUtil.findItem("ThermalExpansion", "meter")), 'r', LibDict.REDSTONE);
 
         // Generator Dynamometer
         addOreDictRecipe(new ItemStack(WtfBlocks.blockSensor, 1, BlockSensor.RPM), "igi", "rmr", "iei", 'i', LibDict.INGOT_IRON, 'g', LibDict.GLASS, 'e', coilElectrum, 'm', new ItemStack(WtfItems.itemMisc, 1, ItemMisc.SOLENOID), 'r', LibDict.REDSTONE);
 
-        GameRegistry.addShapedRecipe(new GeneratorRecipe());
+        //GameRegistry.addShapedRecipe(new GeneratorRecipe());
     }
 
     protected static void addSmelting(ItemStack output, ItemStack input, int xp) {
@@ -190,11 +189,11 @@ public final class MasterRecipeManager {
     }
 
     protected static void addOreDictRecipe(ItemStack output, Object... recipe) {
-        CraftingManager.getInstance().getRecipeList().add(new ShapedOreRecipe(output, recipe));
+        //ModUtil.getRecipeList().add(new ShapedOreRecipe(output, recipe));
     }
 
     protected static void addShapelessOreDictRecipe(ItemStack output, Object... recipe) {
-        CraftingManager.getInstance().getRecipeList().add(new ShapelessOreRecipe(output, recipe));
+        //ModUtil.getRecipeList().add(new ShapelessOreRecipe(output, recipe));
     }
 
 }

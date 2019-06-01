@@ -18,7 +18,7 @@ public class ItemResource extends ItemModSubs {
     public EnumRarity getRarity(ItemStack stack) {
         switch (stack.getItemDamage()) {
         default:
-            return EnumRarity.common;
+            return EnumRarity.COMMON;
         }
     }
 

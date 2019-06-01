@@ -2,22 +2,24 @@ package io.github.phantamanta44.wtflux.block;
 
 import cofh.api.block.IDismantleable;
 import com.google.common.collect.Lists;
-import cpw.mods.fml.common.registry.GameRegistry;
 import io.github.phantamanta44.wtflux.WhatTheFlux;
 import io.github.phantamanta44.wtflux.item.block.ItemBlockDirectional;
 import io.github.phantamanta44.wtflux.lib.LibLang;
+import io.github.phantamanta44.wtflux.renderer.IIcon;
+import io.github.phantamanta44.wtflux.renderer.IIconRegister;
 import io.github.phantamanta44.wtflux.tile.TileMod;
 import io.github.phantamanta44.wtflux.tile.TileSensor;
 import io.github.phantamanta44.wtflux.util.IconHelper;
+import io.github.phantamanta44.wtflux.util.ModUtil;
 import io.github.phantamanta44.wtflux.util.WtfUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -27,8 +29,8 @@ public class BlockSensor extends BlockModSubs implements ITileEntityProvider, ID
 
     public static final int TEMP = 0, ENERGY = 1, RPM = 2;
 
-    public BlockSensor() {
-        super(Material.iron, 3);
+    public BlockSensor(final String name, final Material material) {
+        super(name, material, 2);
         setHardness(4F);
         setResistance(7.5F);
         setBlockName(LibLang.SENSOR_BLOCK_NAME);
@@ -36,7 +38,7 @@ public class BlockSensor extends BlockModSubs implements ITileEntityProvider, ID
 
     @Override
     public Block setBlockName(String name) {
-        GameRegistry.registerBlock(this, ItemBlockDirectional.class, name);
+        ModUtil.registerBlock(this, ItemBlockDirectional.class, name);
         return super.setBlockName(name);
     }
 
@@ -52,10 +54,16 @@ public class BlockSensor extends BlockModSubs implements ITileEntityProvider, ID
 
     @Override
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int face) {
-        TileSensor tile = (TileSensor)world.getTileEntity(x, y, z);
-        return icons[tile != null
-                ? face == tile.getFacing() ? 6 : world.getBlockMetadata(x, y, z) * 2 + (tile.isTripped() ? 1 : 0)
-                : face == 3 ? 6 : world.getBlockMetadata(x, y, z) * 2];
+        BlockPos blockPos = new BlockPos(x, y, z);
+        TileSensor tile = (TileSensor)world.getTileEntity(blockPos);
+        //IIcon icon = icons[tile != null
+                //? face == tile.getFacing() ? 6 : world.getBlockState(blockPos)]; return icon;
+        return null;
+    }
+
+    @Override
+    protected IIcon icons(IBlockState blockState) {
+        return null;
     }
 
     @Override
@@ -70,22 +78,26 @@ public class BlockSensor extends BlockModSubs implements ITileEntityProvider, ID
 
     @Override
     public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int face) {
-        TileSensor tile = (TileSensor)world.getTileEntity(x, y, z);
+        BlockPos blockPos = new BlockPos(x, y, z);
+        TileSensor tile = (TileSensor)world.getTileEntity(blockPos);
         return tile != null ? (face == tile.getOppositeFace() ? 0 : (tile.isTripped() ? 15 : 0)) : 0;
     }
 
     @Override
     public ArrayList<ItemStack> dismantleBlock(EntityPlayer player, World world, int x, int y, int z, boolean returnDrops) {
-        world.setBlockToAir(x, y, z);
-        ItemStack stack = new ItemStack(this, 1, world.getBlockMetadata(x, y, z));
-        if (!returnDrops)
-            WtfUtil.dropItem(world, x, y, z, stack);
-        return Lists.newArrayList(stack);
+        BlockPos blockPos = new BlockPos(x, y, z);
+        world.setBlockToAir(blockPos);
+        //ItemStack stack = new ItemStack(this, 1, world.getBlockState(blockPos));
+        //if (!returnDrops)
+            //WtfUtil.dropItem(world, x, y, z, stack);
+        //return Lists.newArrayList(stack);
+        return null;
     }
 
     @Override
     public boolean canDismantle(EntityPlayer player, World world, int x, int y, int z) {
-        return ((TileMod)world.getTileEntity(x, y, z)).isInitialized();
+        BlockPos blockPos = new BlockPos(x, y, z);
+        return ((TileMod)world.getTileEntity(blockPos)).isInitialized();
     }
 
     @Override
@@ -105,4 +117,13 @@ public class BlockSensor extends BlockModSubs implements ITileEntityProvider, ID
         return TileSensor.getAppropriateTile(meta);
     }
 
+    @Override
+    public ArrayList<ItemStack> dismantleBlock(World world, BlockPos pos, IBlockState state, EntityPlayer player, boolean returnDrops) {
+        return null;
+    }
+
+    @Override
+    public boolean canDismantle(World world, BlockPos pos, IBlockState state, EntityPlayer player) {
+        return false;
+    }
 }

@@ -1,10 +1,17 @@
 package io.github.phantamanta44.wtflux.block;
 
 import io.github.phantamanta44.wtflux.lib.LibLang;
+import io.github.phantamanta44.wtflux.renderer.IIcon;
 import io.github.phantamanta44.wtflux.util.ModUtil;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+
+import java.util.ArrayList;
 
 public class BlockCompressed extends BlockModSubs {
 
@@ -21,5 +28,35 @@ public class BlockCompressed extends BlockModSubs {
     @Override
     public boolean isBeaconBase(IBlockAccess worldObj, BlockPos pos, BlockPos beacon) {
         return true;
+    }
+
+    @Override
+    protected IIcon icons(IBlockState blockState) {
+        return null;
+    }
+
+    @Override
+    public boolean canProvidePower() {
+        return false;
+    }
+
+    @Override
+    public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int face) {
+        return 0;
+    }
+
+    @Override
+    public ArrayList<ItemStack> dismantleBlock(EntityPlayer player, World world, int x, int y, int z, boolean returnDrops) {
+        return null;
+    }
+
+    @Override
+    public boolean canDismantle(EntityPlayer player, World world, int x, int y, int z) {
+        return false;
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float subX, float subY, float subZ) {
+        return false;
     }
 }

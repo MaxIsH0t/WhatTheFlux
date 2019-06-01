@@ -3,11 +3,13 @@ package io.github.phantamanta44.wtflux.item;
 
 import io.github.phantamanta44.wtflux.lib.LibLang;
 import io.github.phantamanta44.wtflux.lib.LibNBT;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemReactor extends ItemModSubs {
@@ -20,12 +22,12 @@ public class ItemReactor extends ItemModSubs {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List info, boolean flag) {
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         int meta = stack.getItemDamage();
         if (meta == 0 || meta == 1) {
             float damagePercent = (float)(getVirtualMaxDamage(stack) - getVirtualDamage(stack)) / (float)getVirtualMaxDamage(stack);
-            String color = (damagePercent == 1F ? EnumChatFormatting.AQUA : (damagePercent > 0.7F ? EnumChatFormatting.GREEN : (damagePercent > 0.5F ? EnumChatFormatting.YELLOW : (damagePercent > 0.2F ? EnumChatFormatting.GOLD : EnumChatFormatting.DARK_RED)))).toString();
-            info.add(String.format("%s: %s%d%%", LibLang.get(LibLang.INF_DURA), color, (int)Math.max(damagePercent * 100, 1)));
+            String color = (damagePercent == 1F ? TextFormatting.AQUA : (damagePercent > 0.7F ? TextFormatting.GREEN : (damagePercent > 0.5F ? TextFormatting.YELLOW : (damagePercent > 0.2F ? TextFormatting.GOLD : TextFormatting.DARK_RED)))).toString();
+            tooltip.add(String.format("%s: %s%d%%", LibLang.get(LibLang.INF_DURA), color, (int)Math.max(damagePercent * 100, 1)));
         }
     }
 
@@ -44,8 +46,8 @@ public class ItemReactor extends ItemModSubs {
     }
 
     public int getVirtualDamage(ItemStack stack) {
-        if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey(LibNBT.DURABILITY))
-            return stack.stackTagCompound.getInteger(LibNBT.DURABILITY);
+        if (stack.getTagCompound() != null && stack.getTagCompound().hasKey(LibNBT.DURABILITY))
+            return stack.getTagCompound().getInteger(LibNBT.DURABILITY);
         return 0;
     }
 
@@ -74,21 +76,21 @@ public class ItemReactor extends ItemModSubs {
     public ItemStack decrementUses(ItemStack stack) {
         int meta = stack.getItemDamage();
         if (meta == 0 || meta == 1) {
-            if (stack.stackTagCompound != null) {
-                if (stack.stackTagCompound.hasKey(LibNBT.DURABILITY)) {
-                    int dura = stack.stackTagCompound.getInteger(LibNBT.DURABILITY);
-                    stack.stackTagCompound.setInteger(LibNBT.DURABILITY, dura + 1);
+            if (stack.getTagCompound() != null) {
+                if (stack.getTagCompound().hasKey(LibNBT.DURABILITY)) {
+                    int dura = stack.getTagCompound().getInteger(LibNBT.DURABILITY);
+                    stack.getTagCompound().setInteger(LibNBT.DURABILITY, dura + 1);
                 }
                 else
-                    stack.stackTagCompound.setInteger(LibNBT.DURABILITY, 1);
+                    stack.getTagCompound().setInteger(LibNBT.DURABILITY, 1);
             }
             else {
                 stack.setTagCompound(new NBTTagCompound());
-                stack.stackTagCompound.setInteger(LibNBT.DURABILITY, 1);
+                stack.getTagCompound().setInteger(LibNBT.DURABILITY, 1);
             }
-            if (stack.stackTagCompound.getInteger(LibNBT.DURABILITY) >= getVirtualMaxDamage(stack))
-                stack.stackSize--;
-            if (stack.stackSize < 0)
+            if (stack.getTagCompound().getInteger(LibNBT.DURABILITY) >= getVirtualMaxDamage(stack))
+                //stack.stackSize--;
+            if (stack.getMaxStackSize() < 0)
                 return null;
         }
         return stack;
