@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = LibCore.MODID, version = LibCore.MODVER,
-        dependencies = "after:cofhcore;" + "after:thermalexpansion;" + "after:thermalfoundation;" + "after:codechickenlib;" + "after:cofhworld;" + "after:redstoneflux;")
+        dependencies = "required-after:cofhcore;" + "required-after:thermalexpansion;" + "required-after:thermalfoundation;" + "required-after:codechickenlib;" + "required-after:cofhworld;" + "required-after:redstoneflux;" + "after:before:enderio;")
 public class WhatTheFlux {
 
     @Mod.Instance(LibCore.MODID)
