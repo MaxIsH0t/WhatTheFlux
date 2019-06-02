@@ -2,6 +2,7 @@ package io.github.phantamanta44.wtflux.common.blocks.generator;
 
 import com.google.common.collect.Lists;
 import io.github.phantamanta44.wtflux.common.blocks.BlockModSubs;
+import io.github.phantamanta44.wtflux.common.tile.TileGenerator;
 import io.github.phantamanta44.wtflux.util.ModUtil;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -41,7 +42,7 @@ public class BlockGenerator extends BlockModSubs {
 
     public ArrayList<ItemStack> compileDrops(IBlockAccess world, BlockPos blockPos, IBlockState meta) {
         ArrayList<ItemStack> drops = Lists.newArrayList();
-        TileGenerator tile = (TileGenerator)world.getTileEntity(blockPos);
+        TileGenerator tile = (TileGenerator) world.getTileEntity(blockPos);
         if (tile != null && tile.isInitialized()) {
             drops.add(tile.getNBTItem());
             for (int i = 0; i < tile.getSizeInventory(); i++) {

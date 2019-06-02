@@ -5,7 +5,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 
 import javax.annotation.Nullable;
 
@@ -95,6 +95,7 @@ public abstract class TileBasicInventory extends TileMod implements IInventory
         return true;
     }
 
+    // TODO Made "Items" to "item" with a lowercase. Check if that works.
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
@@ -111,8 +112,29 @@ public abstract class TileBasicInventory extends TileMod implements IInventory
         }
     }
 
+    // TODO Made "Items" to "item" with a lowercase. Check if that works.
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        return super.writeToNBT(compound);
+        super.writeToNBT(compound);
+        NBTTagList tagList = new NBTTagList();
+        for (int i = 0; i < slots.length; i++) {
+            if (slots[i] != null) {
+                NBTTagCompound itemTag = new NBTTagCompound();
+                slots[i].writeToNBT(itemTag);
+                itemTag.setInteger("SlotID", i);
+                tagList.appendTag(itemTag);
+            }
+        }
+        compound.setTag("items", tagList);
+        return compound;
+    }
+
+    // TODO Made "Items" to "item" with a lowercase. Check if that works.
+    @Nullable
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        SPacketUpdateTileEntity packetUpdateTileEntity = (SPacketUpdateTileEntity) super.getUpdatePacket();
+        packetUpdateTileEntity.getNbtCompound().removeTag("items");
+        return packetUpdateTileEntity;
     }
 }
