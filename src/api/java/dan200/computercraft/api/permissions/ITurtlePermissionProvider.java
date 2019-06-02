@@ -21,22 +21,22 @@ import javax.annotation.Nonnull;
 public interface ITurtlePermissionProvider
 {
     /**
-     * Determine whether a block can be entered by a turtle.
+     * Determine whether a blocks can be entered by a turtle.
      *
-     * @param world The world the block exists in
-     * @param pos   The location of the block.
-     * @return Whether the turtle can move into this block.
+     * @param world The world the blocks exists in
+     * @param pos   The location of the blocks.
+     * @return Whether the turtle can move into this blocks.
      */
     boolean isBlockEnterable( @Nonnull World world, @Nonnull BlockPos pos );
 
     /**
-     * Determine whether a block can be modified by a turtle.
+     * Determine whether a blocks can be modified by a turtle.
      *
      * This includes breaking and placing blocks.
      *
-     * @param world The world the block exists in
-     * @param pos   The location of the block.
-     * @return Whether the turtle can modify this block.
+     * @param world The world the blocks exists in
+     * @param pos   The location of the blocks.
+     * @return Whether the turtle can modify this blocks.
      */
     boolean isBlockEditable( @Nonnull World world, @Nonnull BlockPos pos );
 }

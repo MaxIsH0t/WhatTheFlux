@@ -1,41 +1,29 @@
 package io.github.phantamanta44.wtflux.util;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import io.github.phantamanta44.wtflux.creativetabs.ModCreativeTab;
-import io.github.phantamanta44.wtflux.lib.LibCore;
+import io.github.phantamanta44.wtflux.common.creativetab.ModCreativeTabs;
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.relauncher.libraries.ModList;
+import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static net.minecraft.util.EnumFacing.*;
-
-public final class ModUtil
+public class ModUtil
 {
     /**
      * Sets the {@link IForgeRegistryEntry.Impl#setRegistryName(ResourceLocation) Registry Name} and the
+     * {@link Item#setTranslationKey(String) Translation Key} (if applicable) for the entry
      *
      * @param entry the {@link IForgeRegistryEntry.Impl IForgeRegistryEntry.Impl<?>} to set the names for
      * @param name  the name for the entry that the registry name is derived from
@@ -44,13 +32,14 @@ public final class ModUtil
      */
     public static <T extends IForgeRegistryEntry.Impl<?>> T setRegistryNames(final T entry, final String name) {
 
-        return setRegistryNames(entry, new ResourceLocation(LibCore.MODID, name));
+        return setRegistryNames(entry, new ResourceLocation(ModReference.MOD_ID, name));
     }
 
     /**
      * Sets the {@link IForgeRegistryEntry.Impl#setRegistryName(ResourceLocation) Registry Name} and the
+     * {@link Item#setTranslationKey(String) Translation Key} (if applicable) for the entry
      *
-     * @param entry        the {@link net.minecraftforge.registries.IForgeRegistryEntry.Impl IForgeRegistryEntry.Impl<?>} to set the names for
+     * @param entry        the {@link IForgeRegistryEntry.Impl IForgeRegistryEntry.Impl<?>} to set the names for
      * @param registryName the registry name for the entry that the unlocalised name is also gotten from
      *
      * @return the entry
@@ -62,6 +51,7 @@ public final class ModUtil
 
     /**
      * Sets the {@link IForgeRegistryEntry.Impl#setRegistryName(ResourceLocation) Registry Name} and the
+     * {@link Item#setTranslationKey(String) Translation Key} (if applicable) for the entry
      *
      * @param entry          the {@link IForgeRegistryEntry.Impl IForgeRegistryEntry.Impl<?>} to set the names for
      * @param registryName   the registry name for the entry
@@ -78,9 +68,81 @@ public final class ModUtil
         }
         if (entry instanceof Item) {
             ((Item) entry).setUnlocalizedName(translationKey);
-            setCreativeTab(Block.getBlockFromItem((Item) entry));
+            setCreativeTab((Item) entry);
         }
         return entry;
+    }
+
+    /**
+     * Gets the game name from a slot<br>
+     * For example {@link EntityEquipmentSlot#CHEST EntityEquipmentSlot.CHEST} -> "CHESTPLATE"
+     *
+     * @param slot the {@link EntityEquipmentSlot EntityEquipmentSlot} to get the name for
+     *
+     * @return the game name for the slot
+     */
+    public static String getSlotGameNameUppercase(final EntityEquipmentSlot slot) {
+
+        switch (slot) {
+            case CHEST:
+                return "CHESTPLATE";
+            case FEET:
+                return "BOOTS";
+            case HEAD:
+                return "HELMET";
+            case LEGS:
+                return "LEGGINGS";
+            default:
+                return slot.name().toUpperCase();
+        }
+    }
+
+    /**
+     * Converts the game name to lowercase as per {@link String#toLowerCase() String.toLowerCase}.
+     *
+     * @param slot the {@link EntityEquipmentSlot} to get the name from
+     *
+     * @return the game name in lowercase as per {@link String#toLowerCase() String.toLowerCase}.
+     */
+    public static String getSlotGameNameLowercase(final EntityEquipmentSlot slot) {
+
+        return getSlotGameNameUppercase(slot).toLowerCase();
+    }
+
+    /**
+     * Capitalizes the game name formatted as per {@link StringUtils#capitalize(String) StringUtils.capitalize}.
+     *
+     * @param slot the {@link EntityEquipmentSlot} to get the name from
+     *
+     * @return the game name formatted as per {@link StringUtils#capitalize(String) StringUtils.capitalize}.
+     */
+    public static String getSlotGameNameFormatted(final EntityEquipmentSlot slot) {
+
+        return StringUtils.capitalize(getSlotGameNameLowercase(slot));
+    }
+
+    /**
+     * Utility method to make sure that all our items appear on our creative tab, the search tab and any other tab they specify
+     *
+     * @param item the {@link Item Item}
+     *
+     * @return an array of all tabs that this item is on.
+     */
+    public static CreativeTabs[] getCreativeTabs(final Item item) {
+
+        return new CreativeTabs[] { item.getCreativeTab(), ModCreativeTabs.MOD_TAB, CreativeTabs.SEARCH };
+    }
+
+    /**
+     * Utility method to make sure that all our items appear on our creative tab
+     *
+     * @param item the {@link Item Item}
+     */
+    public static void setCreativeTab(final Item item) {
+
+        if (item.getCreativeTab() == null) {
+            item.setCreativeTab(ModCreativeTabs.MOD_TAB);
+        }
     }
 
     /**
@@ -91,54 +153,28 @@ public final class ModUtil
     public static void setCreativeTab(final Block block) {
 
         if (block.getCreativeTabToDisplayOn() == null) {
-            block.setCreativeTab(ModCreativeTab.MOD_TAB);
+            block.setCreativeTab(ModCreativeTabs.MOD_TAB);
         }
     }
 
-    public static final EnumFacing[] VALID_DIRECTIONS = {DOWN, UP, NORTH, SOUTH, WEST, EAST};
+    /**
+     * Maps a value from one range to another range. Taken from https://stackoverflow.com/a/5732117
+     *
+     * @param input_start  the start of the input's range
+     * @param input_end    the end of the input's range
+     * @param output_start the start of the output's range
+     * @param output_end   the end of the output's range
+     * @param input        the input
+     *
+     * @return the newly mapped value
+     */
+    public static double map(final double input_start, final double input_end, final double output_start, final double output_end, final double input) {
 
-    private static class ContainerKey
-    {
-        ItemStack container;
-        FluidStack stack;
-        private ContainerKey(ItemStack container)
-        {
-            this.container = container;
-        }
-        private ContainerKey(ItemStack container, FluidStack stack)
-        {
-            this(container);
-            this.stack = stack;
-        }
-        @Override
-        public int hashCode()
-        {
-            int code = 1;
-            code = 31*code + container.getItem().hashCode();
-            code = 31*code + container.getItemDamage();
-            if (stack != null)
-                code = 31*code + stack.getFluid().hashCode();
-            return code;
-        }
-        @Override
-        public boolean equals(Object o)
-        {
-            if (!(o instanceof ContainerKey)) return false;
-            ContainerKey ck = (ContainerKey)o;
-            if (container.getItem() != ck.container.getItem()) return false;
-            if (container.getItemDamage() != ck.container.getItemDamage()) return false;
-            if (stack == null && ck.stack != null) return false;
-            if (stack != null && ck.stack == null) return false;
-            if (stack == null && ck.stack == null) return true;
-            if (stack.getFluid() != ck.stack.getFluid()) return false;
-            return true;
-        }
+        final double input_range = input_end - input_start;
+        final double output_range = output_end - output_start;
+
+        return (((input - input_start) * output_range) / input_range) + output_start;
     }
-
-    private static Map<ContainerKey, FluidContainerData> containerFluidMap = Maps.newHashMap();
-    private static final ItemStack NULL_EMPTYCONTAINER = new ItemStack(Items.BUCKET);
-    private static Map<ContainerKey, FluidContainerData> filledContainerMap = Maps.newHashMap();
-    private static Set<ContainerKey> emptyContainers = Sets.newHashSet();
 
     /**
      * Turns a class's name into a registry name<br>
@@ -161,198 +197,251 @@ public final class ModUtil
         return StringUtils.uncapitalize(clazz.getSimpleName().replace(removeType, "")).replaceAll("([A-Z])", "_$1").toLowerCase();
     }
 
-    public static ItemStack loadItemStackFromNBT(NBTTagCompound p_77949_0_)
-    {
-        ItemStack itemstack = new ItemStack(Blocks.PUMPKIN);
-        itemstack.writeToNBT(p_77949_0_);
-        return itemstack.getItem() != null ? itemstack : null;
-    }
-
     /**
-     * Register a new fluid containing item.
+     * Turns a registry name into a more human readable name<br>
+     * It expects the registry name to be in snake_case format<br>
+     * It returns the registry name with "_" replaced with space and every word {@link StringUtils#capitalize(String) capitalized}<br>
+     * <br>
+     * Examples:<br>
+     * super_advanced_furnace -> Super Advanced Furnace<br>
+     * portable_generator -> Portable Generator<br>
+     * tile_portable_generator -> Tile Portable Generator <br>
      *
-     * @param data
-     *            See {@link FluidContainerData}.
-     * @return True if container was successfully registered; false if it already is, or an invalid parameter was passed.
-     */
-    public static boolean registerFluidContainer(FluidContainerData data)
-    {
-        if (isFilledContainer(data.filledContainer) || data.filledContainer == null)
-        {
-            return false;
-        }
-        if (data.fluid == null || data.fluid.getFluid() == null)
-        {
-            FMLLog.bigWarning("Invalid registration attempt for a fluid container item %s has occurred. The registration has been denied to prevent crashes. The mod responsible for the registration needs to correct this.", data.filledContainer.getItem().getUnlocalizedName(data.filledContainer));
-            return false;
-        }
-        containerFluidMap.put(new ContainerKey(data.filledContainer), data);
-
-        if (data.emptyContainer != null && data.emptyContainer != NULL_EMPTYCONTAINER)
-        {
-            filledContainerMap.put(new ContainerKey(data.emptyContainer, data.fluid), data);
-            emptyContainers.add(new ContainerKey(data.emptyContainer));
-        }
-
-        MinecraftForge.EVENT_BUS.post(new FluidContainerRegisterEvent(data));
-        return true;
-    }
-
-    public static boolean isFilledContainer(ItemStack container)
-    {
-        return container != null && getFluidForFilledItem(container) != null;
-    }
-
-    /**
-     * Wrapper class for the registry entries. Ensures that none of the attempted registrations
-     * contain null references unless permitted.
-     */
-    public static class FluidContainerData
-    {
-        public final FluidStack fluid;
-        public final ItemStack filledContainer;
-        public final ItemStack emptyContainer;
-
-        public FluidContainerData(FluidStack stack, ItemStack filledContainer, ItemStack emptyContainer)
-        {
-            this(stack, filledContainer, emptyContainer, false);
-        }
-
-        public FluidContainerData(FluidStack stack, ItemStack filledContainer, ItemStack emptyContainer, boolean nullEmpty)
-        {
-            this.fluid = stack;
-            this.filledContainer = filledContainer;
-            this.emptyContainer = emptyContainer == null ? NULL_EMPTYCONTAINER : emptyContainer;
-
-            if (stack == null || filledContainer == null || emptyContainer == null && !nullEmpty)
-            {
-                throw new RuntimeException("Invalid FluidContainerData - a parameter was null.");
-            }
-        }
-
-        public FluidContainerData copy()
-        {
-            return new FluidContainerData(fluid, filledContainer, emptyContainer, true);
-        }
-    }
-
-    public static class FluidContainerRegisterEvent extends Event
-    {
-        public final FluidContainerData data;
-
-        public FluidContainerRegisterEvent(FluidContainerData data)
-        {
-            this.data = data.copy();
-        }
-    }
-
-    /**
-     * Determines the fluid type and amount inside a container.
+     * @param registryNamePath the path of the registryName name in
      *
-     * @param container
-     *            The fluid container.
-     * @return FluidStack representing stored fluid.
+     * @return the recommended translated name for the class
      */
-    public static FluidStack getFluidForFilledItem(ItemStack container)
-    {
-        if (container == null)
-        {
-            return null;
-        }
+    public static String registryNameToTranslatedName(final String registryNamePath) {
 
-        FluidContainerData data = containerFluidMap.get(new ContainerKey(container));
-        return data == null ? null : data.fluid.copy();
+        final String[] strs = registryNamePath.split("_");
+        for (int i = 0; i < strs.length; i++) {
+            strs[i] = StringUtils.capitalize(strs[i]);
+        }
+        final String translatedName = String.join(" ", strs);
+        return translatedName;
     }
 
     /**
-     * gets the way this piston should face for that entity that placed it.
+     * Generic & dynamic version of {@link Container#transferStackInSlot(EntityPlayer, int)}<br>
+     * Handle when the stack in slot {@code index} is shift-clicked. Normally this moves the stack between the player inventory and the other inventory(s).
+     *
+     * @param player    the player passed in
+     * @param index     the index passed in
+     * @param container the container to apply the transfer to
+     *
+     * @return the {@link ItemStack}
      */
-    public static int determineOrientation(World p_150071_0_, int p_150071_1_, int p_150071_2_, int p_150071_3_, EntityLivingBase p_150071_4_)
-    {
-        if (MathHelper.abs((float)p_150071_4_.posX - (float)p_150071_1_) < 2.0F && MathHelper.abs((float)p_150071_4_.posZ - (float)p_150071_3_) < 2.0F)
-        {
-            double d0 = p_150071_4_.posY + 1.82D - (double)p_150071_4_.posY;
+    public static ItemStack transferStackInSlot(final EntityPlayer player, final int index, final Container container) {
 
-            if (d0 - (double)p_150071_2_ > 2.0D)
-            {
-                return 1;
+        ItemStack itemstack = ItemStack.EMPTY;
+        final Slot slot = container.inventorySlots.get(index);
+        if ((slot != null) && slot.getHasStack()) {
+            final ItemStack itemstack1 = slot.getStack();
+            itemstack = itemstack1.copy();
+
+            final int containerSlots = container.inventorySlots.size() - player.inventory.mainInventory.size();
+            if (index < containerSlots) {
+                if (! mergeItemStack(itemstack1, containerSlots, container.inventorySlots.size(), true, container)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (! mergeItemStack(itemstack1, 0, containerSlots, false, container)) {
+                return ItemStack.EMPTY;
+            }
+            if (itemstack1.getCount() == 0) {
+                slot.putStack(ItemStack.EMPTY);
+            } else {
+                slot.onSlotChanged();
+            }
+            if (itemstack1.getCount() == itemstack.getCount()) {
+                return ItemStack.EMPTY;
+            }
+            slot.onTake(player, itemstack1);
+        }
+        return itemstack;
+    }
+
+    /**
+     * Exact copy of {@link Container#mergeItemStack} with the same JavaDoc (improved for readability)<br>
+     * Merges provided ItemStack with the first available one in the container/player inventor between startIndex (included) and endIndex (excluded).<br>
+     * <font color="#FDCA42"> ⚠WARNING⚠: The Container implementation does not check if the item is valid for the slot! </font>
+     *
+     * @param stack            the stack to merge
+     * @param startIndex
+     * @param endIndex
+     * @param reverseDirection
+     * @param container        the container to apply the merge to
+     *
+     * @return
+     */
+    public static boolean mergeItemStack(final ItemStack stack, final int startIndex, final int endIndex, final boolean reverseDirection, final Container container) {
+
+        boolean flag = false;
+        int i = startIndex;
+
+        if (reverseDirection) {
+            i = endIndex - 1;
+        }
+
+        if (stack.isStackable()) {
+            while (! stack.isEmpty()) {
+                if (reverseDirection) {
+                    if (i < startIndex) {
+                        break;
+                    }
+                } else if (i >= endIndex) {
+                    break;
+                }
+
+                final Slot slot = container.inventorySlots.get(i);
+                final ItemStack itemstack = slot.getStack();
+
+                if (! itemstack.isEmpty() && (itemstack.getItem() == stack.getItem()) && (! stack.getHasSubtypes() || (stack.getMetadata() == itemstack.getMetadata())) && ItemStack.areItemStackTagsEqual(stack, itemstack)) {
+                    final int j = itemstack.getCount() + stack.getCount();
+                    final int maxSize = Math.min(slot.getSlotStackLimit(), stack.getMaxStackSize());
+
+                    if (j <= maxSize) {
+                        stack.setCount(0);
+                        itemstack.setCount(j);
+                        slot.onSlotChanged();
+                        flag = true;
+                    } else if (itemstack.getCount() < maxSize) {
+                        stack.shrink(maxSize - itemstack.getCount());
+                        itemstack.setCount(maxSize);
+                        slot.onSlotChanged();
+                        flag = true;
+                    }
+                }
+
+                if (reverseDirection) {
+                    -- i;
+                } else {
+                    ++ i;
+                }
+            }
+        }
+
+        if (! stack.isEmpty()) {
+            if (reverseDirection) {
+                i = endIndex - 1;
+            } else {
+                i = startIndex;
             }
 
-            if ((double)p_150071_2_ - d0 > 0.0D)
-            {
-                return 0;
+            while (true) {
+                if (reverseDirection) {
+                    if (i < startIndex) {
+                        break;
+                    }
+                } else if (i >= endIndex) {
+                    break;
+                }
+
+                final Slot slot1 = container.inventorySlots.get(i);
+                final ItemStack itemstack1 = slot1.getStack();
+
+                if (itemstack1.isEmpty() && slot1.isItemValid(stack)) {
+                    if (stack.getCount() > slot1.getSlotStackLimit()) {
+                        slot1.putStack(stack.splitStack(slot1.getSlotStackLimit()));
+                    } else {
+                        slot1.putStack(stack.splitStack(stack.getCount()));
+                    }
+
+                    slot1.onSlotChanged();
+                    flag = true;
+                    break;
+                }
+
+                if (reverseDirection) {
+                    -- i;
+                } else {
+                    ++ i;
+                }
             }
         }
 
-        int l = MathHelper.floor((double)(p_150071_4_.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-        return l == 0 ? 2 : (l == 1 ? 5 : (l == 2 ? 3 : (l == 3 ? 4 : 0)));
+        return flag;
     }
 
-    public static EnumFacing getOrientation(int id)
-    {
-        if (id >= 0 && id < VALID_DIRECTIONS.length)
-        {
-            return VALID_DIRECTIONS[id];
+    /**
+     * @param whole the whole number
+     * @param parts how many parts to split the number into
+     *
+     * @return an array of parts adding up to the whole number
+     */
+    public static int[] splitIntoParts(final int whole, final int parts) {
+
+        final int[] arr = new int[parts];
+        int remain = whole;
+        int partsLeft = parts;
+        for (int i = 0; partsLeft > 0; i++) {
+            final int size = ((remain + partsLeft) - 1) / partsLeft; // rounded up, aka ceiling
+            arr[i] = size;
+            remain -= size;
+            partsLeft--;
         }
-        return null;
+        return arr;
     }
 
     /**
-     * Look up a mod item in the global "named item list"
-     * @param modId The modid owning the item
-     * @param name The name of the item itself
-     * @return The item or null if not found
+     * @param world the world to get the logical side from
+     *
+     * @return the logical side of the world
      */
-    public static Item findItem(String modId, String name)
-    {
-        return ModUtil.setRegistryNames(name);
-    }
+    public static Side getLogicalSide(final World world) {
 
-    private static Item setRegistryNames(String name) {
-        return null;
-    }
-
-    private static final CraftingManager instance = new CraftingManager();
-
-    /**
-     * Returns the static instance of this class
-     */
-    public static final CraftingManager getInstance()
-    {
-        /** The static instance of this class */
-        return instance;
-    }
-
-    private List recipes = new ArrayList();
-
-    /**
-     * returns the List<> of all recipes
-     */
-    public List getRecipeList()
-    {
-        return this.recipes;
+        if (world.isRemote) {
+            return Side.CLIENT;
+        } else {
+            return Side.SERVER;
+        }
     }
 
     /**
-     * Register a block with the world, with the specified item class and block name
-     * @param block The block to register
-     * @param itemclass The item type to register with it : null registers a block without associated item.
-     * @param name The mod-unique name to register it as, will get prefixed by your modid.
+     * @param world the world to get the logical side from
      */
-    public static Block registerBlock(Block block, Class<? extends ItemBlock> itemclass, String name)
-    {
-        return registerBlock(block, itemclass, name);
+    public static void logLogicalSide(final World world) {
+
+        LogManager.getLogger().info("Logical Side: " + getLogicalSide(world));
     }
 
-
     /**
-     * Look up a mod block in the global "named item list"
-     * @param modId The modid owning the block
-     * @param name The name of the block itself
-     * @return The block or null if not found
+     * "name", "suffix" -> "name_suffix"<br>
+     * "name, "" -> "name"<br>
+     * "", "suffix" -> "_suffix"
+     *
+     * @param name   the name
+     * @param suffix the suffix
+     *
+     * @return name + "_" + suffix if the suffix's length is greater than 0 or just the name
      */
-    public static Item findBlock(String modId, String name)
-    {
-        return ModUtil.setRegistryNames(name);
+    public static String getNameWithSuffix(final String name, final String suffix) {
+
+        if (suffix.length() <= 0) {
+            return name;
+        }
+        return name + "_" + suffix;
+    }
+
+    public static void dropItem(World world, BlockPos blockPos, ItemStack stack) {
+        float f = world.rand.nextFloat() * 0.8F + 0.1F;
+        float f1 = world.rand.nextFloat() * 0.8F + 0.1F;
+        float f2 = world.rand.nextFloat() * 0.8F + 0.1F;
+        EntityItem ent = new EntityItem(world, blockPos.getX() + f, blockPos.getY() + f1, blockPos.getZ() + f2, stack);
+        float f3 = 0.05F;
+        ent.motionX = (double)((float)world.rand.nextGaussian() * f3);
+        ent.motionY = (double)((float)world.rand.nextGaussian() * f3 + 0.2F);
+        ent.motionZ = (double)((float)world.rand.nextGaussian() * f3);
+        ent.setDefaultPickupDelay();
+        world.spawnEntity(ent);
+    }
+
+    public static boolean canHarvest(World world, BlockPos blockPos, EntityPlayer player) {
+        IBlockState state = world.getBlockState(blockPos);
+        Block block = state.getBlock();
+        return !player.capabilities.isCreativeMode && !world.isRemote && block.canHarvestBlock(world, blockPos, player);
+    }
+
+    public static boolean isMouseOver(int x, int y, int width, int height, int mX, int mY) {
+        return mX >= x - 1 && mX < x + width + 1 && mY >= y - 1 && mY < y + height + 1;
     }
 }

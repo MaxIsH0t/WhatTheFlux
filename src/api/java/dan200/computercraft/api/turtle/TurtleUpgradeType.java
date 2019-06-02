@@ -28,7 +28,7 @@ public enum TurtleUpgradeType
     /**
      * An upgrade which provides both a tool and a peripheral. This can be used when you wish
      * your upgrade to also provide methods. For example, a pickaxe could provide methods
-     * determining whether it can break the given block or not.
+     * determining whether it can break the given blocks or not.
      */
     Both,;
 

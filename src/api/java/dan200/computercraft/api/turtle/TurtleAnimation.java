@@ -24,25 +24,25 @@ public enum TurtleAnimation
     None,
 
     /**
-     * Make the turtle move forward. Note that the animation starts from the block <em>behind</em> it, and
+     * Make the turtle move forward. Note that the animation starts from the blocks <em>behind</em> it, and
      * moves into this one.
      */
     MoveForward,
 
     /**
-     * Make the turtle move backwards. Note that the animation starts from the block <em>in front</em> it, and
+     * Make the turtle move backwards. Note that the animation starts from the blocks <em>in front</em> it, and
      * moves into this one.
      */
     MoveBack,
 
     /**
-     * Make the turtle move backwards. Note that the animation starts from the block <em>above</em> it, and
+     * Make the turtle move backwards. Note that the animation starts from the blocks <em>above</em> it, and
      * moves into this one.
      */
     MoveUp,
 
     /**
-     * Make the turtle move backwards. Note that the animation starts from the block <em>below</em> it, and
+     * Make the turtle move backwards. Note that the animation starts from the blocks <em>below</em> it, and
      * moves into this one.
      */
     MoveDown,

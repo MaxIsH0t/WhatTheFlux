@@ -21,13 +21,13 @@ import javax.annotation.Nonnull;
 public interface IBundledRedstoneProvider
 {
     /**
-     * Produce an bundled redstone output from a block location.
+     * Produce an bundled redstone output from a blocks location.
      *
-     * @param world The world this block is in.
-     * @param pos   The position this block is at.
+     * @param world The world this blocks is in.
+     * @param pos   The position this blocks is at.
      * @param side  The side to extract the bundled redstone output from.
-     * @return A number in the range 0-65535 to indicate this block is providing output, or -1 if you do not wish to
-     * handle this block.
+     * @return A number in the range 0-65535 to indicate this blocks is providing output, or -1 if you do not wish to
+     * handle this blocks.
      * @see dan200.computercraft.api.ComputerCraftAPI#registerBundledRedstoneProvider(IBundledRedstoneProvider)
      */
     int getBundledRedstoneOutput( @Nonnull World world, @Nonnull BlockPos pos, @Nonnull EnumFacing side );

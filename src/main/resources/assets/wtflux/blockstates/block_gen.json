@@ -1,8 +1,13 @@
 {
-  "_comment": "Generated using MiningMark48's JSON Generator.",
-  "variants": {
-    "normal": {
-      "model": "wtflux:block_gen"
+  "forge_marker": 1,
+  "defaults": {
+    "model": "wtflux:none",
+    "textures": {
+      "all": "wtflux:blocks/blockGenerator0/sideOff"
     }
+  },
+  "variants": {
+    "normal": [{}],
+    "inventory": [{}]
   }
 }

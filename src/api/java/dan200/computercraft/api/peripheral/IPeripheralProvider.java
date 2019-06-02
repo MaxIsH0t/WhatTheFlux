@@ -22,10 +22,10 @@ import javax.annotation.Nullable;
 public interface IPeripheralProvider
 {
     /**
-     * Produce an peripheral implementation from a block location.
+     * Produce an peripheral implementation from a blocks location.
      *
-     * @param world The world the block is in.
-     * @param pos   The position the block is at.
+     * @param world The world the blocks is in.
+     * @param pos   The position the blocks is at.
      * @param side  The side to get the peripheral from.
      * @return A peripheral, or {@code null} if there is not a peripheral here you'd like to handle.
      * @see dan200.computercraft.api.ComputerCraftAPI#registerPeripheralProvider(IPeripheralProvider)

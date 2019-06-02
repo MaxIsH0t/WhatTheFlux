@@ -118,7 +118,7 @@ public interface IPeripheral
      * Determine whether this peripheral is equivalent to another one.
      *
      * The minimal example should at least check whether they are the same object. However, you may wish to check if
-     * they point to the same block or tile entity.
+     * they point to the same blocks or tile entity.
      *
      * @param other The peripheral to compare against. This may be {@code null}.
      * @return Whether these peripherals are equivalent.
