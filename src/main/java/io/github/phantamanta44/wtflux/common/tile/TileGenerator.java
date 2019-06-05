@@ -9,6 +9,7 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import io.github.phantamanta44.wtflux.common.init.ModItems;
 import io.github.phantamanta44.wtflux.util.*;
 import io.github.phantamanta44.wtflux.util.computercraft.CCMethod;
 import io.github.phantamanta44.wtflux.util.computercraft.CCMethodBoolGetter;
@@ -28,11 +29,15 @@ import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class TileGenerator extends TileBasicInventory implements IEnergyProvider, IEnergyContainer, ITileItemNBT, IPeripheral {
+public abstract class TileGenerator extends TileBasicInventory implements IEnergyProvider, IEnergyContainer, ITileItemNBT, IPeripheral
+{
+    BlockPos blockPos = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
+
     public static final int[] COIL_AMOUNTS = new int[]{128, 256, 512, 1024};
     public static final int[] CAP_AMOUNTS = new int[]{24000, 80000, 50000, 48000, 160000, 100000, 48000};
     public static final int[] CAP_RATES = new int[]{128, 256, 384, 256, 512, 768, -1};
@@ -463,7 +468,9 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                         tank.fill(bucket.drain(slots[0], Math.min(1000, TANK_SIZE - tank.getFluidAmount()), true), true);
                         dirty = true;
                     }
-                } else if (FluidContainerRegistry.isFilledContainer(slots[0])) {
+                } 
+                /**
+                else if (container.getCapacity(slots[0])) {
                     FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(slots[0]);
                     if (fluid.getFluid() == FluidRegistry.WATER && TANK_SIZE - tank.getFluidAmount() >= fluid.amount) {
                         tank.fill(fluid, true);
@@ -471,7 +478,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                         slots[0] = null;
                         dirty = true;
                     }
-                }
+                }**/
             }
             return dirty;
         }
@@ -633,6 +640,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                         dirty = true;
                     }
                 }
+                /**
                 else if (FluidContainerRegistry.isFilledContainer(slots[0])) {
                     FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(slots[0]);
                     if (fluid.getFluid() == FluidRegistry.WATER && TANK_SIZE - tank.getFluidAmount() >= fluid.amount) {
@@ -641,7 +649,7 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
                         slots[0] = null;
                         dirty = true;
                     }
-                }
+                }**/
             }
             return dirty;
         }
@@ -676,13 +684,14 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         }
 
         @Override
-        public void writeToNBT(NBTTagCompound tag) {
+        public NBTTagCompound writeToNBT(NBTTagCompound tag) {
             super.writeToNBT(tag);
             NBTTagCompound tankTag = new NBTTagCompound(), tankTag2 = new NBTTagCompound();
             tank.writeToNBT(tankTag);
             lowerTank.writeToNBT(tankTag2);
             tag.setTag(ModReference.MACHINE_TANK, tankTag);
             tag.setTag(ModReference.MACHINE_TANK_2, tankTag2);
+            return tankTag;
         }
 
         public IFluidTank getTank() {
@@ -700,8 +709,8 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
 
         @Override
         public boolean isItemValidForSlot(int slot, ItemStack stack) {
-            return slot == 0 && stack.getItem() instanceof IFluidContainerItem
-                    || FluidContainerRegistry.isFilledContainer(stack);
+            return slot == 0 && stack.getItem() instanceof IFluidContainerItem;
+                    //|| IFluidContainerItem.fill(stack);
         }
 
         @Override
@@ -722,6 +731,296 @@ public abstract class TileGenerator extends TileBasicInventory implements IEnerg
         @Override
         public void clear() {
 
+        }
+    }
+
+    public static class Nuke extends TileGenerator implements IFluidHandler {
+
+        private static final int TANK_SIZE = 16000;
+        private float fuel = 0, waste = 0;
+        private SingleFluidTank tank = new SingleFluidTank(FluidRegistry.WATER, TANK_SIZE);
+        private String[] status = new String[] {ModReference.NG_GOOD, "", "", ""};
+        private int statusIndex;
+        private boolean active;
+
+        public Nuke() {
+            super(6, false);
+            ccMethods.add(new CCMethodBoolGetter("isTankEmpty", () -> tank.getFluidAmount() <= 0));
+            ccMethods.add(new CCMethodIntGetter("getTankAmount", tank::getFluidAmount));
+            ccMethods.add(new CCMethodIntGetter("getTankCapacity", tank::getCapacity));
+            ccMethods.add(new CCMethodFloatGetter("getFuel", () -> fuel));
+            ccMethods.add(new CCMethodFloatGetter("getWaste", () -> waste));
+        }
+
+        @Override
+        public boolean isActive() {
+            return active;
+        }
+
+        @Override
+        protected boolean doGeneration() {
+            Arrays.fill(status, "");
+            status[0] = ModReference.NG_GOOD;
+            statusIndex = 0;
+
+            if (fuel > 0F) {
+                if (waste < 4000F)
+                    tryDoReaction();
+            } else {
+                active = false;
+                status(ModReference.NG_NOFUEL);
+            }
+
+            if (fuel < 3000F)
+                tryInjectFuel();
+
+            if (waste >= 1000F)
+                tryEjectWaste();
+
+            if (tank.getFluidAmount() >= (temp / 4F)) {
+                if (temp > getPassiveTemp()) {
+                    tank.drain((int)(temp / 4F), true);
+                    momentumFromHeat();
+                    float tempFac = Math.max(0.01F, 2000F - temp) / 2000F;
+                    temp *= (0.9988F + 0.001F * tempFac);
+                }
+            }
+            else
+                status(ModReference.NG_NOCOOL);
+
+            if (slots[3] != null && slots[4] == null) {
+                if (slots[3].getItem() instanceof IFluidContainerItem) {
+                    IFluidContainerItem bucket = (IFluidContainerItem)slots[3].getItem();
+                    FluidStack fluid = bucket.getFluid(slots[3]);
+                    if (fluid.getFluid() == FluidRegistry.WATER)
+                        tank.fill(bucket.drain(slots[3], Math.min(1000, TANK_SIZE - tank.getFluidAmount()), true), true);
+                }
+                /**
+                else if (FluidContainerRegistry.isFilledContainer(slots[3])) {
+                    FluidStack fluid = FluidContainerRegistry.getFluidForFilledItem(slots[3]);
+                    if (fluid.getFluid() == FluidRegistry.WATER && TANK_SIZE - tank.getFluidAmount() >= fluid.amount) {
+                        tank.fill(fluid, true);
+                        slots[4] = slots[3].getItem().getContainerItem(slots[3]);
+                        slots[3] = null;
+                    }
+                }**/
+            }
+
+            if (energy >= energyMax)
+                status(ModReference.NG_FULLBUF);
+            return true;
+        }
+
+        private void tryDoReaction() {
+            if (slots[2] != null) {
+                if (slots[2].getItem() == ModItems.ITEM_RCT && slots[2].getItemDamage() == ItemReactor.CONTROL_ROD) {
+                    float fuelCost = temp / 35F;
+                    if (fuel >= fuelCost) {
+                        if (4000F - waste >= fuelCost) {
+                            slots[2] = ((ItemReactor)WtfItems.itemRct).decrementUses(slots[2]);
+                            fuel -= fuelCost;
+                            waste += fuelCost;
+                            float tempFac = Math.max(0.01F, 30000F - temp) / 15000F;
+                            temp += (16F + worldObj.rand.nextFloat() * 24F) * Math.max(0.001F, tempFac);
+                            temp += worldObj.rand.nextGaussian() * worldObj.rand.nextFloat() * 100F * tempFac;
+                            active = true;
+                        } else {
+                            status(ModReference.NG_FULLWASTE);
+                            active = false;
+                        }
+                    } else {
+                        status(ModReference.NG_NOFUEL);
+                        active = false;
+                    }
+                    return;
+                }
+            }
+            status(ModReference.NG_NOCTRL);
+            active = false;
+        }
+
+        private void tryInjectFuel() {
+            boolean flag1 = false, flag2 = false;
+            if (slots[1] != null) {
+                if (slots[1].getItem() == WtfItems.itemRct && slots[1].getItemDamage() == ItemReactor.BLASTER)
+                    flag1 = true;
+            }
+
+            if (slots[0] != null) {
+                if (LibDict.matches(slots[0], LibDict.INGOT_URAN))
+                    flag2 = true;
+            }
+
+            if (flag1) {
+                if (flag2) {
+                    slots[1] = ((ItemReactor)WtfItems.itemRct).decrementUses(slots[1]);
+                    decrStackSize(0, 1);
+                    fuel += 1000F;
+                }
+            }
+            else
+                status(ModReference.NG_NOHOW);
+        }
+
+        private void tryEjectWaste() {
+            if (slots[5] == null) {
+                waste -= 1000F;
+                slots[5] = new ItemStack(WtfItems.itemRct, 1, ItemReactor.WASTE);
+            }
+            else if (slots[5].getItem() == WtfItems.itemRct && slots[5].getItemDamage() == ItemReactor.WASTE && slots[5].stackSize < slots[5].getMaxStackSize()) {
+                waste -= 1000F;
+                slots[5].stackSize++;
+            }
+            else
+                status(ModReference.NG_FULLWASTE);
+        }
+
+        @Override
+        public int fill(ForgeDirection from, FluidStack stack, boolean doFill) {
+            return tank.fill(stack, doFill);
+        }
+
+        @Override
+        public FluidStack drain(ForgeDirection from, FluidStack stack, boolean doDrain) {
+            return null;
+        }
+
+        @Override
+        public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+            return null;
+        }
+
+        @Override
+        public boolean canFill(ForgeDirection from, Fluid fluid) {
+            return fluid == FluidRegistry.WATER;
+        }
+
+        @Override
+        public boolean canDrain(ForgeDirection from, Fluid fluid) {
+            return false;
+        }
+
+        @Override
+        public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+            return new FluidTankInfo[] {new FluidTankInfo(tank)};
+        }
+
+        @Override
+        public void doMeltdown() {
+            worldObj.createExplosion(null, xCoord, yCoord, zCoord, 21.67F, true);
+            worldObj.setBlock(xCoord, yCoord, zCoord, Block.getBlockFromName("ThermalFoundation:FluidPyrotheum"));
+            // TODO Radioactive harm of some kind
+        }
+
+        @Override
+        public void doOverspeed() {
+            doMeltdown();
+        }
+
+        @Override
+        public void readFromNBT(NBTTagCompound tag) {
+            super.readFromNBT(tag);
+            fuel = tag.getFloat(LibNBT.MACHINE_FUEL);
+            waste = tag.getFloat(LibNBT.MACHINE_WASTE);
+            tank = SingleFluidTank.loadFromNBT(tag.getCompoundTag(LibNBT.MACHINE_TANK));
+            active = tag.getBoolean(LibNBT.ACTIVE);
+        }
+
+        @Override
+        public void writeToNBT(NBTTagCompound tag) {
+            super.writeToNBT(tag);
+            NBTTagCompound tankTag = new NBTTagCompound();
+            tank.writeToNBT(tankTag);
+            tag.setFloat(LibNBT.MACHINE_FUEL, fuel);
+            tag.setFloat(LibNBT.MACHINE_WASTE, waste);
+            tag.setTag(LibNBT.MACHINE_TANK, tankTag);
+            tag.setBoolean(LibNBT.ACTIVE, active);
+        }
+
+        public IFluidTank getTank() {
+            return tank;
+        }
+
+        public float getFuel() {
+            return fuel;
+        }
+
+        public float getWaste() {
+            return waste;
+        }
+
+        public String[] getStatus() {
+            return status;
+        }
+
+        public void status(String s) {
+            if (statusIndex < status.length)
+                status[statusIndex++] = s;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public boolean isItemValidForSlot(int slot, ItemStack stack) {
+            switch (slot) {
+                case 0: // fuel
+                    return LibDict.matches(stack, LibDict.INGOT_URAN);
+                case 1: // neutron howitzer
+                    return stack.getItem() == WtfItems.itemRct && stack.getItemDamage() == ItemReactor.BLASTER;
+                case 2: // control rod
+                    return stack.getItem() == WtfItems.itemRct && stack.getItemDamage() == ItemReactor.CONTROL_ROD;
+                case 3: // fluid in
+                    return stack.getItem() instanceof IFluidContainerItem || FluidContainerRegistry.isFilledContainer(stack);
+                case 4: // fluid out
+                case 5: // waste
+                    return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int getField(int i) {
+            return 0;
+        }
+
+        @Override
+        public void setField(int i, int i1) {
+
+        }
+
+        @Override
+        public int getFieldCount() {
+            return 0;
+        }
+
+        @Override
+        public void clear() {
+
+        }
+
+        @Override
+        public IFluidTankProperties[] getTankProperties() {
+            return new IFluidTankProperties[0];
+        }
+
+        @Override
+        public int fill(FluidStack fluidStack, boolean b) {
+            return 0;
+        }
+
+        @Nullable
+        @Override
+        public FluidStack drain(FluidStack fluidStack, boolean b) {
+            return null;
+        }
+
+        @Nullable
+        @Override
+        public FluidStack drain(int i, boolean b) {
+            return null;
         }
     }
 }
